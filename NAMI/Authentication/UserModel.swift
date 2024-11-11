@@ -13,3 +13,9 @@ enum UserType {
     // we will add volunteer user later
     // case volunteer
 }
+
+struct Member {
+    var name: String
+    var email: String
+    var phoneNumber: String
+}

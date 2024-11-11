@@ -10,14 +10,23 @@ import SwiftUI
 struct UserProfileView: View {
     @Environment(AuthenticationManager.self) var authManager
     var body: some View {
-        VStack{
+        VStack {
+
             Button("Sign Out") {
                 authManager.signOut()
             }.buttonStyle(.bordered)
+
+            Button("Delete Account", role: .destructive) {
+                Task {
+                    await authManager.deleteAccount()
+                }
+            }.buttonStyle(.bordered)
         }
+        .navigationTitle("Profile")
     }
 }
 
 #Preview {
     UserProfileView()
+        .environment(AuthenticationManager())
 }
