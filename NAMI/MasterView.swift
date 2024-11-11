@@ -9,7 +9,7 @@ import SwiftUI
 import AuthenticationServices
 
 struct MasterView: View {
-    @StateObject private var authManager = AuthenticationManager()
+    @State private var authManager = AuthenticationManager()
 
     var body: some View {
         Group {
@@ -18,12 +18,12 @@ struct MasterView: View {
             case .unauthenticated, .authenticating:
                 VStack {
                     SignUpView()
-                        .environmentObject(authManager)
+                        .environment(authManager)
                 }
 
             case .authenticated:
                 AppView()
-                    .environmentObject(authManager)
+                    .environment(authManager)
                     .onReceive(NotificationCenter.default.publisher(for: ASAuthorizationAppleIDProvider.credentialRevokedNotification)) { event in
                         authManager.signOut()
                         if let userInfo = event.userInfo, let info = userInfo["info"] {

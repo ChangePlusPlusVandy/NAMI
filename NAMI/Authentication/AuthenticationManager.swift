@@ -10,6 +10,7 @@ import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
 import GoogleSignInSwift
+import Observation
 
 enum AuthenticationState {
     case unauthenticated
@@ -17,16 +18,14 @@ enum AuthenticationState {
     case authenticated
 }
 
-
 @MainActor
-class AuthenticationManager: ObservableObject {
-    @Published var email: String = ""
+@Observable class AuthenticationManager {
+    var email: String = ""
 
-    @Published var isValid: Bool  = false
-    @Published var authenticationState: AuthenticationState = .unauthenticated
-    @Published var errorMessage: String = ""
-    @Published var user: User?
-    @Published var displayName: String = ""
+    var isValid: Bool  = false
+    var authenticationState: AuthenticationState = .unauthenticated
+    var errorMessage: String = ""
+    var user: User?
 
     init() {
         registerAuthStateHandler()
@@ -39,7 +38,6 @@ class AuthenticationManager: ObservableObject {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
                 self.authenticationState = user == nil ? .unauthenticated : .authenticated
-                self.displayName = user?.email ?? ""
             }
         }
     }
@@ -81,9 +79,9 @@ extension AuthenticationManager {
         let config = GIDConfiguration(clientID: clientID)
         GIDSignIn.sharedInstance.configuration = config
 
-        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-              let window = windowScene.windows.first,
-              let rootViewController = window.rootViewController else {
+        guard let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = await windowScene.windows.first,
+              let rootViewController = await window.rootViewController else {
             print("There is no root view controller!")
             return false
         }

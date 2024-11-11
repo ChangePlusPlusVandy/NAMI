@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct HomeView: View {
+    @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         NavigationStack{
             VStack{
-                Text("This is homeview")
+                Button("Sign out") {
+                    authManager.signOut()
+                }
+                .buttonStyle(.bordered)
             }
             .navigationTitle("Welcome")
             .toolbar{
@@ -37,5 +41,6 @@ struct HomeView: View {
 
 #Preview {
         HomeView()
+        .environment(AuthenticationManager())
         .tint(.primary)
 }

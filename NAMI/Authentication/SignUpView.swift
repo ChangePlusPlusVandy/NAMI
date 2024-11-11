@@ -9,14 +9,20 @@ import SwiftUI
 import Combine
 
 struct SignUpView: View {
-    @EnvironmentObject var authManager: AuthenticationManager
+    @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         VStack {
+            Spacer()
+            Image("NAMILogo")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200, height: 200)
+            Spacer()
             GoogleSignInButton
+            Spacer()
         }
         .padding()
     }
-
 
     var GoogleSignInButton: some View{
         Button{
@@ -40,5 +46,5 @@ struct SignUpView: View {
 
 #Preview {
     SignUpView()
-        .environmentObject(AuthenticationManager())
+        .environment(AuthenticationManager())
 }
