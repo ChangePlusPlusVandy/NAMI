@@ -24,7 +24,6 @@ struct NamiUser: Codable, Identifiable {
     var email: String
     var phoneNumber: String
     var zipCode: String
-    var profilePictureULR: String?
 
     static var errorUser = NamiUser(id: "", userType: .member, firstName: "Error", lastName: "Error", email: "error.com", phoneNumber: "error", zipCode: "123")
 }
