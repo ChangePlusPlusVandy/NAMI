@@ -9,8 +9,9 @@ import SwiftUI
 
 struct HomeView: View {
     @Environment(AuthenticationManager.self) var authManager
+    @State var homeScreenRouter = HomeScreenRouter()
     var body: some View {
-        NavigationStack{
+        NavigationStack (path: $homeScreenRouter.navPath){
             VStack{
                 Button("Sign out") {
                     authManager.signOut()

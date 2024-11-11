@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-final class Router {
+final class HomeScreenRouter {
 
     public enum Destination: Hashable {
     }

@@ -8,12 +8,9 @@
 import SwiftUI
 
 struct AppView: View {
-    @State var router = Router()
-    @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         TabView {
             HomeView()
-                .environment(authManager)
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
@@ -23,7 +20,7 @@ struct AppView: View {
                 }
             ChatView()
                 .tabItem {
-                    Label("Events", systemImage: "message")
+                    Label("Chat", systemImage: "message")
                 }
         }
         .tint(.primary)
@@ -31,6 +28,6 @@ struct AppView: View {
 }
 
 #Preview {
-    MasterView()
+    AppView()
         .environment(AuthenticationManager())
 }
