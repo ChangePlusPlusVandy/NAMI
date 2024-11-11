@@ -12,11 +12,22 @@ struct HomeView: View {
     @State var homeScreenRouter = HomeScreenRouter()
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
-            VStack{
-                Button("Create"){
+            VStack (alignment: .leading){
+                Text("Welcome")
+                    .font(.largeTitle.bold())
+                    .padding(.bottom, 50)
+                Text("My Upcoming Events")
+                    .foregroundStyle(.secondary)
+                List{
+
+                }
+                Text("Saved Resources")
+                    .foregroundStyle(.secondary)
+                List {
 
                 }
             }
+            .padding()
             .toolbar {homeViewToolBar}
             .navigationTitle("")
             .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in

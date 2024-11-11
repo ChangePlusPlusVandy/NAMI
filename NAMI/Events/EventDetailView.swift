@@ -16,5 +16,6 @@ struct EventDetailView: View {
 }
 
 #Preview {
-    EventDetailView(event: Event(title: "Dummy title", location: "2301 Vanderbilt Pl", date: "2020/12/12", about: "a very long about", meetingMode: .virtual(link: "www.zoom.com")))
+    EventDetailView(event: Event.dummyEvent)
+
 }
