@@ -13,12 +13,16 @@ struct HomeView: View {
     var body: some View {
         NavigationStack (path: $homeScreenRouter.navPath){
             VStack{
-                Button("Sign out") {
-                    authManager.signOut()
-                }
-                .buttonStyle(.bordered)
             }
-            .navigationTitle("Welcome")
+            .navigationTitle("")
+            .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
+                switch destination {
+                case .userProfileView:
+                    UserProfileView()
+                        .environment(homeScreenRouter)
+
+                }
+            }
             .toolbar{
                 ToolbarItem(placement: .navigationBarLeading){
                     Button{
@@ -27,9 +31,13 @@ struct HomeView: View {
                         Image(systemName: "line.horizontal.3")
                     }
                 }
+                ToolbarItem(placement: .navigationBarLeading){
+                    Text("NAMI")
+                        .font(.title2.bold())
+                }
                 ToolbarItem(placement: .navigationBarTrailing){
                     Button{
-
+                        homeScreenRouter.navigate(to: .userProfileView)
                     } label: {
                         Image(systemName: "person.fill")
                     }
@@ -41,7 +49,7 @@ struct HomeView: View {
 
 
 #Preview {
-        HomeView()
+    HomeView()
         .environment(AuthenticationManager())
         .tint(.primary)
 }

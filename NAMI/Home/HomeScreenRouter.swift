@@ -11,6 +11,7 @@ import SwiftUI
 final class HomeScreenRouter {
 
     public enum Destination: Hashable {
+        case userProfileView
     }
 
     var navPath = NavigationPath()
