@@ -1,33 +1,37 @@
 //
-//  ContentView.swift
+//  AuthenticationView.swift
 //  NAMI
 //
-//  Created by Zachary Tao on 10/5/24.
+//  Created by Zachary Tao on 11/10/24.
 //
 
 import SwiftUI
+import AuthenticationServices
 
 struct MasterView: View {
-    @State var router = Router()
-    var body: some View {
-        TabView {
-            HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-            EventsView()
-                .tabItem {
-                    Label("Events", systemImage: "person.3.fill")
-                }
-            ChatView()
-                .tabItem {
-                    Label("Events", systemImage: "message")
-                }
-        }
-        .tint(.primary)
-    }
-}
+    @StateObject private var authManager = AuthenticationManager()
 
-#Preview {
-    MasterView()
+    var body: some View {
+        Group {
+            switch authManager.authenticationState {
+
+            case .unauthenticated, .authenticating:
+                VStack {
+                    SignUpView()
+                        .environmentObject(authManager)
+                }
+
+            case .authenticated:
+                AppView()
+                    .environmentObject(authManager)
+                    .onReceive(NotificationCenter.default.publisher(for: ASAuthorizationAppleIDProvider.credentialRevokedNotification)) { event in
+                        authManager.signOut()
+                        if let userInfo = event.userInfo, let info = userInfo["info"] {
+                            print(info)
+                        }
+                    }
+
+            }
+        }
+    }
 }

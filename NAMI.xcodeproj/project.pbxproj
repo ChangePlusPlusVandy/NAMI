@@ -10,15 +10,30 @@
 		EF13E14D2CE177B5002248AC /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EF13E14C2CE177B5002248AC /* FirebaseAnalytics */; };
 		EF13E14F2CE177B5002248AC /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = EF13E14E2CE177B5002248AC /* FirebaseAuth */; };
 		EF13E1512CE177B5002248AC /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = EF13E1502CE177B5002248AC /* FirebaseFirestore */; };
+		EF9A8DC62CE17CD0000BFFA1 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = EF9A8DC52CE17CD0000BFFA1 /* GoogleSignIn */; };
+		EF9A8DC82CE17CD0000BFFA1 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EF9A8DC72CE17CD0000BFFA1 /* GoogleSignInSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EF1E86A42CB200740053E9D5 /* NAMI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NAMI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EF9A8DCC2CE17D5B000BFFA1 /* Exceptions for "NAMI" folder in "NAMI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EF1E86A32CB200740053E9D5 /* NAMI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EF1E86A62CB200740053E9D5 /* NAMI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EF9A8DCC2CE17D5B000BFFA1 /* Exceptions for "NAMI" folder in "NAMI" target */,
+			);
 			path = NAMI;
 			sourceTree = "<group>";
 		};
@@ -29,7 +44,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF9A8DC82CE17CD0000BFFA1 /* GoogleSignInSwift in Frameworks */,
 				EF13E14D2CE177B5002248AC /* FirebaseAnalytics in Frameworks */,
+				EF9A8DC62CE17CD0000BFFA1 /* GoogleSignIn in Frameworks */,
 				EF13E14F2CE177B5002248AC /* FirebaseAuth in Frameworks */,
 				EF13E1512CE177B5002248AC /* FirebaseFirestore in Frameworks */,
 			);
@@ -77,6 +94,8 @@
 				EF13E14C2CE177B5002248AC /* FirebaseAnalytics */,
 				EF13E14E2CE177B5002248AC /* FirebaseAuth */,
 				EF13E1502CE177B5002248AC /* FirebaseFirestore */,
+				EF9A8DC52CE17CD0000BFFA1 /* GoogleSignIn */,
+				EF9A8DC72CE17CD0000BFFA1 /* GoogleSignInSwift */,
 			);
 			productName = NAMI;
 			productReference = EF1E86A42CB200740053E9D5 /* NAMI.app */;
@@ -108,6 +127,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				EF13E14B2CE177B5002248AC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				EF9A8DC42CE17CD0000BFFA1 /* XCRemoteSwiftPackageReference "GoogleSignin-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = EF1E86A52CB200740053E9D5 /* Products */;
@@ -270,6 +290,7 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NAMI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NAMI;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -301,6 +322,7 @@
 				DEVELOPMENT_TEAM = DP7CA5HH9V;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NAMI/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NAMI;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -353,6 +375,14 @@
 				minimumVersion = 11.4.0;
 			};
 		};
+		EF9A8DC42CE17CD0000BFFA1 /* XCRemoteSwiftPackageReference "GoogleSignin-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignin-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -370,6 +400,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EF13E14B2CE177B5002248AC /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		EF9A8DC52CE17CD0000BFFA1 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF9A8DC42CE17CD0000BFFA1 /* XCRemoteSwiftPackageReference "GoogleSignin-iOS" */;
+			productName = GoogleSignIn;
+		};
+		EF9A8DC72CE17CD0000BFFA1 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EF9A8DC42CE17CD0000BFFA1 /* XCRemoteSwiftPackageReference "GoogleSignin-iOS" */;
+			productName = GoogleSignInSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

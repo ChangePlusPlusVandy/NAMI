@@ -1,5 +1,5 @@
 {
-  "originHash" : "c63c63846d9c539229e96de38d6af51417e28c0ee9a0bc48bd0f0f19d923c329",
+  "originHash" : "757db2d942d3b502c2230f95958f50ce9b44e1f63fe2e1588bc32facac2a10f1",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "61b85103a1aeed8218f17c794687781505fbbef5",
         "version" : "11.2.0"
+      }
+    },
+    {
+      "identity" : "appauth-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/openid/AppAuth-iOS.git",
+      "state" : {
+        "revision" : "c89ed571ae140f8eb1142735e6e23d7bb8c34cb2",
+        "version" : "1.7.5"
       }
     },
     {
@@ -47,6 +56,15 @@
       }
     },
     {
+      "identity" : "googlesignin-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/GoogleSignin-iOS",
+      "state" : {
+        "revision" : "65fb3f1aa6ffbfdc79c4e22178a55cd91561f5e9",
+        "version" : "8.0.0"
+      }
+    },
+    {
       "identity" : "googleutilities",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleUtilities.git",
@@ -69,8 +87,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/gtm-session-fetcher.git",
       "state" : {
-        "revision" : "5cfe5f090c982de9c58605d2a82a4fc77b774fbd",
-        "version" : "4.1.0"
+        "revision" : "a2ab612cb980066ee56d90d60d8462992c07f24b",
+        "version" : "3.5.0"
+      }
+    },
+    {
+      "identity" : "gtmappauth",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/google/GTMAppAuth.git",
+      "state" : {
+        "revision" : "5d7d66f647400952b1758b230e019b07c0b4b22a",
+        "version" : "4.1.1"
       }
     },
     {
