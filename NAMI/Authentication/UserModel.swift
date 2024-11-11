@@ -17,11 +17,14 @@ enum UserType : Codable {
 struct NamiUser: Codable, Identifiable {
     @DocumentID var id: String?
     var userType: UserType
-    var isAdmin: Bool
 
-    var name: String
+
+    var firstName: String
+    var lastName: String
     var email: String
     var phoneNumber: String
+    var zipCode: String
+    var profilePictureULR: String?
 
-    static var errorUser = NamiUser(userType: .member, isAdmin: false, name: "Error", email: "Error", phoneNumber: "Error")
+    static var errorUser = NamiUser(id: "", userType: .member, firstName: "Error", lastName: "Error", email: "error.com", phoneNumber: "error", zipCode: "123")
 }

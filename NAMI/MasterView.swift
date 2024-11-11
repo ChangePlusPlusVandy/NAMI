@@ -38,7 +38,7 @@ struct MasterView: View {
             showAlert = !authManager.errorMessage.isEmpty
         }
         .alert(isPresented: $showAlert) {
-            Alert(title: Text("Error"), message: Text(authManager.errorMessage), dismissButton: .default(Text("OK")))
+            Alert(title: Text("Error"), message: Text(authManager.errorMessage), dismissButton: .default(Text("OK")) {authManager.errorMessage = ""})
         }
 
     }

@@ -28,6 +28,7 @@ struct SignUpView: View {
         Button{
             Task {
                 if await authManager.signInWithGoogle() == true {
+                    await UserManager.shared.fetchUser()
                 }
             }
         } label: {

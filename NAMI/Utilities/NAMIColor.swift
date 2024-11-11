@@ -8,6 +8,12 @@
 import SwiftUI
 
 extension Color {
+    static var NAMIDarkBlue = Color(hex: "#F7F5F5")
+    static var NAMITealBlue = Color(hex: "#1A1A1A")
+    static var NAMIGreen = Color(hex: "DDE7D9")
+}
+
+extension Color {
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0
@@ -32,10 +38,4 @@ extension Color {
             opacity: Double(a) / 255
         )
     }
-}
-
-extension Color {
-    static var NAMIDarkBlue = Color(hex: "#F7F5F5")
-    static var NAMITealBlue = Color(hex: "#1A1A1A")
-    static var NAMIGreen = Color(hex: "DDE7D9")
 }

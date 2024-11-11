@@ -14,7 +14,7 @@ struct HomeView: View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack{
                 Button("Create"){
-                    UserManager.shared.createNewUser(newUser: NamiUser(userType: .member, isAdmin: false, name: "Zachary", email: "taozhewen.tao", phoneNumber: "1233"))
+
                 }
             }
             .toolbar {homeViewToolBar}
