@@ -18,7 +18,9 @@ struct UserProfileView: View {
 
             Button("Delete Account", role: .destructive) {
                 Task {
-                    await authManager.deleteAccount()
+                    if await authManager.deleteAccount() {
+                        UserManager.shared.deleteUserInfo()
+                    }
                 }
             }.buttonStyle(.bordered)
         }

@@ -20,9 +20,6 @@ enum AuthenticationState {
 
 @MainActor
 @Observable class AuthenticationManager {
-    var email: String = ""
-
-    var isValid: Bool  = false
     var authenticationState: AuthenticationState = .unauthenticated
     var errorMessage: String = ""
     var user: User?
@@ -33,7 +30,7 @@ enum AuthenticationState {
 
     private var authStateHandler: AuthStateDidChangeListenerHandle?
 
-    func registerAuthStateHandler() {
+    private func registerAuthStateHandler() {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
@@ -41,9 +38,7 @@ enum AuthenticationState {
             }
         }
     }
-}
 
-extension AuthenticationManager {
     func signOut() {
         do {
             try Auth.auth().signOut()
@@ -61,6 +56,7 @@ extension AuthenticationManager {
         }
         catch {
             errorMessage = error.localizedDescription
+            print(errorMessage)
             return false
         }
     }
