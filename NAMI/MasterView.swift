@@ -12,6 +12,7 @@ struct MasterView: View {
     @State private var authManager = AuthenticationManager()
     @State private var showAlert = false
 
+
     var body: some View {
         Group {
             switch authManager.authenticationState {
@@ -27,12 +28,6 @@ struct MasterView: View {
                     .environment(authManager)
                     .transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
 
-            case .newUserOnboardingStage:
-                UserOnboardingView()
-                    .environment(authManager)
-                    .transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
-
-
             case .authenticated:
                 AppView()
                     .environment(authManager)
@@ -42,6 +37,14 @@ struct MasterView: View {
                             print(info)
                         }
                     }
+                    .sheet(isPresented: $authManager.isFirstTimeSignIn) {
+                        UserOnboardingView()
+                            .environment(authManager)
+                            .interactiveDismissDisabled()
+
+                            //.transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
+                    }
+
             }
         }
         .animation(.default, value: authManager.authenticationState)

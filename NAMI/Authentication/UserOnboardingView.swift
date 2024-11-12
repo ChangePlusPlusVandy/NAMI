@@ -9,35 +9,29 @@ import SwiftUI
 
 struct UserOnboardingView: View {
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(\.dismiss) var dismiss
     var body: some View {
-        VStack{
-            backButton
+        VStack {
+            //backButton
             // TODO: Create a form for user onboarding
+            Text("Member Sign Up")
+                .font(.title.bold())
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
             Spacer()
             Button("Confirm") {
                 // dummy data for now
                 Task {
                     await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
                 }
-                authManager.authenticationState = .authenticated
+                authManager.isFirstTimeSignIn = false
             }
             Spacer()
         }
-    }
-
-    var backButton: some View {
-        Button{
-            authManager.signOut()
-            authManager.authenticationState = .welcomeStage
-        } label: {
-            Image(systemName: "chevron.left")
-                .font(.title3.bold())
-                .foregroundStyle(.black)
-        }.frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
     }
 }
 
 #Preview {
     UserOnboardingView()
+        .environment(AuthenticationManager())
 }

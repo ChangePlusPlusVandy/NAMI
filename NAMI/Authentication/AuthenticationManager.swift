@@ -15,7 +15,6 @@ import Observation
 enum AuthenticationState {
     case welcomeStage
     case loginStage
-    case newUserOnboardingStage
     case authenticated
 }
 
@@ -24,6 +23,7 @@ enum AuthenticationState {
     var authenticationState: AuthenticationState = .welcomeStage
     var errorMessage: String = ""
     var user: User?
+    var isFirstTimeSignIn = false
 
     init() {
         registerAuthStateHandler()
@@ -35,32 +35,40 @@ enum AuthenticationState {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
-                if user == nil{
-                    self.authenticationState = .welcomeStage
-                } else {
-                        if self.isUserFirstTimeLogIn() {
-                            // if this is user's first time sign in
-                            self.authenticationState = .newUserOnboardingStage
-                        } else {
-                            // if user has signed in before
-                            Task {
-                                await UserManager.shared.fetchUser()
-                            }
-                            self.authenticationState = .authenticated
-                        }
-                }
+//                if user == nil{
+//                    self.authenticationState = .welcomeStage
+//                } else {
+//                        if self.isUserFirstTimeLogIn() {
+//                            // if this is user's first time sign in
+//                            self.authenticationState = .newUserOnboardingStage
+//                            print("False")
+//                        } else {
+//                            // if user has signed in before
+//                            print("True")
+//                            Task {
+//                                await UserManager.shared.fetchUser()
+//                            }
+//                            self.authenticationState = .authenticated
+//                        }
+//                }
+                self.authenticationState = user == nil ? .welcomeStage : .authenticated
             }
         }
     }
 
-    private func isUserFirstTimeLogIn() -> Bool {
+    func isUserFirstTimeLogIn() -> Bool {
         let newUserRref = Auth.auth().currentUser?.metadata
-
         /*Check if the automatic creation time of the user is equal to the last
           sign in time (Which will be the first sign in time if it is indeed
           their first sign in)*/
-
-        return newUserRref?.creationDate?.timeIntervalSince1970 == newUserRref?.lastSignInDate?.timeIntervalSince1970
+        if newUserRref?.creationDate?.timeIntervalSince1970 == newUserRref?.lastSignInDate?.timeIntervalSince1970{
+            print("This is user first time login")
+            print("Creation time: \(String(describing: newUserRref?.creationDate))")
+            print("Last sign in time: \(String(describing: newUserRref?.lastSignInDate))")
+            return true
+        } else {
+            return false
+        }
     }
 
     func signOut() {
@@ -117,6 +125,9 @@ extension AuthenticationManager {
                                                            accessToken: accessToken.tokenString)
 
             let result = try await Auth.auth().signIn(with: credential)
+            if let isNewUser = result.additionalUserInfo?.isNewUser, isNewUser {
+                isFirstTimeSignIn = true
+            }
             let firebaseUser = result.user
             print("User \(firebaseUser.uid) signed in with email \(firebaseUser.email ?? "unknown")")
             return true
