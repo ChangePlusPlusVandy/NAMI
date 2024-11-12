@@ -8,10 +8,12 @@
 import SwiftUI
 import Combine
 
-struct SignUpView: View {
+struct LoginView: View {
     @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         VStack {
+            backButton
+
             Spacer()
             Image("NAMILogo")
                 .resizable()
@@ -24,12 +26,22 @@ struct SignUpView: View {
         .padding()
     }
 
-    var GoogleSignInButton: some View{
+    var backButton: some View {
+        Button{
+            authManager.authenticationState = .welcomeStage
+        } label: {
+            Image(systemName: "chevron.left")
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+    }
+
+
+    var GoogleSignInButton: some View {
         Button{
             Task {
-                if await authManager.signInWithGoogle() == true {
-                    await UserManager.shared.fetchUser()
-                }
+                _ = await authManager.signInWithGoogle()
             }
         } label: {
             HStack(alignment: .center){
@@ -46,6 +58,6 @@ struct SignUpView: View {
 }
 
 #Preview {
-    SignUpView()
+    LoginView()
         .environment(AuthenticationManager())
 }

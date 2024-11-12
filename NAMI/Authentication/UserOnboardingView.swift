@@ -8,9 +8,33 @@
 import SwiftUI
 
 struct UserOnboardingView: View {
+    @Environment(AuthenticationManager.self) var authManager
     var body: some View {
+        VStack{
+            backButton
+            // TODO: Create a form for user onboarding
+            Spacer()
+            Button("Confirm") {
+                // dummy data for now
+                Task {
+                    await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
+                }
+                authManager.authenticationState = .authenticated
+            }
+            Spacer()
+        }
+    }
 
-        Text("This screen is UserOnboardingView")
+    var backButton: some View {
+        Button{
+            authManager.signOut()
+            authManager.authenticationState = .welcomeStage
+        } label: {
+            Image(systemName: "chevron.left")
+                .font(.title3.bold())
+                .foregroundStyle(.black)
+        }.frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
     }
 }
 

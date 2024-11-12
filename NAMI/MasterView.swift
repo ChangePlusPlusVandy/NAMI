@@ -16,11 +16,22 @@ struct MasterView: View {
         Group {
             switch authManager.authenticationState {
 
-            case .unauthenticated, .authenticating:
-                VStack {
-                    SignUpView()
-                        .environment(authManager)
-                }
+            case .welcomeStage:
+                AppWelcomeView()
+                    .environment(authManager)
+                    .transition(AsymmetricTransition(insertion: .move(edge: .leading), removal: .identity))
+                    .transition(.move(edge: .trailing))
+
+            case .loginStage:
+                LoginView()
+                    .environment(authManager)
+                    .transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
+
+            case .newUserOnboardingStage:
+                UserOnboardingView()
+                    .environment(authManager)
+                    .transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
+
 
             case .authenticated:
                 AppView()
@@ -31,9 +42,9 @@ struct MasterView: View {
                             print(info)
                         }
                     }
-
             }
         }
+        .animation(.default, value: authManager.authenticationState)
         .onChange(of: authManager.errorMessage) {
             showAlert = !authManager.errorMessage.isEmpty
         }

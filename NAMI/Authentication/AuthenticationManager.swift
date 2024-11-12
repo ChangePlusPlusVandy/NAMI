@@ -13,14 +13,15 @@ import GoogleSignInSwift
 import Observation
 
 enum AuthenticationState {
-    case unauthenticated
-    case authenticating
+    case welcomeStage
+    case loginStage
+    case newUserOnboardingStage
     case authenticated
 }
 
 @MainActor
 @Observable class AuthenticationManager {
-    var authenticationState: AuthenticationState = .unauthenticated
+    var authenticationState: AuthenticationState = .welcomeStage
     var errorMessage: String = ""
     var user: User?
 
@@ -34,9 +35,32 @@ enum AuthenticationState {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
-                self.authenticationState = user == nil ? .unauthenticated : .authenticated
+                if user == nil{
+                    self.authenticationState = .welcomeStage
+                } else {
+                        if self.isUserFirstTimeLogIn() {
+                            // if this is user's first time sign in
+                            self.authenticationState = .newUserOnboardingStage
+                        } else {
+                            // if user has signed in before
+                            Task {
+                                await UserManager.shared.fetchUser()
+                            }
+                            self.authenticationState = .authenticated
+                        }
+                }
             }
         }
+    }
+
+    private func isUserFirstTimeLogIn() -> Bool {
+        let newUserRref = Auth.auth().currentUser?.metadata
+
+        /*Check if the automatic creation time of the user is equal to the last
+          sign in time (Which will be the first sign in time if it is indeed
+          their first sign in)*/
+
+        return newUserRref?.creationDate?.timeIntervalSince1970 == newUserRref?.lastSignInDate?.timeIntervalSince1970
     }
 
     func signOut() {

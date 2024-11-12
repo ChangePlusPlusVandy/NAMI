@@ -39,6 +39,15 @@ final class UserManager {
         }
     }
 
+    func isUserFirstTimeLogIn() async -> Bool {
+        do {
+            _ = try await db.collection("users").document(userID).getDocument()
+            return false
+        } catch {
+            return true
+        }
+    }
+
     // Fetch and cache the user info
     // called when account is logged in
     func fetchUser() async {
@@ -47,7 +56,6 @@ final class UserManager {
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)
-            currentUser = NamiUser.errorUser // Fallback if fetch fails
         }
     }
 
