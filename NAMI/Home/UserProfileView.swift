@@ -22,6 +22,7 @@ struct UserProfileView: View {
                     }
                 }
             }.buttonStyle(.bordered)
+                .tint(.red)
         }
         .navigationTitle("Profile")
     }
