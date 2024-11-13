@@ -12,8 +12,6 @@ struct LoginView: View {
     @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         VStack {
-            backButton
-
             Spacer()
             Image("NAMILogo")
                 .resizable()
@@ -25,18 +23,6 @@ struct LoginView: View {
         }
         .padding()
     }
-
-    var backButton: some View {
-        Button{
-            authManager.authenticationState = .welcomeStage
-        } label: {
-            Image(systemName: "chevron.left")
-                .font(.title3.bold())
-                .foregroundStyle(.black)
-        }.frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-    }
-
 
     var GoogleSignInButton: some View {
         Button{

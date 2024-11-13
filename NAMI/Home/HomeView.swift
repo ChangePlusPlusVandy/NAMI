@@ -68,5 +68,4 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environment(AuthenticationManager())
-        .tint(.primary)
 }

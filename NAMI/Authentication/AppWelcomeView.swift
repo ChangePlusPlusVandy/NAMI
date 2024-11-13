@@ -19,6 +19,7 @@ struct AppWelcomeView: View {
                 adminButton
                 Spacer()
             }
+            .navigationTitle("")
         }
     }
 
@@ -34,8 +35,9 @@ struct AppWelcomeView: View {
     }
 
     var memberButton: some View {
-        Button{
-            authManager.authenticationState = .loginStage
+        NavigationLink {
+            LoginView()
+                .environment(authManager)
         } label: {
             Text("Member")
                 .frame(width: 300, height: 50)

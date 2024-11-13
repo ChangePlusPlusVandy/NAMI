@@ -52,7 +52,6 @@ struct EventsView: View {
             .foregroundStyle(.black)
             .buttonBorderShape(.capsule)
             .controlSize(.small)
-
     }
 }
 

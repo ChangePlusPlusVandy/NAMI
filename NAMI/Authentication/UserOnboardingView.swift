@@ -65,8 +65,22 @@ struct UserOnboardingView: View {
                 TextField("\(text)", text: variable)
                     .keyboardType(numPad ? .numberPad : .default)
                     .textFieldStyle(CustemOnboardingTextfieldStyle())
+         
             }
-        }
+            .frame(maxWidth: .infinity, alignment: .center)
+
+        }.padding()
+    }
+}
+
+struct CustemOnboardingTextfieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.gray, lineWidth: 2)
+            )
     }
 }
 

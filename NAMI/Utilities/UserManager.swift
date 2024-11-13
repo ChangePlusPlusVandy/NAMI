@@ -13,7 +13,7 @@ final class UserManager {
     static let shared = UserManager()
     var errorMessage = ""
     let db = Firestore.firestore()
-    let userID = Auth.auth().currentUser?.uid ?? ""
+    var userID: String { Auth.auth().currentUser?.uid ?? "" }
 
     private var currentUser: NamiUser?
 
@@ -39,15 +39,6 @@ final class UserManager {
         }
     }
 
-    func isUserFirstTimeLogIn() async -> Bool {
-        do {
-            _ = try await db.collection("users").document(userID).getDocument()
-            return false
-        } catch {
-            return true
-        }
-    }
-
     // Fetch and cache the user info
     // called when account is logged in
     func fetchUser() async {
@@ -62,6 +53,7 @@ final class UserManager {
     // Create a new user and cache it
     func createNewUser(newUser: NamiUser) async {
         do {
+            print("User id: \(userID) is created in the database")
             try db.collection("users").document(userID).setData(from: newUser)
             currentUser = newUser
         } catch {
@@ -71,8 +63,8 @@ final class UserManager {
     }
 
     // Delete the user info
-    func deleteUserInfo() {
-        db.collection("users").document(userID).delete()
+    func deleteUserInfo(userIDTarget: String) {
+        db.collection("users").document(userIDTarget).delete()
         currentUser = nil
     }
 }
