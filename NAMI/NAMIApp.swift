@@ -15,6 +15,7 @@ struct NAMIApp: App {
         WindowGroup {
             MasterView()
                 .preferredColorScheme(.light)
+                .tint(.black)
         }
     }
 }

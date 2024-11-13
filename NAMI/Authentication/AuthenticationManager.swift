@@ -13,14 +13,13 @@ import GoogleSignInSwift
 import Observation
 
 enum AuthenticationState {
-    case welcomeStage
-    case loginStage
+    case unauthenticated
     case authenticated
 }
 
 @MainActor
 @Observable class AuthenticationManager {
-    var authenticationState: AuthenticationState = .welcomeStage
+    var authenticationState: AuthenticationState = .unauthenticated
     var errorMessage: String = ""
     var user: User?
     var isFirstTimeSignIn = false
@@ -35,23 +34,7 @@ enum AuthenticationState {
         if authStateHandler == nil {
             authStateHandler = Auth.auth().addStateDidChangeListener { auth, user in
                 self.user = user
-//                if user == nil{
-//                    self.authenticationState = .welcomeStage
-//                } else {
-//                        if self.isUserFirstTimeLogIn() {
-//                            // if this is user's first time sign in
-//                            self.authenticationState = .newUserOnboardingStage
-//                            print("False")
-//                        } else {
-//                            // if user has signed in before
-//                            print("True")
-//                            Task {
-//                                await UserManager.shared.fetchUser()
-//                            }
-//                            self.authenticationState = .authenticated
-//                        }
-//                }
-                self.authenticationState = user == nil ? .welcomeStage : .authenticated
+                self.authenticationState = user == nil ? .unauthenticated : .authenticated
             }
         }
     }
@@ -59,8 +42,8 @@ enum AuthenticationState {
     func isUserFirstTimeLogIn() -> Bool {
         let newUserRref = Auth.auth().currentUser?.metadata
         /*Check if the automatic creation time of the user is equal to the last
-          sign in time (Which will be the first sign in time if it is indeed
-          their first sign in)*/
+         sign in time (Which will be the first sign in time if it is indeed
+         their first sign in)*/
         if newUserRref?.creationDate?.timeIntervalSince1970 == newUserRref?.lastSignInDate?.timeIntervalSince1970{
             print("This is user first time login")
             print("Creation time: \(String(describing: newUserRref?.creationDate))")
@@ -123,7 +106,7 @@ extension AuthenticationManager {
 
             let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString,
                                                            accessToken: accessToken.tokenString)
-
+            
             let result = try await Auth.auth().signIn(with: credential)
             if let isNewUser = result.additionalUserInfo?.isNewUser, isNewUser {
                 isFirstTimeSignIn = true
@@ -134,7 +117,9 @@ extension AuthenticationManager {
         }
         catch {
             print(error.localizedDescription)
-            self.errorMessage = error.localizedDescription
+            if error.localizedDescription != "The user canceled the sign-in flow."{
+                self.errorMessage = error.localizedDescription
+            }
             return false
         }
     }

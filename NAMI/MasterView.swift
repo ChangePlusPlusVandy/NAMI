@@ -17,16 +17,11 @@ struct MasterView: View {
         Group {
             switch authManager.authenticationState {
 
-            case .welcomeStage:
+            case .unauthenticated:
                 AppWelcomeView()
                     .environment(authManager)
                     .transition(AsymmetricTransition(insertion: .move(edge: .leading), removal: .identity))
                     .transition(.move(edge: .trailing))
-
-            case .loginStage:
-                LoginView()
-                    .environment(authManager)
-                    .transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
 
             case .authenticated:
                 AppView()
@@ -37,14 +32,11 @@ struct MasterView: View {
                             print(info)
                         }
                     }
-                    .sheet(isPresented: $authManager.isFirstTimeSignIn) {
+                    .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
                         UserOnboardingView()
                             .environment(authManager)
                             .interactiveDismissDisabled()
-
-                            //.transition(AsymmetricTransition(insertion: .move(edge: .trailing), removal: .identity))
                     }
-
             }
         }
         .animation(.default, value: authManager.authenticationState)

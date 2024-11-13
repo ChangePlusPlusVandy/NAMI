@@ -71,8 +71,8 @@ final class UserManager {
     }
 
     // Delete the user info
-    func deleteUserInfo() {
-        db.collection("users").document(userID).delete()
+    func deleteUserInfo(userIDTarget: String) {
+        db.collection("users").document(userIDTarget).delete()
         currentUser = nil
     }
 }
