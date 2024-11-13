@@ -14,61 +14,62 @@ struct UserOnboardingView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-
-            Text("Member Sign Up")
-                .font(.title)
-                .bold()
-
-            Text("First Name: ")
-                .bold()
-
-            TextField("First Name", text: $user.firstName)
-                .textFieldStyle(CustemOnboardingTextfieldStyle())
-
-
-            Text("Last Name: ")
-                .bold()
-
-
-            TextField("Last Name", text: $user.lastName)
-                .textFieldStyle(CustemOnboardingTextfieldStyle())
-
-            Text("Email: ")
-                .bold()
-
-
-            TextField("Email", text: $user.email)
-                .textFieldStyle(CustemOnboardingTextfieldStyle())
-
-
-            Text("Phone number: ")
-                .bold()
-
-
-            TextField("Phone Number", text: $user.phoneNumber)
-                .textFieldStyle(CustemOnboardingTextfieldStyle())
-
-            Text("Zipcode: ")
-                .bold()
-
-
-            TextField("Zipcode", text: $user.zipCode)
-                .textFieldStyle(CustemOnboardingTextfieldStyle())
-
-
-            Button {
-                Task {
-                    await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 21) {
+                
+                Text("Member Sign Up")
+                    .font(.title)
+                    .bold()
+                
+                SignUpField(text: "First Name", variable: $user.firstName).body
+                
+                SignUpField(text: "Last Name", variable: $user.lastName).body
+                
+                SignUpField(text: "Email", variable: $user.email).body
+                
+                SignUpField(text: "Phone Number", variable: $user.phoneNumber, numPad: true).body
+                
+                SignUpField(text: "Zipcode", variable: $user.zipCode, numPad: true).body
+                
+                Button {
+                    if textfieldsFilledOut() {
+                        Task {
+                            await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
+                        }
+                        authManager.isFirstTimeSignIn = false
+                    }
+                } label: {
+                    Text("Confirm")
+                        .font(.title2)
+                        .foregroundStyle(textfieldsFilledOut() ? .blue : .gray)
                 }
-                authManager.isFirstTimeSignIn = false
-            } label: {
-                Text("Confirm")
-                    .font(.title2)
+                .frame(maxWidth: .infinity, alignment: .center)
+                
+            }.padding()
+        }
+    }
+    private func textfieldsFilledOut() -> Bool {
+        return (user.firstName != "" &&
+                user.lastName != "" &&
+                user.email != "" &&
+                user.phoneNumber != "" &&
+                user.zipCode != "")
+    }
+    private struct SignUpField {
+        var text: String
+        var variable: Binding<String>
+        var numPad: Bool = false
+        var body: some View {
+            VStack (alignment: .leading, spacing: 21) {
+                Text("\(text): ")
+                    .bold()
+                
+                
+                TextField("\(text)", text: variable)
+                    .keyboardType(numPad ? .numberPad : .default)
+                    .textFieldStyle(CustemOnboardingTextfieldStyle())
             }
-            .frame(maxWidth: .infinity, alignment: .center)
-
-        }.padding()
+        }
     }
 }
 
