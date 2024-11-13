@@ -20,8 +20,6 @@ struct MasterView: View {
             case .unauthenticated:
                 AppWelcomeView()
                     .environment(authManager)
-                    .transition(AsymmetricTransition(insertion: .move(edge: .leading), removal: .identity))
-                    .transition(.move(edge: .trailing))
 
             case .authenticated:
                 AppView()

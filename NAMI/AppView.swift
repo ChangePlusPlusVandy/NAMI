@@ -23,7 +23,6 @@ struct AppView: View {
                     Label("Chat", systemImage: "message")
                 }
         }
-        .tint(.primary)
     }
 }
 
