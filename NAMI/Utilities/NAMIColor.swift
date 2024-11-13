@@ -9,8 +9,8 @@ import SwiftUI
 
 extension Color {
     static var NAMIDarkBlue = Color(hex: "#0c499c")
-    static var NAMITealBlue = Color(hex: "#1A1A1A")
-    static var NAMIGreen = Color(hex: "DDE7D9")
+    static var NAMITealBlue = Color(hex: "#0099a8")
+    static var NAMIGreen = Color(hex: "799900")
 }
 
 extension Color {

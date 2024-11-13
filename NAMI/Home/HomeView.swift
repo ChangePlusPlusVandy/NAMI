@@ -21,11 +21,6 @@ struct HomeView: View {
                 List{
 
                 }
-                Text("Saved Resources")
-                    .foregroundStyle(.secondary)
-                List {
-
-                }
             }
             .padding()
             .toolbar {homeViewToolBar}
