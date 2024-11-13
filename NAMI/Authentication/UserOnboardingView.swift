@@ -12,6 +12,8 @@ struct UserOnboardingView: View {
     @State var user = NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "")
     @Environment(AuthenticationManager.self) var authManager
     @Environment(\.dismiss) var dismiss
+    
+    @State var disable = true
 
     var body: some View {
         ScrollView {
@@ -32,28 +34,23 @@ struct UserOnboardingView: View {
                 SignUpField(text: "Zipcode", variable: $user.zipCode, numPad: true).body
                 
                 Button {
-                    if textfieldsFilledOut() {
-                        Task {
-                            await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
-                        }
-                        authManager.isFirstTimeSignIn = false
+                    Task {
+                        await UserManager.shared.createNewUser(newUser: NamiUser.errorUser)
                     }
+                    authManager.isFirstTimeSignIn = false
                 } label: {
                     Text("Confirm")
                         .font(.title2)
-                        .foregroundStyle(textfieldsFilledOut() ? .blue : .gray)
                 }
+                .disabled(user.firstName == "" ||
+                          user.lastName == "" ||
+                          user.email == "" ||
+                          user.phoneNumber == "" ||
+                          user.zipCode == "")
                 .frame(maxWidth: .infinity, alignment: .center)
                 
             }.padding()
         }
-    }
-    private func textfieldsFilledOut() -> Bool {
-        return (user.firstName != "" &&
-                user.lastName != "" &&
-                user.email != "" &&
-                user.phoneNumber != "" &&
-                user.zipCode != "")
     }
     private struct SignUpField {
         var text: String
