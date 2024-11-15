@@ -8,50 +8,82 @@
 import SwiftUI
 
 struct EventsView: View {
-    @State var searchText = ""
-    @State private var selectedGroup = "all"
-    @State private var selectedMode = "all"
+    @State var eventsManager = EventsManager()
+
     var body: some View {
         NavigationStack {
-            VStack{
+            VStack {
                 eventsMenuFilter
                 List {
 
 
                 }
-                .searchable(text: $searchText)
+                .searchable(text: $eventsManager.searchText)
             }.navigationTitle("Events")
         }
     }
 
     var eventsMenuFilter: some View {
-        HStack {
-            Menu {
-                Picker("Group", selection: $selectedGroup) {
-                    Text("All Groups").tag("all")
-                    Text("Group 1").tag("Group 1")
-                    Text("Group 2").tag("Group 2")
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                Menu{
+                    let selected = Binding(
+                        get: { eventsManager.selectedCategory },
+                        set: {
+                            self.eventsManager.selectedCategory = $0 == self.eventsManager.selectedCategory ? nil : $0
+                            self.eventsManager.selectedSeries = nil
+                        }
+                    )
+
+                    Picker("Category", selection: selected) {
+                        ForEach(eventCategories, id: \.self){ category in
+                            Text(category.name).tag(category)
+                        }
+                    }
+                } label: {
+                    let selectedCategory = eventsManager.selectedCategory
+                    Label(selectedCategory == nil ? "Category" : selectedCategory!.name, systemImage: "chevron.down")
+                }.animation(.none, value: eventsManager.selectedCategory)
+
+                if let series = eventsManager.selectedCategory?.series, !series.isEmpty {
+                    Menu{
+                        let selected = Binding(
+                            get: { eventsManager.selectedSeries },
+                            set: { self.eventsManager.selectedSeries = $0 == self.eventsManager.selectedSeries ? nil : $0 }
+                        )
+                        Picker("Series", selection: selected) {
+                            ForEach(series, id: \.self){ s in
+                                Text(s.name).tag(s)
+                            }
+                        }
+                    } label: {
+                        let selectedSeries = eventsManager.selectedSeries
+                        Label(selectedSeries == nil ? "Series" : selectedSeries!.name, systemImage: "chevron.down")
+                    }.animation(.none, value: eventsManager.selectedSeries)
                 }
-            } label: {
-                Label("Filter Group", systemImage: "line.horizontal.3.decrease.circle")
+
+                Menu {
+                    let selected = Binding(
+                        get: { eventsManager.selectedMeetingMode },
+                        set: { self.eventsManager.selectedMeetingMode = $0 == self.eventsManager.selectedMeetingMode ? nil : $0 }
+                    )
+                    Picker("Mode", selection: selected) {
+                        Label("Virtual", systemImage: "laptopcomputer.and.iphone").tag(MeetingMode.virtual(link: ""))
+                        Label("In Person", systemImage: "person.3").tag(MeetingMode.inPerson)
+                    }
+                } label: {
+                    let selectedMeetingMode = eventsManager.selectedMeetingMode
+                    Label(selectedMeetingMode == nil ? "Mode" : selectedMeetingMode!.displayName, systemImage: "chevron.down")
+                }.animation(.none, value: eventsManager.selectedMeetingMode)
             }
-
-
-            Menu {
-                Picker("Mode", selection: $selectedMode) {
-                    Label("Virtual", systemImage: "laptopcomputer.and.iphone").tag("virtual")
-                    Label("In Person", systemImage: "person.3").tag("in person")
-                }
-            } label: {
-                Label("Mode", systemImage: "line.horizontal.3.decrease.circle")
-            }
-
-            Spacer()
-        }.padding(.horizontal)
+            .labelStyle(CustomFilterLabelStyle())
+            .padding(.horizontal)
             .buttonStyle(.bordered)
-            .foregroundStyle(.black)
             .buttonBorderShape(.capsule)
-            .controlSize(.small)
+            .animation(.default, value: eventsManager.selectedCategory)
+            .animation(.default, value: eventsManager.selectedSeries)
+            .animation(.default, value: eventsManager.selectedMeetingMode)
+        }
     }
 }
 

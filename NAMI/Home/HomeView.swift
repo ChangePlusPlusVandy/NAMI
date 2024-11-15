@@ -17,6 +17,7 @@ struct HomeView: View {
                     .font(.largeTitle.bold())
                     .padding(.bottom, 50)
                 Text("My Upcoming Events")
+                    .font(.callout)
                     .foregroundStyle(.secondary)
                 List{
 

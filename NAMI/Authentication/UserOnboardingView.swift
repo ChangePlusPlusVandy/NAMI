@@ -14,7 +14,7 @@ struct UserOnboardingView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        ScrollView {
+        ScrollView (showsIndicators: false) {
             VStack(alignment: .leading, spacing: 21) {
 
                 Text("Member Sign Up")
@@ -50,7 +50,6 @@ struct UserOnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }.scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.hidden)
 
     }
 
