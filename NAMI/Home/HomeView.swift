@@ -17,13 +17,9 @@ struct HomeView: View {
                     .font(.largeTitle.bold())
                     .padding(.bottom, 50)
                 Text("My Upcoming Events")
+                    .font(.callout)
                     .foregroundStyle(.secondary)
                 List{
-
-                }
-                Text("Saved Resources")
-                    .foregroundStyle(.secondary)
-                List {
 
                 }
             }
@@ -68,5 +64,4 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environment(AuthenticationManager())
-        .tint(.primary)
 }

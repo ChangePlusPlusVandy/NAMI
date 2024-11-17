@@ -8,6 +8,18 @@
 import SwiftUI
 
 struct AppView: View {
+
+    init() {
+        // to customize tab bar color
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.backgroundColor = UIColor.systemGray6
+        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color.NAMITealBlue)
+        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color.NAMITealBlue)]
+
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+    }
+
     var body: some View {
         TabView {
             HomeView()
@@ -23,7 +35,6 @@ struct AppView: View {
                     Label("Chat", systemImage: "message")
                 }
         }
-        .tint(.primary)
     }
 }
 

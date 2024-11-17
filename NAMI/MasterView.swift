@@ -12,15 +12,14 @@ struct MasterView: View {
     @State private var authManager = AuthenticationManager()
     @State private var showAlert = false
 
+
     var body: some View {
         Group {
             switch authManager.authenticationState {
 
-            case .unauthenticated, .authenticating:
-                VStack {
-                    SignUpView()
-                        .environment(authManager)
-                }
+            case .unauthenticated:
+                AppWelcomeView()
+                    .environment(authManager)
 
             case .authenticated:
                 AppView()
@@ -31,9 +30,14 @@ struct MasterView: View {
                             print(info)
                         }
                     }
-
+                    .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
+                        UserOnboardingView()
+                            .environment(authManager)
+                            .interactiveDismissDisabled()
+                    }
             }
         }
+        .animation(.default, value: authManager.authenticationState)
         .onChange(of: authManager.errorMessage) {
             showAlert = !authManager.errorMessage.isEmpty
         }

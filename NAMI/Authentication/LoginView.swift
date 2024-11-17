@@ -8,7 +8,7 @@
 import SwiftUI
 import Combine
 
-struct SignUpView: View {
+struct LoginView: View {
     @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         VStack {
@@ -24,12 +24,10 @@ struct SignUpView: View {
         .padding()
     }
 
-    var GoogleSignInButton: some View{
+    var GoogleSignInButton: some View {
         Button{
             Task {
-                if await authManager.signInWithGoogle() == true {
-                    await UserManager.shared.fetchUser()
-                }
+                _ = await authManager.signInWithGoogle()
             }
         } label: {
             HStack(alignment: .center){
@@ -46,6 +44,6 @@ struct SignUpView: View {
 }
 
 #Preview {
-    SignUpView()
+    LoginView()
         .environment(AuthenticationManager())
 }
