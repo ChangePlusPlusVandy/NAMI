@@ -9,7 +9,7 @@ import SwiftUI
 
 struct EventCardView: View {
     var event: Event
-    // TODO: Implement Event card view from the event object
+    // TODO: Connect to event model
     var body: some View {
         RoundedRectangle(cornerRadius: 15)
             .stroke(Color.gray.opacity(0.8), lineWidth: 1)
@@ -29,7 +29,7 @@ struct EventCardView: View {
                     case .inPerson:
                         Text(event.location)
                     case .virtual(let link):
-                        Text(link)
+                        Link("Event Link", destination: URL(string: link)!)
                     }
                 }
             )
