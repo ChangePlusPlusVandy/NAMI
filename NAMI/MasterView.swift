@@ -6,12 +6,10 @@
 //
 
 import SwiftUI
-import AuthenticationServices
 
 struct MasterView: View {
     @State private var authManager = AuthenticationManager()
     @State private var showAlert = false
-
 
     var body: some View {
         Group {
@@ -24,12 +22,6 @@ struct MasterView: View {
             case .authenticated:
                 AppView()
                     .environment(authManager)
-                    .onReceive(NotificationCenter.default.publisher(for: ASAuthorizationAppleIDProvider.credentialRevokedNotification)) { event in
-                        authManager.signOut()
-                        if let userInfo = event.userInfo, let info = userInfo["info"] {
-                            print(info)
-                        }
-                    }
                     .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
                         UserOnboardingView()
                             .environment(authManager)
