@@ -21,15 +21,15 @@ struct UserOnboardingView: View {
                     .font(.title.bold())
                     .padding(20)
 
-                SignUpField(text: "First Name", field: $newUser.firstName)
+                UserInfoInputField(text: "First Name", field: $newUser.firstName)
 
-                SignUpField(text: "Last Name", field: $newUser.lastName)
+                UserInfoInputField(text: "Last Name", field: $newUser.lastName)
 
-                SignUpField(text: "Email", field: $newUser.email)
+                UserInfoInputField(text: "Email", field: $newUser.email)
 
-                SignUpField(text: "Phone Number", field: $newUser.phoneNumber, numPad: true)
+                UserInfoInputField(text: "Phone Number", field: $newUser.phoneNumber, numPad: true)
 
-                SignUpField(text: "ZIP Code", field: $newUser.zipCode, numPad: true)
+                UserInfoInputField(text: "ZIP Code", field: $newUser.zipCode, numPad: true)
 
                 Button {
                     Task {
@@ -60,26 +60,26 @@ struct UserOnboardingView: View {
         newUser.phoneNumber == "" ||
         newUser.zipCode == ""
     }
+}
 
-    private struct SignUpField: View {
-        var text: String
-        @Binding var field: String
-        var numPad: Bool = false
-        var body: some View {
-            VStack (alignment: .leading, spacing: 8) {
-                Text("\(text): ")
-                    .bold()
+struct UserInfoInputField: View {
+    var text: String
+    @Binding var field: String
+    var numPad: Bool = false
+    var body: some View {
+        VStack (alignment: .leading, spacing: 8) {
+            Text("\(text): ")
+                .bold()
 
-                TextField("", text: $field)
-                    .frame(height: 50)
-                    .keyboardType(numPad ? .numberPad : .default)
-                    .padding(.horizontal, 10)
-                    .overlay{
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.black, lineWidth: 1)
-                    }
-            }.padding(.horizontal, 20)
-        }
+            TextField("", text: $field)
+                .frame(height: 50)
+                .keyboardType(numPad ? .numberPad : .default)
+                .padding(.horizontal, 10)
+                .overlay{
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.black, lineWidth: 1)
+                }
+        }.padding(.horizontal, 20)
     }
 }
 

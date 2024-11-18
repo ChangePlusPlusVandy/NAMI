@@ -9,16 +9,29 @@ import SwiftUI
 
 struct UserProfileView: View {
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(HomeScreenRouter.self) var homeScreenRouter
     @State private var showDeleteAccountAlert = false
 
     var body: some View {
         VStack {
             // TODO: Other information add here
-
+            editProfileButton
             signOutButton
             deleteAccountButton
         }
         .navigationTitle("Profile")
+    }
+
+    var editProfileButton: some View {
+        Button {
+            homeScreenRouter.navigate(to: .userProfileEditView)
+        } label: {
+            Text("Edit Profile")
+                .frame(width: 300, height: 50)
+                .foregroundStyle(.white)
+                .background(Color.NAMITealBlue)
+                .cornerRadius(10)
+        }
     }
 
     var signOutButton: some View {
@@ -26,11 +39,11 @@ struct UserProfileView: View {
             authManager.signOut()
         } label: {
             Text("Sign Out")
-                .frame(width: 300, height: 50)
                 .foregroundStyle(.black)
-                .background(.regularMaterial)
+                .frame(width: 300, height: 50)
+                .background(Color.white)
                 .cornerRadius(10)
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.black, lineWidth: 1))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary, lineWidth: 1.5))
         }
     }
 
@@ -65,4 +78,5 @@ struct UserProfileView: View {
 #Preview {
     UserProfileView()
         .environment(AuthenticationManager())
+        .environment(HomeScreenRouter())
 }

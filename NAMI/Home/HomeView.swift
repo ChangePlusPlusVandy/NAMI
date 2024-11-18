@@ -35,7 +35,11 @@ struct HomeView: View {
                 case .userProfileView:
                     UserProfileView()
                         .environment(homeScreenRouter)
-
+                        .toolbar(.hidden, for: .tabBar)
+                case .userProfileEditView:
+                    UserProfileEditView()
+                        .environment(homeScreenRouter)
+                        .toolbar(.hidden, for: .tabBar)
                 }
             }
         }

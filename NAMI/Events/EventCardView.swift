@@ -52,7 +52,7 @@ struct EventCardView: View {
         }
         .padding(.horizontal, 5)
         .padding(.vertical, 2)
-        .background(.gray.opacity(0.15))
+        .background(Color(UIColor.systemGray5))
         .clipShape(RoundedRectangle(cornerRadius: 5))
         .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary, lineWidth: 1))
     }

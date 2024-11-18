@@ -14,7 +14,7 @@ struct NAMIApp: App {
     var body: some Scene {
         WindowGroup {
             MasterView()
-                .preferredColorScheme(.light)
+                //.preferredColorScheme(.light)
         }
     }
 }

@@ -12,6 +12,7 @@ final class HomeScreenRouter {
 
     public enum Destination: Hashable {
         case userProfileView
+        case userProfileEditView
     }
 
     var navPath = NavigationPath()
