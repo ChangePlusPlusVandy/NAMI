@@ -17,10 +17,7 @@ struct UserProfileEditView: View {
             } label: {
                 Text("Cancel")
                     .foregroundStyle(Color.NAMIDarkBlue)
-                    .padding(2)
             }
-            .padding(10)
-            .frame(alignment: .leading)
             Spacer()
             Button {
                 Task {
@@ -31,9 +28,8 @@ struct UserProfileEditView: View {
                 Text("Save")
                     .foregroundStyle(Color.NAMIDarkBlue)
             }
-            .padding(10)
-            .frame(alignment: .trailing)
         }
+        .padding()
         ScrollView (showsIndicators: false) {
             VStack(alignment: .leading, spacing: 21) {
 
