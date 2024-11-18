@@ -47,15 +47,15 @@ enum EventCategory: String, CaseIterable, Identifiable {
     var color: Color {
         switch self {
         case .familySupport:
-            return .blue
+            return Color.FamilyCaregiverSupport
         case .familyEducation:
-            return Color.NAMIGreen
+            return Color.FamilyCaregiverEducation
         case .peerSupport:
-            return .orange
+            return Color.PeerSupport
         case .peerEducation:
-            return .purple
+            return Color.PeerEducation
         case .specialEvents:
-            return .red
+            return Color.SpecialEvents
         }
     }
 }
