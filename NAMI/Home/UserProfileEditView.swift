@@ -15,12 +15,9 @@ struct UserProfileEditView: View {
             Button {
                 homeScreenRouter.navigateBack()
             } label: {
-                HStack {
-                    Image(systemName: "chevron.backward")
-                        .padding(2)
-                    Text("Cancel")
-                        .padding(2)
-                }
+                Text("Cancel")
+                    .foregroundStyle(Color.NAMIDarkBlue)
+                    .padding(2)
             }
             .padding(10)
             .frame(alignment: .leading)
@@ -32,6 +29,7 @@ struct UserProfileEditView: View {
                 homeScreenRouter.navigateBack()
             } label: {
                 Text("Save")
+                    .foregroundStyle(Color.NAMIDarkBlue)
             }
             .padding(10)
             .frame(alignment: .trailing)
@@ -54,7 +52,9 @@ struct UserProfileEditView: View {
                 UserInfoInputField(text: "ZIP Code", field: $user.zipCode, numPad: true)
 
             }
-        }.scrollDismissesKeyboard(.interactively)
+        }
+            .scrollDismissesKeyboard(.interactively)
+            .toolbar(.hidden)
 
     }
 }
