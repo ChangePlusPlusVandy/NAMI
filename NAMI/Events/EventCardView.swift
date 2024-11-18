@@ -27,6 +27,8 @@ struct EventCardView: View {
         .frame(height: 250)
         .cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
+        .contentShape(Rectangle())
+
     }
 
 
