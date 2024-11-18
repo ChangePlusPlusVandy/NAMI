@@ -18,9 +18,9 @@ class EventsManager {
     init() {
         // dummy data
         allEvents = [
-            Event(title: "NAMI Connection Recovery Support Group", date: Date(), about: "About 1", meetingMode: .inPerson(location: "Here"), eventCategory: EventCategory.peerSupport),
-            Event(title: "NAMI Family Support Group", date: Date(), about: "About 2", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: EventCategory.familySupport),
-            Event(title: "Family & Friends Mental Health Caregiver Primer", date: Date(), about: "About 3", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: EventCategory.specialEvents)
+            Event(title: "NAMI Connection Recovery Support Group", startTime: Date(), endTime: Calendar.current.date(byAdding: .hour, value: 2, to: Date())!,  about: "About 1", meetingMode: .inPerson(location: "Here"), eventCategory: EventCategory.peerSupport),
+            Event(title: "NAMI Family Support Group", startTime: Date(), endTime: Calendar.current.date(byAdding: .hour, value: 2, to: Date())!, about: "About 2", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: EventCategory.familySupport),
+            Event(title: "Family & Friends Mental Health Caregiver Primer", startTime: Date(), endTime: Calendar.current.date(byAdding: .hour, value: 2, to: Date())!, about: "About 3", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: EventCategory.specialEvents)
         ]
     }
 

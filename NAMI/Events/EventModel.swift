@@ -10,14 +10,15 @@ import SwiftUI
 struct Event: Identifiable, Equatable, Hashable {
     let id = UUID()
     let title: String
-    let date: Date
+    let startTime: Date
+    let endTime: Date
     let about: String
 
     let meetingMode: MeetingMode
     let eventCategory: EventCategory
     var eventSeries: EventSeries?
 
-    static var dummyEvent = Event(title: "This is an event by NAMI", date: Date(), about: "This is what the event is about", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: .familyEducation, eventSeries: EventSeries(name: "NAMI Family to Family"))
+    static var dummyEvent = Event(title: "This is an event by NAMI", startTime: Date(), endTime: Date(), about: "This is what the event is about", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: .familyEducation, eventSeries: EventSeries(name: "NAMI Family to Family"))
 }
 
 enum MeetingMode: Equatable, Hashable {

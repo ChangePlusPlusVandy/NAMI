@@ -17,7 +17,7 @@ struct EventCardView: View {
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
 
-            Text(event.date.formatted(date: .abbreviated, time: .omitted))
+            Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
                 .foregroundStyle(.secondary)
 
             meetingModeCapsuleView(meetingMode: event.meetingMode)
