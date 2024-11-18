@@ -12,12 +12,17 @@ struct EventCardView: View {
     var event: Event
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
+            eventCategoryCapsuleView(eventCategory: event.eventCategory)
+            
             Text(event.title)
                 .font(.title3.bold())
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
 
             Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
+                .foregroundStyle(.secondary)
+            
+            Text("\(event.startTime.formatted(date: .omitted, time: .shortened)) - \(event.endTime.formatted(date: .omitted, time: .shortened))" )
                 .foregroundStyle(.secondary)
 
             meetingModeCapsuleView(meetingMode: event.meetingMode)
@@ -30,6 +35,21 @@ struct EventCardView: View {
         .contentShape(Rectangle())
 
     }
+    
+    
+    func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
+        Group {
+            Text(eventCategory.id)
+                .font(.callout)
+                .foregroundColor(
+                    eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+                )
+        }
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(eventCategory.color)
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+    }
 
 
     func meetingModeCapsuleView(meetingMode: MeetingMode) -> some View {
@@ -39,7 +59,7 @@ struct EventCardView: View {
                 HStack(spacing: 3) {
                     Image(systemName: "person.3")
                         .controlSize(.mini)
-                    Text("In Person")
+                    Text(meetingMode.displayName)
                         .font(.callout)
                 }
 
@@ -47,7 +67,7 @@ struct EventCardView: View {
                 HStack(spacing: 3) {
                     Image(systemName: "laptopcomputer.and.iphone")
                         .controlSize(.mini)
-                    Text("Virtual")
+                    Text(meetingMode.displayName)
                         .font(.callout)
                 }
             }

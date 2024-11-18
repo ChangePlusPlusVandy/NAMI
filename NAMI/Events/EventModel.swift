@@ -49,7 +49,7 @@ enum EventCategory: String, CaseIterable, Identifiable {
         case .familySupport:
             return .blue
         case .familyEducation:
-            return .green
+            return Color.NAMIGreen
         case .peerSupport:
             return .orange
         case .peerEducation:
