@@ -9,17 +9,39 @@ import SwiftUI
 
 struct EventsView: View {
     @State var eventsManager = EventsManager()
+    @State var eventsViewRouter = EventsViewRouter()
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
                 eventsMenuFilter
-                List {
-
+                List(eventsManager.filteredEvents) { event in
+                    EventCardView(event: event)
+                        .environment(eventsViewRouter)
+                        .listRowSeparator(.hidden, edges: .all)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false){
+                            Button("", systemImage: "calendar.badge.plus") {}
+                                .tint(Color.NAMIDarkBlue)
+                        }
+                        .onTapGesture {
+                            eventsViewRouter.navigate(to: .eventDetailView(event: event))
+                        }
+                }
+                .listStyle(.plain)
+                .scrollIndicators(.hidden)
+                .searchable(text: $eventsManager.searchText, placement: .navigationBarDrawer(displayMode: .always))
+                .refreshable {
 
                 }
-                .searchable(text: $eventsManager.searchText)
-            }.navigationTitle("Events")
+            }
+            .navigationTitle("Events")
+            .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
+                switch destination {
+                case .eventDetailView(let event):
+                    EventDetailView(event: event)
+                        .environment(eventsViewRouter)
+                }
+            }
         }
     }
 
@@ -31,35 +53,17 @@ struct EventsView: View {
                         get: { eventsManager.selectedCategory },
                         set: {
                             self.eventsManager.selectedCategory = $0 == self.eventsManager.selectedCategory ? nil : $0
-                            self.eventsManager.selectedSeries = nil
                         }
                     )
 
                     Picker("Category", selection: selected) {
-                        ForEach(eventCategories, id: \.self){ category in
-                            Text(category.name).tag(category)
+                        ForEach(EventCategory.allCases){ category in
+                            Text(category.rawValue).tag(category)
                         }
                     }
                 } label: {
                     let selectedCategory = eventsManager.selectedCategory
-                    Label(selectedCategory == nil ? "Category" : selectedCategory!.name, systemImage: "chevron.down")
-                }.animation(.none, value: eventsManager.selectedCategory)
-
-                if let series = eventsManager.selectedCategory?.series, !series.isEmpty {
-                    Menu{
-                        let selected = Binding(
-                            get: { eventsManager.selectedSeries },
-                            set: { self.eventsManager.selectedSeries = $0 == self.eventsManager.selectedSeries ? nil : $0 }
-                        )
-                        Picker("Series", selection: selected) {
-                            ForEach(series, id: \.self){ s in
-                                Text(s.name).tag(s)
-                            }
-                        }
-                    } label: {
-                        let selectedSeries = eventsManager.selectedSeries
-                        Label(selectedSeries == nil ? "Series" : selectedSeries!.name, systemImage: "chevron.down")
-                    }.animation(.none, value: eventsManager.selectedSeries)
+                    Label(selectedCategory == nil ? "Category" : selectedCategory!.rawValue, systemImage: "chevron.down")
                 }
 
                 Menu {
@@ -69,20 +73,17 @@ struct EventsView: View {
                     )
                     Picker("Mode", selection: selected) {
                         Label("Virtual", systemImage: "laptopcomputer.and.iphone").tag(MeetingMode.virtual(link: ""))
-                        Label("In Person", systemImage: "person.3").tag(MeetingMode.inPerson)
+                        Label("In Person", systemImage: "person.3").tag(MeetingMode.inPerson(location: ""))
                     }
                 } label: {
                     let selectedMeetingMode = eventsManager.selectedMeetingMode
                     Label(selectedMeetingMode == nil ? "Mode" : selectedMeetingMode!.displayName, systemImage: "chevron.down")
-                }.animation(.none, value: eventsManager.selectedMeetingMode)
+                }
             }
             .labelStyle(CustomFilterLabelStyle())
             .padding(.horizontal)
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
-            .animation(.default, value: eventsManager.selectedCategory)
-            .animation(.default, value: eventsManager.selectedSeries)
-            .animation(.default, value: eventsManager.selectedMeetingMode)
         }
     }
 }

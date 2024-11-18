@@ -15,15 +15,19 @@ struct HomeView: View {
             VStack (alignment: .leading){
                 Text("Welcome")
                     .font(.largeTitle.bold())
-                    .padding(.bottom, 50)
+                    .padding()
                 Text("My Upcoming Events")
                     .font(.callout)
                     .foregroundStyle(.secondary)
-                List{
-
+                    .padding()
+                List {
+                    EventCardView(event: Event.dummyEvent)
+                        .listRowSeparator(.hidden)
                 }
+                .ignoresSafeArea()
+                .listStyle(.plain)
+                .scrollIndicators(.hidden)
             }
-            .padding()
             .toolbar {homeViewToolBar}
             .navigationTitle("")
             .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
