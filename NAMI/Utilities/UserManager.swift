@@ -23,6 +23,7 @@ final class UserManager {
 
     // Expose current user
     func getCurrentUser() -> NamiUser? {
+        print("Current user: \(currentUser.debugDescription)")
         return currentUser
     }
 
