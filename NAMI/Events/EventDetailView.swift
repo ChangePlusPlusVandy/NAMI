@@ -16,7 +16,6 @@ struct EventDetailView: View {
     var eventCategories: String = "Ex: Education, NAMI \nFamily-to-Family, NAMI \nWilliamson and Maury County TN"
     var body: some View {
         ZStack{
-
             LinearGradient(
                 gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white]),
                 startPoint: .top,
@@ -30,9 +29,9 @@ struct EventDetailView: View {
                             .font(.largeTitle.bold())
                         Text("\(formattedDate(event.startTime))")
                             .font(.subheadline)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(.secondary)
                     }
-                    .padding(.vertical, 50)
+                    .padding(.vertical, 20)
 
 
                     VStack(alignment: .leading) {
@@ -90,11 +89,9 @@ struct EventDetailView: View {
             case .inPerson:
                 Text("In-Person")
                     .font(.body)
-                    .foregroundStyle(.blue)
             case .virtual(let link):
                 Text("Virtual")
                     .font(.body)
-                    .foregroundColor(.blue)
 
                 HStack {
                     if let url = URL(string: link) {
@@ -105,7 +102,7 @@ struct EventDetailView: View {
                             UIPasteboard.general.string = link
                         } label: {
                             Image(systemName: "doc.on.doc")
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
