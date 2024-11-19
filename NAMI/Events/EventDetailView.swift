@@ -87,11 +87,13 @@ struct EventDetailView: View {
                 .font(.headline)
             switch event.meetingMode {
             case .inPerson:
-                Text("In-Person")
+                Text("In Person")
                     .font(.body)
+                    .foregroundStyle(.secondary)
             case .virtual(let link):
                 Text("Virtual")
                     .font(.body)
+                    .foregroundStyle(.secondary)
 
                 HStack {
                     if let url = URL(string: link) {

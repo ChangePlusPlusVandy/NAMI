@@ -18,7 +18,14 @@ struct UserProfileEditView: View {
                 Text("Cancel")
                     .foregroundStyle(Color.NAMIDarkBlue)
             }
+
             Spacer()
+
+            Text("Edit Profile")
+                .bold()
+
+            Spacer()
+
             Button {
                 Task {
                     await UserManager.shared.updateUserInfo(updatedUser: user)
@@ -30,13 +37,10 @@ struct UserProfileEditView: View {
             }
         }
         .padding()
+
         ScrollView (showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 21) {
-
-                Text("Profile")
-                    .font(.title.bold())
-                    .padding(20)
-
+            VStack(alignment: .leading, spacing: 35) {
+                Spacer(minLength: 20)
                 UserInfoInputField(text: "First Name", field: $user.firstName)
 
                 UserInfoInputField(text: "Last Name", field: $user.lastName)
@@ -46,12 +50,10 @@ struct UserProfileEditView: View {
                 UserInfoInputField(text: "Phone Number", field: $user.phoneNumber, numPad: true)
 
                 UserInfoInputField(text: "ZIP Code", field: $user.zipCode, numPad: true)
-
             }
         }
-            .scrollDismissesKeyboard(.interactively)
-            .toolbar(.hidden)
-
+        .scrollDismissesKeyboard(.interactively)
+        .toolbar(.hidden)
     }
 }
 
