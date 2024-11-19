@@ -25,7 +25,13 @@ struct EventCardView: View {
             Text("\(event.startTime.formatted(date: .omitted, time: .shortened)) - \(event.endTime.formatted(date: .omitted, time: .shortened))" )
                 .foregroundStyle(.secondary)
 
-            meetingModeCapsuleView(meetingMode: event.meetingMode)
+            HStack {
+                meetingModeCapsuleView(meetingMode: event.meetingMode)
+                
+                if let series = event.eventSeries {
+                    eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
+                }
+            }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,6 +46,21 @@ struct EventCardView: View {
     func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
         Group {
             Text(eventCategory.id)
+                .font(.callout)
+                .foregroundColor(
+                    eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+                )
+        }
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(eventCategory.color)
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+    }
+    
+    
+    func eventSeriesCapsuleView(eventSeries: EventSeries, eventCategory: EventCategory) -> some View {
+        Group {
+            Text(eventSeries.name)
                 .font(.callout)
                 .foregroundColor(
                     eventCategory == EventCategory.peerSupport ? Color.black : Color.white
