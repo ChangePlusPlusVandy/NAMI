@@ -14,107 +14,106 @@ struct EventDetailView: View {
     var contact: String = "909-000-1827"
     var series: String = "Ex: Family-To-Family Class- In-Person"
     var eventCategories: String = "Ex: Education, NAMI \nFamily-to-Family, NAMI \nWilliamson and Maury County TN"
-    // TODO: Implement Event detail view from the event object
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Text(event.title)
-                    .franklinGothic(.bold, 34)
-                    .multilineTextAlignment(.leading)
-                        .padding(.bottom, 8)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Session Leader/s:")
-                        .franklinGothic(.regular, 17)
-                        .foregroundColor(.primary)
-                    Text(sessionLeader)
-                        .proximaNova(.regular, 17)
-                        .foregroundStyle(.secondary)
-                    Text(contact)
-                        .proximaNova(.regular, 17)
-                        .foregroundStyle(.secondary)
-                }
-                        
-                Text("Date: \(formattedDate(event.startTime))")
-                    .proximaNova(.regular, 15)
-                    .foregroundStyle(.gray)
+        ZStack{
+            LinearGradient(
+                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white]),
+                startPoint: .top,
+                endPoint: .bottom
+            ).ignoresSafeArea(.all)
 
-                meetingModeSection
-                        
-                VStack (alignment: .leading, spacing: 8){
-                    Text("About")
-                        .proximaNova(.regular, 17)
-                    
-                    Text(event.about)
-                        .proximaNova(.regular, 17)
-                        .foregroundStyle(.secondary)
-                }
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Series:")
-                        .proximaNova(.regular, 17)
-                    Text(series)
-                        .proximaNova(.regular, 17)
-                        .foregroundColor(.secondary)
-                    
-                    
-                }
-                
-                VStack (alignment: .leading, spacing: 8){
-                    Text("Event Categories:")
-                        .proximaNova(.regular, 17)
-                    Text(eventCategories)
-                        .proximaNova(.regular, 17)
-                        .foregroundStyle(.secondary)
-                }
-                
-                
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(event.title)
+                            .franklinGothic(.bold, 34)
+                        Text("\(formattedDate(event.startTime))")
+                            .proximaNova(.light, 15)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 20)
+
+
+                    VStack(alignment: .leading) {
+                        Text("Session Leader/s:")
+                            .proximaNova(.regular, 17)
+
+                        Text(sessionLeader)
+                            .proximaNova(.light, 17)
+                            .foregroundStyle(.secondary)
+
+                        Text(contact)
+                            .proximaNova(.light, 17)
+                            .foregroundStyle(.secondary)
+                    }
+
+
+                    meetingModeSection
+
+                    VStack(alignment: .leading) {
+                        Text("About")
+                            .proximaNova(.regular, 17)
+                        Text(event.about)
+                            .proximaNova(.light, 17)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text("Series:")
+                            .proximaNova(.regular, 17)
+                        Text(series)
+                            .proximaNova(.light, 17)
+                            .foregroundColor(.secondary)
+                    }
+
+                    VStack(alignment: .leading) {
+                        Text("Event Categories:")
+                            .proximaNova(.regular, 17)
+                        Text(eventCategories)
+                            .proximaNova(.light, 17)
+                            .foregroundStyle(.secondary)
+                    }
+                }.padding(.horizontal, 20)
             }
-            .padding()
         }
         .background(LinearGradient(
             gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white]),
             startPoint: .top,
             endPoint: .bottom
         ))
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text("Event")
-                    .franklinGothic(.regular, 28)
-            }
-        }
+        .toolbar(.hidden, for: .tabBar)
+        .navigationTitle("")
     }
+
     @ViewBuilder
     private var meetingModeSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading) {
             Text("Meeting Mode:")
                 .proximaNova(.regular, 17)
             switch event.meetingMode {
             case .inPerson:
                 Text("In-Person")
-                    .proximaNova(.regular, 17)
-                    .foregroundStyle(.blue)
+                    .proximaNova(.light, 17)
             case .virtual(let link):
                 Text("Virtual")
-                    .proximaNova(.regular, 17)
-                    .foregroundColor(.blue)
+                    .proximaNova(.light, 17)
                 HStack {
-                    
                     if let url = URL(string: link) {
                         Link(link, destination: url)
                             .foregroundStyle(.blue)
-                        Button(action: {
+
+                        Button {
                             UIPasteboard.general.string = link
-                        }) {
+                        } label: {
                             Image(systemName: "doc.on.doc")
-                                .foregroundStyle(.gray)
-                            }
+                                .foregroundStyle(.secondary)
                         }
                     }
                 }
             }
         }
-    
+    }
+
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
