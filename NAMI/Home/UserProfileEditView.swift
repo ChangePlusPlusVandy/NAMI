@@ -9,8 +9,51 @@ import SwiftUI
 
 struct UserProfileEditView: View {
     @Environment(HomeScreenRouter.self) var homeScreenRouter
+    @State var user: NamiUser = (UserManager.shared.getCurrentUser() ?? NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: ""))
     var body: some View {
-        Text("This view is the user profile edit view!")
+        HStack {
+            Button {
+                homeScreenRouter.navigateBack()
+            } label: {
+                Text("Cancel")
+                    .foregroundStyle(Color.NAMIDarkBlue)
+            }
+
+            Spacer()
+
+            Text("Edit Profile")
+                .bold()
+
+            Spacer()
+
+            Button {
+                Task {
+                    await UserManager.shared.updateUserInfo(updatedUser: user)
+                }
+                homeScreenRouter.navigateBack()
+            } label: {
+                Text("Save")
+                    .foregroundStyle(Color.NAMIDarkBlue)
+            }
+        }
+        .padding()
+
+        ScrollView (showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 35) {
+                Spacer(minLength: 20)
+                UserInfoInputField(text: "First Name", field: $user.firstName)
+
+                UserInfoInputField(text: "Last Name", field: $user.lastName)
+
+                UserInfoInputField(text: "Email", field: $user.email)
+
+                UserInfoInputField(text: "Phone Number", field: $user.phoneNumber, numPad: true)
+
+                UserInfoInputField(text: "ZIP Code", field: $user.zipCode, numPad: true)
+            }
+        }
+        .scrollDismissesKeyboard(.interactively)
+        .toolbar(.hidden)
     }
 }
 

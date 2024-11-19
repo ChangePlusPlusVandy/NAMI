@@ -27,6 +27,9 @@ struct MasterView: View {
                             .environment(authManager)
                             .interactiveDismissDisabled()
                     }
+                    .task {
+                        await UserManager.shared.fetchUser()
+                    }
             }
         }
         .animation(.default, value: authManager.authenticationState)
