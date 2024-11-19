@@ -99,6 +99,7 @@ struct EventDetailView: View {
                 Text("Virtual")
                     .proximaNova(.light, 17)
                     .foregroundStyle(.secondary)
+
                 HStack {
                     if let url = URL(string: link) {
                         Link(link, destination: url)
