@@ -92,11 +92,13 @@ struct EventDetailView: View {
                 .proximaNova(.regular, 17)
             switch event.meetingMode {
             case .inPerson:
-                Text("In-Person")
+                Text("In Person")
                     .proximaNova(.light, 17)
+                    .foregroundStyle(.secondary)
             case .virtual(let link):
                 Text("Virtual")
                     .proximaNova(.light, 17)
+                    .foregroundStyle(.secondary)
                 HStack {
                     if let url = URL(string: link) {
                         Link(link, destination: url)
