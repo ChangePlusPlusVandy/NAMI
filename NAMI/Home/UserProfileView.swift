@@ -19,7 +19,13 @@ struct UserProfileView: View {
             signOutButton
             deleteAccountButton
         }
-        .navigationTitle("Profile")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Profile")
+                    .franklinGothic(.regular, 28)
+            }
+        }
+        
     }
 
     var editProfileButton: some View {
@@ -27,6 +33,7 @@ struct UserProfileView: View {
             homeScreenRouter.navigate(to: .userProfileEditView)
         } label: {
             Text("Edit Profile")
+                .proximaNova()
                 .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(Color.NAMITealBlue)
@@ -39,6 +46,7 @@ struct UserProfileView: View {
             authManager.signOut()
         } label: {
             Text("Sign Out")
+                .proximaNova()
                 .foregroundStyle(.black)
                 .frame(width: 300, height: 50)
                 .background(Color.white)
@@ -52,6 +60,7 @@ struct UserProfileView: View {
             showDeleteAccountAlert.toggle()
         } label: {
             Text("Delete Account")
+                .proximaNova()
                 .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(.red)

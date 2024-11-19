@@ -15,5 +15,21 @@
 	</array>
 	<key>GIDClientID</key>
 	<string>85449107079-4tv0o6qf86mb0a5e0dv19d94m0q17gfh.apps.googleusercontent.com</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>fgwo____.ttf</string>
+		<string>FRANKGO.ttf</string>
+		<string>Franklin Gothic Condensed.ttf</string>
+		<string>FranklinGothic.ttf</string>
+		<string>FranklinGothicITALIC.ttf</string>
+		<string>proximanova_black.otf</string>
+		<string>proximanova_black.ttf</string>
+		<string>proximanova_blackit.otf</string>
+		<string>proximanova_bold.otf</string>
+		<string>proximanova_boldit.otf</string>
+		<string>proximanova_extrabold.otf</string>
+		<string>proximanova_light.otf</string>
+		<string>proximanova_regular.ttf</string>
+	</array>
 </dict>
 </plist>

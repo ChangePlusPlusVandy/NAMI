@@ -13,11 +13,12 @@ struct EventCardView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(event.title)
-                .font(.title3.bold())
+                .franklinGothic(.bold, 20)
                 .lineLimit(3)
                 .multilineTextAlignment(.leading)
 
             Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
+                .proximaNova()
                 .foregroundStyle(.secondary)
 
             meetingModeCapsuleView(meetingMode: event.meetingMode)
@@ -40,7 +41,7 @@ struct EventCardView: View {
                     Image(systemName: "person.3")
                         .controlSize(.mini)
                     Text("In Person")
-                        .font(.callout)
+                        .proximaNova(.regular, 16)
                 }
 
             case .virtual(_):
@@ -48,7 +49,7 @@ struct EventCardView: View {
                     Image(systemName: "laptopcomputer.and.iphone")
                         .controlSize(.mini)
                     Text("Virtual")
-                        .font(.callout)
+                        .proximaNova(.regular, 16)
                 }
             }
         }

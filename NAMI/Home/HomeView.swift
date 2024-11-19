@@ -14,10 +14,10 @@ struct HomeView: View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
                 Text("Welcome")
-                    .font(.largeTitle.bold())
+                    .franklinGothic(.bold, 34)
                     .padding()
                 Text("My Upcoming Events")
-                    .font(.callout)
+                    .proximaNova(.regular, 16)
                     .foregroundStyle(.secondary)
                     .padding()
                 List {
@@ -29,7 +29,12 @@ struct HomeView: View {
                 .scrollIndicators(.hidden)
             }
             .toolbar {homeViewToolBar}
-            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("")
+                        .franklinGothic(.regular, 28)
+                }
+            }
             .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
                 switch destination {
                 case .userProfileView:
@@ -56,7 +61,7 @@ struct HomeView: View {
         }
         ToolbarItem(placement: .navigationBarLeading){
             Text("NAMI")
-                .font(.title2.bold())
+                .franklinGothic(.bold, 22)
         }
         ToolbarItem(placement: .navigationBarTrailing){
             Button{

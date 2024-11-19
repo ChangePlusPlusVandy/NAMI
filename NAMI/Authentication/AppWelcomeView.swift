@@ -19,15 +19,21 @@ struct AppWelcomeView: View {
                 adminButton
                 Spacer()
             }
-            .navigationTitle("")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("")
+                        .franklinGothic(.regular, 28)
+                }
+            }
         }
     }
 
     var welcomeTitle: some View {
         VStack (alignment: .leading, spacing: 50){
             Text("Welcome")
-                .font(.system(size: 40, weight: .bold))
+                .proximaNova(.bold, 40)
             Text("Are you a...")
+                .proximaNova()
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,6 +46,7 @@ struct AppWelcomeView: View {
                 .environment(authManager)
         } label: {
             Text("Member")
+                .proximaNova()
                 .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(Color.NAMIDarkBlue)
@@ -52,6 +59,7 @@ struct AppWelcomeView: View {
 
         } label: {
             Text("Admin")
+                .proximaNova()
                 .foregroundStyle(.black)
                 .frame(width: 300, height: 50)
                 .background(Color.white)

@@ -16,6 +16,7 @@ struct UserProfileEditView: View {
                 homeScreenRouter.navigateBack()
             } label: {
                 Text("Cancel")
+                    .proximaNova()
                     .foregroundStyle(Color.NAMIDarkBlue)
             }
             Spacer()
@@ -26,6 +27,7 @@ struct UserProfileEditView: View {
                 homeScreenRouter.navigateBack()
             } label: {
                 Text("Save")
+                    .proximaNova()
                     .foregroundStyle(Color.NAMIDarkBlue)
             }
         }

@@ -12,7 +12,12 @@ struct ChatView: View {
         NavigationStack{
             VStack{
             }
-            .navigationTitle("NAMI Helpline")
+            .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Text("NAMI Helpline")
+                        .franklinGothic(.regular, 28)
+                }
+            }
         }
     }
 }

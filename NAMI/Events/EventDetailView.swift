@@ -19,43 +19,42 @@ struct EventDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 Text(event.title)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .franklinGothic(.bold, 34)
                     .multilineTextAlignment(.leading)
                         .padding(.bottom, 8)
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Session Leader/s:")
-                        .font(.headline)
+                        .franklinGothic(.regular, 17)
                         .foregroundColor(.primary)
                     Text(sessionLeader)
-                        .font(.body)
+                        .proximaNova(.regular, 17)
                         .foregroundStyle(.secondary)
                     Text(contact)
-                        .font(.body)
+                        .proximaNova(.regular, 17)
                         .foregroundStyle(.secondary)
                 }
                         
-                Text("Date: \(formattedDate(event.date))")
-                    .font(.subheadline)
+                Text("Date: \(formattedDate(event.startTime))")
+                    .proximaNova(.regular, 15)
                     .foregroundStyle(.gray)
 
                 meetingModeSection
                         
                 VStack (alignment: .leading, spacing: 8){
                     Text("About")
-                        .font(.headline)
+                        .proximaNova(.regular, 17)
                     
                     Text(event.about)
-                        .font(.body)
+                        .proximaNova(.regular, 17)
                         .foregroundStyle(.secondary)
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Series:")
-                        .font(.headline)
+                        .proximaNova(.regular, 17)
                     Text(series)
-                        .font(.body)
+                        .proximaNova(.regular, 17)
                         .foregroundColor(.secondary)
                     
                     
@@ -63,9 +62,9 @@ struct EventDetailView: View {
                 
                 VStack (alignment: .leading, spacing: 8){
                     Text("Event Categories:")
-                        .font(.headline)
+                        .proximaNova(.regular, 17)
                     Text(eventCategories)
-                        .font(.body)
+                        .proximaNova(.regular, 17)
                         .foregroundStyle(.secondary)
                 }
                 
@@ -78,21 +77,26 @@ struct EventDetailView: View {
             startPoint: .top,
             endPoint: .bottom
         ))
-        .navigationTitle("Event")
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text("Event")
+                    .franklinGothic(.regular, 28)
+            }
+        }
     }
     @ViewBuilder
     private var meetingModeSection: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Meeting Mode:")
-                .font(.headline)
+                .proximaNova(.regular, 17)
             switch event.meetingMode {
             case .inPerson:
                 Text("In-Person")
-                    .font(.body)
+                    .proximaNova(.regular, 17)
                     .foregroundStyle(.blue)
             case .virtual(let link):
                 Text("Virtual")
-                    .font(.body)
+                    .proximaNova(.regular, 17)
                     .foregroundColor(.blue)
                 HStack {
                     

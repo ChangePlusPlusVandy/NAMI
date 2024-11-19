@@ -34,7 +34,13 @@ struct EventsView: View {
 
                 }
             }
-            .navigationTitle("Events")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Events")
+                        .franklinGothic(.regular, 32)
+                        .padding(15)
+                }
+            }
             .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
                 switch destination {
                 case .eventDetailView(let event):

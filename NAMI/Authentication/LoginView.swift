@@ -33,6 +33,7 @@ struct LoginView: View {
             HStack(alignment: .center){
                 Image("Google")
                 Text("Sign in with Google")
+                    .proximaNova()
             }
             .frame(maxWidth: .infinity)
         }

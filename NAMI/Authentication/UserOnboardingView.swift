@@ -18,7 +18,7 @@ struct UserOnboardingView: View {
             VStack(alignment: .leading, spacing: 21) {
 
                 Text("Member Sign Up")
-                    .font(.title.bold())
+                    .franklinGothic(.bold, 28)
                     .padding(20)
 
                 UserInfoInputField(text: "First Name", field: $newUser.firstName)
@@ -38,7 +38,7 @@ struct UserOnboardingView: View {
                     authManager.isFirstTimeSignIn = false
                 } label: {
                     Text("Confirm")
-                        .font(.title3)
+                        .franklinGothic(.regular, 20)
                         .frame(width: 300, height: 50)
                         .foregroundStyle(.white)
                         .background(Color.NAMIDarkBlue)
@@ -69,7 +69,7 @@ struct UserInfoInputField: View {
     var body: some View {
         VStack (alignment: .leading, spacing: 8) {
             Text("\(text): ")
-                .bold()
+                .proximaNova(.bold)
 
             TextField("", text: $field)
                 .frame(height: 50)
