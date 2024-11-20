@@ -12,8 +12,8 @@ struct AppView: View {
     init() {
         // to customize tab bar color
         let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color.NAMITealBlue)
-        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color.NAMITealBlue)]
+        tabBarAppearance.stackedLayoutAppearance.selected.iconColor = UIColor(Color.NAMIDarkBlue)
+        tabBarAppearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(Color.NAMIDarkBlue)]
 
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance

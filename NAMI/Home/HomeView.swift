@@ -16,6 +16,7 @@ struct HomeView: View {
                 Text("Welcome")
                     .font(.largeTitle.bold())
                     .padding([.bottom, .horizontal])
+                    .padding(.top, 10)
                 Text("My Upcoming Events")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -47,18 +48,13 @@ struct HomeView: View {
 
     @ToolbarContentBuilder
     var homeViewToolBar: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarLeading){
-            Button{
-
-            } label: {
-                Image(systemName: "line.horizontal.3")
-            }
+        ToolbarItem(placement: .topBarLeading){
+            Image("NAMIHeaderLogo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 100, height: 100)
         }
-        ToolbarItem(placement: .navigationBarLeading){
-            Text("NAMI")
-                .font(.title2.bold())
-        }
-        ToolbarItem(placement: .navigationBarTrailing){
+        ToolbarItem(placement: .topBarTrailing){
             Button{
                 homeScreenRouter.navigate(to: .userProfileView)
             } label: {

@@ -66,7 +66,7 @@ struct EventDetailView: View {
                         Text(eventCategories)
                     }
                 }
-                .font(.callout)
+                .font(.footnote)
                 .padding(.horizontal, 20)
                 .padding(.bottom, 20)
             }

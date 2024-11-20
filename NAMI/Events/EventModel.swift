@@ -33,6 +33,15 @@ enum MeetingMode: Equatable, Hashable {
             return "Virtual"
         }
     }
+
+    var iconName: String {
+        switch self {
+        case .inPerson:
+            return "person.3"
+        case .virtual:
+            return "laptopcomputer.and.iphone"
+        }
+    }
 }
 
 enum EventCategory: String, CaseIterable, Identifiable {

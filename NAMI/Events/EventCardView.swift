@@ -11,23 +11,26 @@ struct EventCardView: View {
 
     var event: Event
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading) {
             eventCategoryCapsuleView(eventCategory: event.eventCategory)
-            
+
+            Spacer()
             Text(event.title)
                 .font(.title3.bold())
-                .lineLimit(3)
-                .multilineTextAlignment(.leading)
 
+            Spacer()
             Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
                 .foregroundStyle(.secondary)
-            
+                .font(.caption)
+
             Text(formatEventDurationWithTimeZone(startTime: event.startTime, endTime: event.endTime))
                 .foregroundStyle(.secondary)
+                .font(.caption)
 
+            Spacer()
             HStack {
                 meetingModeCapsuleView(meetingMode: event.meetingMode)
-                
+
                 if let series = event.eventSeries {
                     eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
                 }
@@ -36,13 +39,12 @@ struct EventCardView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 250)
-        .cornerRadius(20)
+        //.cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
         .contentShape(Rectangle())
 
     }
-    
-    
+
     /// Converts the startTime and endTime to the user's current time zone, then formats the adjusted times
     /// to a string with the format "startTime - endTime userTimeZone".
     /// - Parameters:
@@ -53,64 +55,45 @@ struct EventCardView: View {
         // This assumes NAMI posts events in central time, may need to change later
         let initTimeZone = TimeZone(identifier: "America/Chicago")!
         let userTimeZone = TimeZone.current
-        
+
         let adjustedStartTime = startTime.convertToTimeZone(initTimeZone: initTimeZone, targetTimeZone: userTimeZone)
         let adjustedEndTime = endTime.convertToTimeZone(initTimeZone: initTimeZone, targetTimeZone: userTimeZone)
-        
+
         return "\(adjustedStartTime.formatted(date: .omitted, time: .shortened)) - \(adjustedEndTime.formatted(date: .omitted, time: .shortened)) \(userTimeZone.abbreviation()!)"
     }
-    
-    
+
     func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
-        Group {
-            Text(eventCategory.id)
-                .font(.callout)
-                .foregroundColor(
-                    eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-                )
-        }
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
-        .background(eventCategory.color)
-        .clipShape(RoundedRectangle(cornerRadius: 5))
+        Text(eventCategory.rawValue)
+            .font(.caption)
+            .foregroundColor(
+                eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+            )
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(eventCategory.color)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
     }
-    
-    
+
     func eventSeriesCapsuleView(eventSeries: EventSeries, eventCategory: EventCategory) -> some View {
-        Group {
-            Text(eventSeries.name)
-                .font(.callout)
-                .foregroundColor(
-                    eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-                )
-        }
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
-        .background(eventCategory.color)
-        .clipShape(RoundedRectangle(cornerRadius: 5))
+        Text(eventSeries.name)
+            .font(.caption)
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .foregroundColor(
+                eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+            )
+            .background(eventCategory.color)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
     }
 
 
     func meetingModeCapsuleView(meetingMode: MeetingMode) -> some View {
-        Group {
-            switch meetingMode {
-            case .inPerson(_):
-                HStack(spacing: 3) {
-                    Image(systemName: "person.3")
-                        .controlSize(.mini)
-                    Text(meetingMode.displayName)
-                        .font(.callout)
-                }
-
-            case .virtual(_):
-                HStack(spacing: 3) {
-                    Image(systemName: "laptopcomputer.and.iphone")
-                        .controlSize(.mini)
-                    Text(meetingMode.displayName)
-                        .font(.callout)
-                }
-            }
+        HStack(spacing: 3) {
+            Image(systemName: meetingMode.iconName)
+                .controlSize(.mini)
+            Text(meetingMode.displayName)
         }
+        .font(.callout)
         .padding(.horizontal, 5)
         .padding(.vertical, 2)
         .background(Color(UIColor.systemGray5))
@@ -121,8 +104,8 @@ struct EventCardView: View {
 
 extension Date {
     func convertToTimeZone(initTimeZone: TimeZone, targetTimeZone: TimeZone) -> Date {
-         let delta = TimeInterval(targetTimeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
-         return addingTimeInterval(delta)
+        let delta = TimeInterval(targetTimeZone.secondsFromGMT(for: self) - initTimeZone.secondsFromGMT(for: self))
+        return addingTimeInterval(delta)
     }
 }
 
