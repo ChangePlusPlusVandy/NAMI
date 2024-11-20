@@ -15,6 +15,9 @@ struct UserProfileView: View {
     var body: some View {
         VStack {
             // TODO: Other information add here
+
+
+            Link("Donate Now", destination: URL(string: "https://secure.namidavidson.org/forms/namidavidsondonations")!)
             editProfileButton
             signOutButton
             deleteAccountButton

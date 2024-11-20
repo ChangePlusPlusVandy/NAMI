@@ -151,7 +151,7 @@ extension AuthenticationManager {
             let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString,
                                                            accessToken: accessToken.tokenString)
 
-            let result = try await Auth.auth().currentUser?.reauthenticate(with: credential)
+            let _ = try await Auth.auth().currentUser?.reauthenticate(with: credential)
 
             return true
         }

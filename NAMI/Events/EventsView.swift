@@ -62,8 +62,7 @@ struct EventsView: View {
                         }
                     }
                 } label: {
-                    let selectedCategory = eventsManager.selectedCategory
-                    Label(selectedCategory == nil ? "Category" : selectedCategory!.rawValue, systemImage: "chevron.down")
+                    Label(eventsManager.selectedCategory?.rawValue ?? "All Categories", systemImage: "chevron.down")
                 }
 
                 Menu {
@@ -76,8 +75,7 @@ struct EventsView: View {
                         Label("In Person", systemImage: "person.3").tag(MeetingMode.inPerson(location: ""))
                     }
                 } label: {
-                    let selectedMeetingMode = eventsManager.selectedMeetingMode
-                    Label(selectedMeetingMode == nil ? "Mode" : selectedMeetingMode!.displayName, systemImage: "chevron.down")
+                    Label(eventsManager.selectedMeetingMode?.displayName ?? "All Modes", systemImage: "chevron.down")
                 }
             }
             .labelStyle(CustomFilterLabelStyle())

@@ -93,7 +93,7 @@ struct EventCardView: View {
                 .controlSize(.mini)
             Text(meetingMode.displayName)
         }
-        .font(.callout)
+        .font(.caption)
         .padding(.horizontal, 5)
         .padding(.vertical, 2)
         .background(Color(UIColor.systemGray5))
