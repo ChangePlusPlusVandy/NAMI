@@ -9,15 +9,15 @@ import Foundation
 import FirebaseFirestore
 
 enum UserType : Codable {
-    case member
+    case superAdmin
     case admin
-    // we will add volunteer user later
+    case volunteer
+    case member
 }
 
 struct NamiUser: Codable, Identifiable {
     @DocumentID var id: String?
     var userType: UserType
-
 
     var firstName: String
     var lastName: String

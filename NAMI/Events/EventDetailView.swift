@@ -26,12 +26,11 @@ struct EventDetailView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 10) {
                         Text(event.title)
-                            .font(.largeTitle.bold())
+                            .font(.title.bold())
                         Text("\(formattedDate(event.startTime))")
-                            .font(.headline)
                             .foregroundStyle(.secondary)
                     }
-                    .padding(.vertical, 20)
+                    .padding(.vertical, 15)
 
 
                     VStack(alignment: .leading) {
@@ -40,7 +39,6 @@ struct EventDetailView: View {
                             .padding(.vertical, 3)
 
                         Text(sessionLeader)
-
                         Text(contact)
                     }
 
@@ -67,7 +65,10 @@ struct EventDetailView: View {
                             .padding(.vertical, 3)
                         Text(eventCategories)
                     }
-                }.padding(.horizontal, 20)
+                }
+                .font(.callout)
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
             }
         }
         .navigationTitle("")
