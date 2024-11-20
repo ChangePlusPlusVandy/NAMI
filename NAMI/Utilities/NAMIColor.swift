@@ -13,11 +13,11 @@ extension Color {
     static var NAMIGreen = Color(hex: "799900")
 
     // TODO: match the color to NAMI website
-    static var FamilyCaregiverSupport = Color(hex: "#0c499c")
-    static var FamilyCaregiverEducation = Color(hex: "#0c499c")
-    static var PeerSupport = Color(hex: "#0c499c")
-    static var PeerEducation = Color(hex: "#0c499c")
-    static var SpecialEvents = Color(hex: "#0c499c")
+    static var FamilyCaregiverSupport = Color(hex: "#00509b")
+    static var FamilyCaregiverEducation = Color(hex: "#7a9900")
+    static var PeerSupport = Color(hex: "#e9b61b")
+    static var PeerEducation = Color(hex: "#7a1f7e")
+    static var SpecialEvents = Color(hex: "#05a8a4")
 }
 
 extension Color {
