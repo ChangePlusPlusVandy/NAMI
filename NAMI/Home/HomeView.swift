@@ -15,7 +15,7 @@ struct HomeView: View {
             VStack (alignment: .leading){
                 Text("Welcome")
                     .font(.largeTitle.bold())
-                    .padding()
+                    .padding([.bottom, .horizontal])
                 Text("My Upcoming Events")
                     .font(.callout)
                     .foregroundStyle(.secondary)

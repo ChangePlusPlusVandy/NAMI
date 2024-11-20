@@ -15,11 +15,12 @@ import Observation
 enum AuthenticationState {
     case unauthenticated
     case authenticated
+    case progress
 }
 
 @MainActor
 @Observable class AuthenticationManager {
-    var authenticationState: AuthenticationState = .unauthenticated
+    var authenticationState: AuthenticationState = .progress
     var errorMessage: String = ""
     var user: User?
     var isFirstTimeSignIn = false
@@ -152,8 +153,6 @@ extension AuthenticationManager {
 
             let result = try await Auth.auth().currentUser?.reauthenticate(with: credential)
 
-            let firebaseUser = result?.user
-            print("User \(String(describing: firebaseUser?.uid)) signed in with email \(firebaseUser?.email ?? "unknown")")
             return true
         }
         catch {

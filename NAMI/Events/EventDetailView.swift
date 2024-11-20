@@ -16,11 +16,11 @@ struct EventDetailView: View {
     var eventCategories: String = "Ex: Education, NAMI \nFamily-to-Family, NAMI \nWilliamson and Maury County TN"
     var body: some View {
         ZStack{
-            LinearGradient(
-                gradient: Gradient(colors: [Color.NAMIDarkBlue.opacity(0.5), Color.NAMITealBlue.opacity(0.5)]),
-                startPoint: .top,
-                endPoint: .bottom
-            ).ignoresSafeArea(.all)
+//            LinearGradient(
+//                gradient: Gradient(colors: [Color.NAMIDarkBlue.opacity(0.2), Color.NAMITealBlue.opacity(0.2)]),
+//                startPoint: .top,
+//                endPoint: .bottom
+//            ).ignoresSafeArea(.all)
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
@@ -28,7 +28,7 @@ struct EventDetailView: View {
                         Text(event.title)
                             .font(.largeTitle.bold())
                         Text("\(formattedDate(event.startTime))")
-                            .font(.subheadline)
+                            .font(.headline)
                             .foregroundStyle(.secondary)
                     }
                     .padding(.vertical, 20)
@@ -36,47 +36,40 @@ struct EventDetailView: View {
 
                     VStack(alignment: .leading) {
                         Text("Session Leader/s:")
-                            .font(.headline)
+                            .font(.title3.bold())
+                            .padding(.vertical, 3)
 
                         Text(sessionLeader)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
 
                         Text(contact)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
                     }
 
 
                     meetingModeSection
 
                     VStack(alignment: .leading) {
-                        Text("About")
-                            .font(.headline)
+                        Text("About:")
+                            .font(.title3.bold())
+                            .padding(.vertical, 3)
                         Text(event.about)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Series:")
-                            .font(.headline)
+                            .font(.title3.bold())
+                            .padding(.vertical, 3)
                         Text(series)
-                            .font(.body)
-                            .foregroundColor(.secondary)
                     }
 
                     VStack(alignment: .leading) {
                         Text("Event Categories:")
-                            .font(.headline)
+                            .font(.title3.bold())
+                            .padding(.vertical, 3)
                         Text(eventCategories)
-                            .font(.body)
-                            .foregroundStyle(.secondary)
                     }
                 }.padding(.horizontal, 20)
             }
         }
-        .toolbar(.hidden, for: .tabBar)
         .navigationTitle("")
     }
 
@@ -84,16 +77,13 @@ struct EventDetailView: View {
     private var meetingModeSection: some View {
         VStack(alignment: .leading) {
             Text("Meeting Mode:")
-                .font(.headline)
+                .font(.title3.bold())
+                .padding(.vertical, 3)
             switch event.meetingMode {
             case .inPerson:
                 Text("In Person")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
             case .virtual(let link):
                 Text("Virtual")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
 
                 HStack {
                     if let url = URL(string: link) {
@@ -104,7 +94,6 @@ struct EventDetailView: View {
                             UIPasteboard.general.string = link
                         } label: {
                             Image(systemName: "doc.on.doc")
-                                .foregroundStyle(.secondary)
                         }
                     }
                 }

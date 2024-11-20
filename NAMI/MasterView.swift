@@ -15,6 +15,9 @@ struct MasterView: View {
         Group {
             switch authManager.authenticationState {
 
+            case .progress:
+                ProgressView()
+
             case .unauthenticated:
                 AppWelcomeView()
                     .environment(authManager)
