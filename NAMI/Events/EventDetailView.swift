@@ -17,7 +17,7 @@ struct EventDetailView: View {
     var body: some View {
         ZStack{
             LinearGradient(
-                gradient: Gradient(colors: [Color.blue.opacity(0.3), Color.white]),
+                gradient: Gradient(colors: [Color.NAMIDarkBlue.opacity(0.5), Color.NAMITealBlue.opacity(0.5)]),
                 startPoint: .top,
                 endPoint: .bottom
             ).ignoresSafeArea(.all)

@@ -11,11 +11,12 @@ struct AppWelcomeView: View {
     @Environment(AuthenticationManager.self) var authManager
     var body: some View {
         NavigationStack {
-            VStack{
+            VStack {
                 Spacer()
                 welcomeTitle
                 Spacer()
                 memberButton
+                volunteerButton
                 adminButton
                 Spacer()
             }
@@ -25,7 +26,7 @@ struct AppWelcomeView: View {
 
     var welcomeTitle: some View {
         VStack (alignment: .leading, spacing: 50){
-            Text("Welcome")
+            Text("Welcome to NAMI")
                 .font(.system(size: 40, weight: .bold))
             Text("Are you a...")
                 .foregroundStyle(.secondary)
@@ -40,6 +41,7 @@ struct AppWelcomeView: View {
                 .environment(authManager)
         } label: {
             Text("Member")
+                .bold()
                 .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(Color.NAMIDarkBlue)
@@ -52,11 +54,25 @@ struct AppWelcomeView: View {
 
         } label: {
             Text("Admin")
+                .bold()
                 .foregroundStyle(.black)
                 .frame(width: 300, height: 50)
                 .background(Color.white)
                 .cornerRadius(10)
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary, lineWidth: 1.5))
+        }
+    }
+
+    var volunteerButton: some View {
+        Button {
+
+        } label: {
+            Text("Volunteer")
+                .bold()
+                .foregroundStyle(.white)
+                .frame(width: 300, height: 50)
+                .background(Color.NAMIGreen)
+                .cornerRadius(10)
         }
     }
 }
