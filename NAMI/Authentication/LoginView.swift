@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthenticationManager.self) var authManager
@@ -19,6 +20,7 @@ struct LoginView: View {
                 .frame(width: 300, height: 300)
             Spacer()
             GoogleSignInButton
+            signInWithAppleButton
             Spacer()
         }
         .padding()
@@ -41,6 +43,18 @@ struct LoginView: View {
         .buttonStyle(.bordered)
         .cornerRadius(10)
     }
+    
+    var signInWithAppleButton: some View {
+            SignInWithAppleButton(.signIn) { request in
+                request.requestedScopes = [.fullName, .email]
+            } onCompletion: { _ in
+                Task {
+                    _ = await authManager.signInWithApple()
+                }
+            }
+            .frame(height: 50)
+            .cornerRadius(10)
+        }
 }
 
 #Preview {
