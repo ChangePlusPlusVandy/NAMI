@@ -13,8 +13,10 @@ struct UserProfileView: View {
     @State private var showDeleteAccountAlert = false
 
     var body: some View {
-        header
-        VStack {
+
+        VStack(alignment: .leading, spacing: 20) {
+            header
+
             Group {
                 profileRow(label: "Username:", value: "UserName_insert")
                 profileRow(label: "First Name:", value: "name_insert")
@@ -23,19 +25,24 @@ struct UserProfileView: View {
                 profileRow(label: "Phone:", value: "000-000-xxxx")
                 profileRow(label: "Zip Code:", value: "insert_number")
             }
+
             .padding(.horizontal, 30)
             .padding(.vertical, 5)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-
-            Link("Donate Now", destination: URL(string: "https://secure.namidavidson.org/forms/namidavidsondonations")!)
-            editProfileButton
-            signOutButton
-            deleteAccountButton
+            //buttons
+            VStack(alignment: .center) {
+                editProfileButton
+                Spacer()
+                donateButton
+                signOutButton
+                Spacer()
+                deleteAccountButton
+            }.frame(maxWidth: .infinity)
         }
         .navigationTitle("Profile")
     }
-    
+
     var header: some View {
         HStack {
             Button(action: {
@@ -58,10 +65,29 @@ struct UserProfileView: View {
             homeScreenRouter.navigate(to: .userProfileEditView)
         } label: {
             Text("Edit Profile")
-                .frame(width: 300, height: 50)
+                .frame(width: 118, height: 40)
                 .foregroundStyle(.white)
                 .background(Color.NAMITealBlue)
-                .cornerRadius(10)
+                .cornerRadius(100)
+        }
+    }
+
+    var donateButton: some View {
+        Button(action: {
+            if let url = URL(
+                string:
+                    "https://secure.namidavidson.org/forms/namidavidsondonations"
+            ) {
+                UIApplication.shared.open(url)
+            }
+        }) {
+            Text("Donate")
+                .frame(maxWidth: 300, minHeight: 41)
+                .foregroundColor(.white)
+                .background(Color(hex: "#0C499C"))
+                .cornerRadius(7)
+                .font(.headline)
+                .padding(.horizontal, 30)
         }
     }
 
@@ -69,12 +95,18 @@ struct UserProfileView: View {
         Button {
             authManager.signOut()
         } label: {
-            Text("Sign Out")
+
+            Text("Log out")
                 .foregroundStyle(.black)
-                .frame(width: 300, height: 50)
-                .background(Color.white)
-                .cornerRadius(10)
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary, lineWidth: 1.5))
+                .frame(width: 300, height: 41)
+                .background(
+                    Color(hex: "#86C1C7").opacity(0.11)
+                )
+                .cornerRadius(7)
+
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10).stroke(
+                        Color.primary, lineWidth: 1.5))
         }
     }
 
@@ -83,12 +115,15 @@ struct UserProfileView: View {
             showDeleteAccountAlert.toggle()
         } label: {
             Text("Delete Account")
-                .frame(width: 300, height: 50)
+                .frame(width: 300, height: 41)
                 .foregroundStyle(.white)
                 .background(.red)
-                .cornerRadius(10)
+                .cornerRadius(7)
         }
-        .confirmationDialog("Are you sure you want to delete your account? This action is permanent and cannot be undone. To proceed, you will need to reauthenticate your account.", isPresented: $showDeleteAccountAlert, titleVisibility: .visible) {
+        .confirmationDialog(
+            "Are you sure you want to delete your account? This action is permanent and cannot be undone. To proceed, you will need to reauthenticate your account.",
+            isPresented: $showDeleteAccountAlert, titleVisibility: .visible
+        ) {
             Button("Delete", role: .destructive, action: deleteAccount)
             Button("Cancel", role: .cancel) { showDeleteAccountAlert.toggle() }
         }
@@ -104,7 +139,7 @@ struct UserProfileView: View {
             }
         }
     }
-    
+
     func profileRow(label: String, value: String) -> some View {
         VStack(alignment: .leading) {
             Text(label)
@@ -112,7 +147,7 @@ struct UserProfileView: View {
             Text(value)
                 .foregroundColor(.gray)
         }
-        .padding(.vertical, 5)
+        .padding(.vertical, 1)
     }
 }
 
