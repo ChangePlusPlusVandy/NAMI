@@ -14,7 +14,17 @@ struct UserProfileView: View {
 
     var body: some View {
         VStack {
-            // TODO: Other information add here
+            Group {
+                profileRow(label: "Username:", value: "UserName_insert")
+                profileRow(label: "First Name:", value: "name_insert")
+                profileRow(label: "Last Name:", value: "last_Name_insert")
+                profileRow(label: "Email:", value: "person@email.com")
+                profileRow(label: "Phone:", value: "000-000-xxxx")
+                profileRow(label: "Zip Code:", value: "insert_number")
+            }
+            .padding(.horizontal, 30)
+            .padding(.vertical, 5)
+            .frame(maxWidth: .infinity, alignment: .leading)
 
 
             Link("Donate Now", destination: URL(string: "https://secure.namidavidson.org/forms/namidavidsondonations")!)
@@ -24,6 +34,7 @@ struct UserProfileView: View {
         }
         .navigationTitle("Profile")
     }
+    
 
     var editProfileButton: some View {
         Button {
@@ -75,6 +86,16 @@ struct UserProfileView: View {
                 }
             }
         }
+    }
+    
+    func profileRow(label: String, value: String) -> some View {
+        VStack(alignment: .leading) {
+            Text(label)
+                .fontWeight(.semibold)
+            Text(value)
+                .foregroundColor(.gray)
+        }
+        .padding(.vertical, 5)
     }
 }
 
