@@ -13,6 +13,7 @@ struct UserProfileView: View {
     @State private var showDeleteAccountAlert = false
 
     var body: some View {
+        header
         VStack {
             Group {
                 profileRow(label: "Username:", value: "UserName_insert")
@@ -35,6 +36,22 @@ struct UserProfileView: View {
         .navigationTitle("Profile")
     }
     
+    var header: some View {
+        HStack {
+            Button(action: {
+            }) {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(.black)
+            }
+            Spacer()
+            Text("Profile")
+                .font(.title2)
+                .fontWeight(.semibold)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .padding(.top, 20)
+    }
 
     var editProfileButton: some View {
         Button {
