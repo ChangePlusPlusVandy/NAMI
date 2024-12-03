@@ -40,13 +40,18 @@ struct EventsView: View {
                 case .eventDetailView(let event):
                     EventDetailView(event: event)
                         .environment(eventsViewRouter)
+                case .eventCreationView:
+                    EventCreationView()
+                        .environment(eventsViewRouter)
+                        .environment(HomeScreenRouter())
+                        .toolbar(.hidden, for: .tabBar)
                 }
             }
             .toolbar {
                 if UserManager.shared.userType == .admin {
                     ToolbarItem(placement: .topBarTrailing){
-                        NavigationLink {
-                            EventCreationView()
+                        Button {
+                            eventsViewRouter.navigate(to: .eventCreationView)
                         } label: {
                             Image(systemName: "plus.app")
                         }

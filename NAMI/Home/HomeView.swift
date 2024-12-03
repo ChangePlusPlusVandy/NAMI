@@ -44,6 +44,7 @@ struct HomeView: View {
                 case .adminEventCreationView:
                     EventCreationView()
                         .environment(homeScreenRouter)
+                        .environment(EventsViewRouter())
                         .toolbar(.hidden, for: .tabBar)
                 }
             }

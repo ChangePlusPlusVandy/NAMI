@@ -23,7 +23,9 @@ final class HomeScreenRouter {
     }
 
     func navigateBack() {
-        navPath.removeLast()
+        if navPath.count > 0 {
+            navPath.removeLast()
+        }
     }
 
     func navigateToRoot() {

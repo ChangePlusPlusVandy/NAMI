@@ -26,6 +26,7 @@ struct EventCreationView : View {
         case None, EventDetails, EventLeader, Series, EventCategories
     }
     @Environment(HomeScreenRouter.self) var homeScreenRouter
+    @Environment(EventsViewRouter.self) var eventsViewRouter
     @State var openField: fields = .None
     
     @State var title: String = ""
@@ -73,6 +74,7 @@ struct EventCreationView : View {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     homeScreenRouter.navigateBack()
+                    eventsViewRouter.navigateBack()
                 } label: {
                     Text("Cancel")
                 }
@@ -81,6 +83,7 @@ struct EventCreationView : View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     homeScreenRouter.navigateBack()
+                    eventsViewRouter.navigateBack()
                 } label: {
                     Text("Done")
                         .bold()

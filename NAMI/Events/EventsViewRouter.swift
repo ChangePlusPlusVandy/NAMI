@@ -12,6 +12,7 @@ final class EventsViewRouter {
 
     public enum Destination: Hashable {
         case eventDetailView(event: Event)
+        case eventCreationView
     }
 
     var navPath = NavigationPath()
@@ -21,7 +22,9 @@ final class EventsViewRouter {
     }
 
     func navigateBack() {
-        navPath.removeLast()
+        if navPath.count > 0 {
+            navPath.removeLast()
+        }
     }
 
     func navigateToRoot() {
