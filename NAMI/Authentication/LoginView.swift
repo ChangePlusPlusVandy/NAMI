@@ -36,11 +36,7 @@ struct LoginView: View {
         } label: {
             HStack(alignment: .center, spacing: 0) {
                 Image("Google")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25, height: 25)
                 Text("Sign in with Google")
-                    .font(.title3)
             }
             .padding()
             .frame(maxWidth: .infinity)

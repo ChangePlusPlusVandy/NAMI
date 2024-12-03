@@ -68,11 +68,9 @@ struct UserProfileView: View {
 
     private func deleteAccount() {
         Task {
-            if await authManager.reauthenticateSignInWithGoogle() {
-                let userID = UserManager.shared.userID
-                if await authManager.deleteAccount() {
-                    UserManager.shared.deleteUserInfo(userIDTarget: userID)
-                }
+            let userID = UserManager.shared.userID
+            if await authManager.deleteAccount() {
+                UserManager.shared.deleteUserInfo(userIDTarget: userID)
             }
         }
     }

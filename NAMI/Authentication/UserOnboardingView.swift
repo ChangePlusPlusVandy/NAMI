@@ -75,7 +75,7 @@ struct UserInfoInputField: View {
                 .padding(.horizontal, 10)
                 .overlay{
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(Color.secondary, lineWidth: 1)
                 }
         }.padding(.horizontal, 20)
     }

@@ -200,9 +200,13 @@ extension AuthenticationManager {
                 let credential = OAuthProvider.credential(providerID: .apple,
                                                           idToken: idTokenString,
                                                           rawNonce: nonce)
+                
                 Task {
                     do {
-                        let _ = try await Auth.auth().signIn(with: credential)
+                        let result = try await Auth.auth().signIn(with: credential)
+                        if let isNewUser = result.additionalUserInfo?.isNewUser, isNewUser {
+                            isFirstTimeSignIn = true
+                        }
                     }
                     catch {
                         print("Error authenticating: \(error.localizedDescription)")
