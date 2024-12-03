@@ -15,23 +15,26 @@ struct EventsView: View {
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
-                eventsMenuFilter
-                List(eventsManager.filteredEvents) { event in
-                    EventCardView(event: event)
-                        .environment(eventsViewRouter)
+                List {
+                    eventsMenuFilter
                         .listRowSeparator(.hidden, edges: .all)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false){
-                            Button("", systemImage: "calendar.badge.plus") {}
-                                .tint(Color.NAMIDarkBlue)
-                        }
-                        .onTapGesture {
-                            tabVisibilityControls.makeHidden()
-                            eventsViewRouter.navigate(to: .eventDetailView(event: event))
-                        }
+                    ForEach(eventsManager.filteredEvents) {event in
+                        EventCardView(event: event)
+                            .environment(eventsViewRouter)
+                            .listRowSeparator(.hidden, edges: .all)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false){
+                                Button("", systemImage: "calendar.badge.plus") {}
+                                    .tint(Color.NAMIDarkBlue)
+                            }
+                            .onTapGesture {
+                                tabVisibilityControls.makeHidden()
+                                eventsViewRouter.navigate(to: .eventDetailView(event: event))
+                            }
+                    }
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
-                .searchable(text: $eventsManager.searchText, placement: .navigationBarDrawer(displayMode: .always))
+                .searchable(text: $eventsManager.searchText, placement: .navigationBarDrawer(displayMode: .automatic))
                 .refreshable {}
             }
             .navigationTitle("Events")
@@ -100,7 +103,6 @@ struct EventsView: View {
                 }
             }
             .labelStyle(CustomFilterLabelStyle())
-            .padding(.horizontal)
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
         }

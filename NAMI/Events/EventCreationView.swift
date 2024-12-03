@@ -380,5 +380,7 @@ struct EventCreationView : View {
     NavigationStack {
         EventCreationView()
             .environment(HomeScreenRouter())
+            .environment(EventsViewRouter())
+            .environment(TabsControl())
     }
 }
