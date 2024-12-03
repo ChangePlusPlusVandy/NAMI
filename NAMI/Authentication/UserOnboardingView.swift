@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct UserOnboardingView: View {
     @State var newUser = NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "")
     @Environment(AuthenticationManager.self) var authManager
@@ -50,7 +49,6 @@ struct UserOnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }.scrollDismissesKeyboard(.interactively)
-
     }
 
     var isConfirmButtonDisabled : Bool {
@@ -77,7 +75,7 @@ struct UserInfoInputField: View {
                 .padding(.horizontal, 10)
                 .overlay{
                     RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.black, lineWidth: 1)
+                        .stroke(Color.secondary, lineWidth: 1)
                 }
         }.padding(.horizontal, 20)
     }

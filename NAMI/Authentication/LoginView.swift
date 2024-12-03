@@ -7,9 +7,11 @@
 
 import SwiftUI
 import Combine
+import AuthenticationServices
 
 struct LoginView: View {
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(\.colorScheme) var colorScheme
     var body: some View {
         VStack {
             Spacer()
@@ -19,6 +21,8 @@ struct LoginView: View {
                 .frame(width: 300, height: 300)
             Spacer()
             GoogleSignInButton
+                .padding(.vertical)
+            AppleSignInButton
             Spacer()
         }
         .padding()
@@ -30,15 +34,28 @@ struct LoginView: View {
                 _ = await authManager.signInWithGoogle()
             }
         } label: {
-            HStack(alignment: .center){
+            HStack(alignment: .center, spacing: 0) {
                 Image("Google")
                 Text("Sign in with Google")
             }
+            .padding()
             .frame(maxWidth: .infinity)
+            .frame(height: 35)
         }
-        .frame(height: 50)
         .foregroundStyle(.primary)
         .buttonStyle(.bordered)
+        .cornerRadius(10)
+    }
+
+    var AppleSignInButton: some View {
+        SignInWithAppleButton(.signIn) { request in
+            authManager.handleSignInWithAppleRequest(request)
+        } onCompletion: { result in
+            authManager.handleSignInWithAppleCompletion(result)
+        }
+        .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
+        .frame(maxWidth: .infinity)
+        .frame(height: 50)
         .cornerRadius(10)
     }
 }

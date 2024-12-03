@@ -10,7 +10,8 @@ import FirebaseCore
 import FirebaseAuth
 import GoogleSignIn
 import GoogleSignInSwift
-import Observation
+import AuthenticationServices
+import CryptoKit
 
 enum AuthenticationState {
     case unauthenticated
@@ -20,6 +21,7 @@ enum AuthenticationState {
 
 @MainActor
 @Observable class AuthenticationManager {
+
     var authenticationState: AuthenticationState = .progress
     var errorMessage: String = ""
     var user: User?
@@ -27,8 +29,10 @@ enum AuthenticationState {
 
     init() {
         registerAuthStateHandler()
+        verifySignInWithAppleAuthenticationState()
     }
 
+    private var currentNonce: String?
     private var authStateHandler: AuthStateDidChangeListenerHandle?
 
     private func registerAuthStateHandler() {
@@ -165,3 +169,117 @@ extension AuthenticationManager {
     }
 }
 
+// Apple Sign in
+extension AuthenticationManager {
+
+    func handleSignInWithAppleRequest(_ request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = [.fullName, .email]
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.nonce = sha256(nonce)
+    }
+
+    func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) {
+        if case .failure(let failure) = result {
+            errorMessage = failure.localizedDescription
+        }
+        else if case .success(let authorization) = result {
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                guard let nonce = currentNonce else {
+                    fatalError("Invalid state: a login callback was received, but no login request was sent.")
+                }
+                guard let appleIDToken = appleIDCredential.identityToken else {
+                    print("Unable to fetdch identify token.")
+                    return
+                }
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                    print("Unable to serialise token string from data: \(appleIDToken.debugDescription)")
+                    return
+                }
+
+                let credential = OAuthProvider.credential(providerID: .apple,
+                                                          idToken: idTokenString,
+                                                          rawNonce: nonce)
+                
+                Task {
+                    do {
+                        let result = try await Auth.auth().signIn(with: credential)
+                        if let isNewUser = result.additionalUserInfo?.isNewUser, isNewUser {
+                            isFirstTimeSignIn = true
+                        }
+                    }
+                    catch {
+                        print("Error authenticating: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+    }
+
+    func verifySignInWithAppleAuthenticationState() {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let providerData = Auth.auth().currentUser?.providerData
+        if let appleProviderData = providerData?.first(where: { $0.providerID == "apple.com" }) {
+            Task {
+                do {
+                    let credentialState = try await appleIDProvider.credentialState(forUserID: appleProviderData.uid)
+                    switch credentialState {
+                    case .authorized:
+                        break // The Apple ID credential is valid.
+                    case .revoked, .notFound:
+                        // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
+                        self.signOut()
+                    default:
+                        break
+                    }
+                }
+                catch {
+                }
+            }
+        }
+    }
+}
+
+fileprivate func randomNonceString(length: Int = 32) -> String {
+    precondition(length > 0)
+    let charset: [Character] =
+    Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+    var result = ""
+    var remainingLength = length
+
+    while remainingLength > 0 {
+        let randoms: [UInt8] = (0 ..< 16).map { _ in
+            var random: UInt8 = 0
+            let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+            if errorCode != errSecSuccess {
+                fatalError(
+                    "Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)"
+                )
+            }
+            return random
+        }
+
+        randoms.forEach { random in
+            if remainingLength == 0 {
+                return
+            }
+
+            if random < charset.count {
+                result.append(charset[Int(random)])
+                remainingLength -= 1
+            }
+        }
+    }
+
+    return result
+}
+
+fileprivate func sha256(_ input: String) -> String {
+    let inputData = Data(input.utf8)
+    let hashedData = SHA256.hash(data: inputData)
+    let hashString = hashedData.compactMap {
+        String(format: "%02x", $0)
+    }.joined()
+
+    return hashString
+}
