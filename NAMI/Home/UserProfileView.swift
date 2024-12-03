@@ -16,22 +16,21 @@ struct UserProfileView: View {
 
         VStack (alignment: .leading) {
 
-            VStack(alignment: .leading, spacing: 45) {
+            VStack (alignment: .leading, spacing: 35) {
                 profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
                 profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
                 profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
                 profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
                 profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
             }
-            .padding(.horizontal, 50)
             .padding(.top, 50)
+            .padding(.bottom, 20)
 
             Spacer()
 
-            VStack (alignment: .center, spacing: 10) {
+            VStack (alignment: .center, spacing: 15) {
                 donateButton
                 signOutButton
-                Divider().padding()
                 deleteAccountButton
             }
         }

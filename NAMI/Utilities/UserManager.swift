@@ -9,6 +9,8 @@ import Foundation
 import FirebaseFirestore
 import FirebaseAuth
 
+@Observable
+@MainActor
 final class UserManager {
     static let shared = UserManager()
     var errorMessage = ""
