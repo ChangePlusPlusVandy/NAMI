@@ -41,6 +41,10 @@ struct HomeView: View {
                     UserProfileEditView()
                         .environment(homeScreenRouter)
                         .toolbar(.hidden, for: .tabBar)
+                case .adminEventCreationView:
+                    EventCreationView()
+                        .environment(homeScreenRouter)
+                        .toolbar(.hidden, for: .tabBar)
                 }
             }
         }
@@ -53,6 +57,16 @@ struct HomeView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 100, height: 100)
+        }
+
+        if UserManager.shared.userType == .admin {
+            ToolbarItem(placement: .topBarTrailing){
+                Button{
+                    homeScreenRouter.navigate(to: .adminEventCreationView)
+                } label: {
+                    Image(systemName: "plus.app")
+                }
+            }
         }
         ToolbarItem(placement: .topBarTrailing){
             Button{

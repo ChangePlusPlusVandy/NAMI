@@ -26,6 +26,7 @@ enum AuthenticationState {
     var errorMessage: String = ""
     var user: User?
     var isFirstTimeSignIn = false
+    var userType: UserType = .member
 
     init() {
         registerAuthStateHandler()

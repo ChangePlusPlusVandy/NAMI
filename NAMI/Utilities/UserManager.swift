@@ -18,6 +18,7 @@ final class UserManager {
     var userID: String { Auth.auth().currentUser?.uid ?? "" }
 
     var currentUser: NamiUser?
+    var userType: UserType = .member
 
 
     private init () {}
@@ -33,6 +34,7 @@ final class UserManager {
         do {
             try db.collection("users").document(userID).setData(from: updatedUser, merge: true)
             currentUser = updatedUser
+            userType = updatedUser.userType
             return true
         } catch {
             errorMessage = error.localizedDescription
@@ -46,6 +48,7 @@ final class UserManager {
     func fetchUser() async {
         do {
             currentUser = try await db.collection("users").document(userID).getDocument().data(as: NamiUser.self)
+            userType = currentUser?.userType ?? .member
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)
@@ -58,6 +61,7 @@ final class UserManager {
             print("User id: \(userID) is created in the database")
             try db.collection("users").document(userID).setData(from: newUser)
             currentUser = newUser
+            userType = newUser.userType
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)

@@ -1,5 +1,5 @@
 //
-//  EventDetailsView.swift
+//  EventCreationView.swift
 //  NAMI
 //
 //  Created by Riley Koo on 12/2/24.
@@ -21,10 +21,11 @@ func dummyCreate (event: Event, repeat: repeatType) -> Void {
     return
 }
 
-struct EventCreateView : View {
+struct EventCreationView : View {
     enum fields {
         case None, EventDetails, EventLeader, Series, EventCategories
     }
+    @Environment(HomeScreenRouter.self) var homeScreenRouter
     @State var openField: fields = .None
     
     @State var title: String = ""
@@ -50,12 +51,6 @@ struct EventCreateView : View {
     var body: some View {
         ScrollView {
             VStack (spacing: 8) {
-                Spacer()
-                    .frame(height: 50)
-                Text("Create Event")
-                    .font(.title2)
-                    .bold()
-                Spacer()
                 ExpandView(title: "Event Details", expandedBody: EventDetails as! AnyView, selected: $openField, myField: .EventDetails, imageName: "info.circle")
                 Spacer()
                     .frame(height: 3)
@@ -69,7 +64,27 @@ struct EventCreateView : View {
                 Spacer()
                     .frame(height: 6)
                 createButton
-                Spacer()
+            }
+        }
+        .navigationTitle("Create Event")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    homeScreenRouter.navigateBack()
+                } label: {
+                    Text("Cancel")
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    homeScreenRouter.navigateBack()
+                } label: {
+                    Text("Done")
+                        .bold()
+                }
             }
         }
     }
@@ -356,6 +371,10 @@ struct EventCreateView : View {
         }
     }
 }
+
 #Preview {
-    EventCreateView()
+    NavigationStack {
+        EventCreationView()
+            .environment(HomeScreenRouter())
+    }
 }

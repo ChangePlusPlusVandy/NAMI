@@ -42,6 +42,17 @@ struct EventsView: View {
                         .environment(eventsViewRouter)
                 }
             }
+            .toolbar {
+                if UserManager.shared.userType == .admin {
+                    ToolbarItem(placement: .topBarTrailing){
+                        NavigationLink {
+                            EventCreationView()
+                        } label: {
+                            Image(systemName: "plus.app")
+                        }
+                    }
+                }
+            }
         }
     }
 

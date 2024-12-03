@@ -39,6 +39,9 @@ struct AppWelcomeView: View {
         NavigationLink {
             LoginView()
                 .environment(authManager)
+                .onAppear {
+                    authManager.userType = .member
+                }
         } label: {
             Text("Member")
                 .bold()
@@ -50,8 +53,12 @@ struct AppWelcomeView: View {
     }
 
     var adminButton: some View {
-        Button {
-
+        NavigationLink {
+            LoginView()
+                .environment(authManager)
+                .onAppear {
+                    authManager.userType = .admin
+                }
         } label: {
             Text("Admin")
                 .bold()
