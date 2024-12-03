@@ -10,6 +10,7 @@ import SwiftUI
 struct EventsView: View {
     @State var eventsManager = EventsManager()
     @State var eventsViewRouter = EventsViewRouter()
+    @Environment(TabsControl.self) var tabVisibilityControls
 
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
@@ -24,15 +25,14 @@ struct EventsView: View {
                                 .tint(Color.NAMIDarkBlue)
                         }
                         .onTapGesture {
+                            tabVisibilityControls.makeHidden()
                             eventsViewRouter.navigate(to: .eventDetailView(event: event))
                         }
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
                 .searchable(text: $eventsManager.searchText, placement: .navigationBarDrawer(displayMode: .always))
-                .refreshable {
-
-                }
+                .refreshable {}
             }
             .navigationTitle("Events")
             .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
@@ -44,7 +44,11 @@ struct EventsView: View {
                     EventCreationView()
                         .environment(eventsViewRouter)
                         .environment(HomeScreenRouter())
-                        .toolbar(.hidden, for: .tabBar)
+                }
+            }
+            .onChange(of: eventsViewRouter.navPath) {
+                if eventsViewRouter.navPath.isEmpty {
+                    tabVisibilityControls.makeVisible()
                 }
             }
             .toolbar {
@@ -52,6 +56,7 @@ struct EventsView: View {
                     ToolbarItem(placement: .topBarTrailing){
                         Button {
                             eventsViewRouter.navigate(to: .eventCreationView)
+                            tabVisibilityControls.makeHidden()
                         } label: {
                             Image(systemName: "plus.app")
                         }
@@ -104,4 +109,5 @@ struct EventsView: View {
 
 #Preview {
     EventsView()
+        .environment(TabsControl())
 }

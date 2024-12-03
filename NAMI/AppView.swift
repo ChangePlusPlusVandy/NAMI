@@ -10,8 +10,8 @@ import SwiftUI
 struct AppView: View {
     
     @State var tabSelection = 0
-    
-    
+    @State var tabVisiblityControls = TabsControl()
+
     init() {
         // to customize tab bar color
         let tabBarAppearance = UITabBarAppearance()
@@ -27,25 +27,31 @@ struct AppView: View {
 
             Tab(value: 0) {
                 HomeView()
+                    .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
             } label: {
                 Label("Home", systemImage: "house")
             }
 
             Tab(value: 1) {
                 EventsView()
+                    .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
             } label: {
                 Label("Events", systemImage: "person.3.fill")
             }
 
             Tab(value: 2) {
                 ChatView()
+                    .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
             } label: {
                 Label("Chat", systemImage: "message")
             }
         }
+        .environment(tabVisiblityControls)
         .sensoryFeedback(.impact(weight: .heavy), trigger: tabSelection)
     }
 }
+
+
 
 #Preview {
     AppView()

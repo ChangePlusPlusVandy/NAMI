@@ -27,6 +27,7 @@ struct EventCreationView : View {
     }
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @Environment(EventsViewRouter.self) var eventsViewRouter
+    @Environment(TabsControl.self) var tabVisibilityControls
     @State var openField: fields = .None
     
     @State var title: String = ""

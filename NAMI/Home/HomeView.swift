@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
+
     @Environment(AuthenticationManager.self) var authManager
+    @Environment(TabsControl.self) var tabVisibilityControls
     @State var homeScreenRouter = HomeScreenRouter()
+
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
@@ -36,16 +39,18 @@ struct HomeView: View {
                 case .userProfileView:
                     UserProfileView()
                         .environment(homeScreenRouter)
-                        .toolbar(.hidden, for: .tabBar)
                 case .userProfileEditView:
                     UserProfileEditView()
                         .environment(homeScreenRouter)
-                        .toolbar(.hidden, for: .tabBar)
                 case .adminEventCreationView:
                     EventCreationView()
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
-                        .toolbar(.hidden, for: .tabBar)
+                }
+            }
+            .onChange(of: homeScreenRouter.navPath) {
+                if homeScreenRouter.navPath.isEmpty {
+                    tabVisibilityControls.makeVisible()
                 }
             }
         }
@@ -63,14 +68,17 @@ struct HomeView: View {
         if UserManager.shared.userType == .admin {
             ToolbarItem(placement: .topBarTrailing){
                 Button{
+                    tabVisibilityControls.makeHidden()
                     homeScreenRouter.navigate(to: .adminEventCreationView)
                 } label: {
                     Image(systemName: "plus.app")
                 }
             }
         }
-        ToolbarItem(placement: .topBarTrailing){
-            Button{
+
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                tabVisibilityControls.makeHiddenNoAnimation()
                 homeScreenRouter.navigate(to: .userProfileView)
             } label: {
                 Image(systemName: "person.fill")
@@ -83,4 +91,5 @@ struct HomeView: View {
 #Preview {
     HomeView()
         .environment(AuthenticationManager())
+        .environment(TabsControl())
 }
