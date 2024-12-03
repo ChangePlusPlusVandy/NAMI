@@ -24,16 +24,19 @@ struct AppView: View {
     
     var body: some View {
         TabView(selection: $tabSelection) {
+
             Tab(value: 0) {
                 HomeView()
             } label: {
                 Label("Home", systemImage: "house")
             }
+
             Tab(value: 1) {
                 EventsView()
             } label: {
                 Label("Events", systemImage: "person.3.fill")
             }
+
             Tab(value: 2) {
                 ChatView()
             } label: {

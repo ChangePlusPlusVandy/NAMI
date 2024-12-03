@@ -14,80 +14,49 @@ struct UserProfileView: View {
 
     var body: some View {
 
-        VStack(alignment: .leading, spacing: 20) {
-            header
+        VStack (alignment: .leading) {
 
-            Group {
-                profileRow(label: "Username:", value: "UserName_insert")
-                profileRow(label: "First Name:", value: "name_insert")
-                profileRow(label: "Last Name:", value: "last_Name_insert")
-                profileRow(label: "Email:", value: "person@email.com")
-                profileRow(label: "Phone:", value: "000-000-xxxx")
-                profileRow(label: "Zip Code:", value: "insert_number")
+            VStack(alignment: .leading, spacing: 45) {
+                profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
+                profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
+                profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
+                profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
+                profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
             }
+            .padding(.horizontal, 50)
+            .padding(.top, 50)
 
-            .padding(.horizontal, 30)
-            .padding(.vertical, 5)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            Spacer()
 
-            //buttons
-            VStack(alignment: .center) {
-                editProfileButton
-                Spacer()
+            VStack (alignment: .center, spacing: 10) {
                 donateButton
                 signOutButton
-                Spacer()
+                Divider().padding()
                 deleteAccountButton
-            }.frame(maxWidth: .infinity)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    homeScreenRouter.navigate(to: .userProfileEditView)
+                } label: {
+                    Text("Edit")
+                }
+            }
         }
         .navigationTitle("Profile")
-    }
-
-    var header: some View {
-        HStack {
-            Button(action: {
-            }) {
-                Image(systemName: "chevron.left")
-                    .foregroundColor(.black)
-            }
-            Spacer()
-            Text("Profile")
-                .font(.title2)
-                .fontWeight(.semibold)
-            Spacer()
-        }
-        .padding(.horizontal)
-        .padding(.top, 20)
-    }
-
-    var editProfileButton: some View {
-        Button {
-            homeScreenRouter.navigate(to: .userProfileEditView)
-        } label: {
-            Text("Edit Profile")
-                .frame(width: 118, height: 40)
-                .foregroundStyle(.white)
-                .background(Color.NAMITealBlue)
-                .cornerRadius(100)
-        }
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     var donateButton: some View {
-        Button(action: {
-            if let url = URL(
-                string:
-                    "https://secure.namidavidson.org/forms/namidavidsondonations"
-            ) {
-                UIApplication.shared.open(url)
-            }
-        }) {
+        Button {
+            UIApplication.shared.open(URL(string: "https://secure.namidavidson.org/forms/namidavidsondonations")!)
+        } label: {
             Text("Donate")
-                .frame(maxWidth: 300, minHeight: 41)
+                .frame(width: 300, height: 50)
                 .foregroundColor(.white)
-                .background(Color(hex: "#0C499C"))
-                .cornerRadius(7)
-                .font(.headline)
-                .padding(.horizontal, 30)
+                .background(Color.NAMITealBlue)
+                .cornerRadius(10)
         }
     }
 
@@ -98,15 +67,10 @@ struct UserProfileView: View {
 
             Text("Log out")
                 .foregroundStyle(.black)
-                .frame(width: 300, height: 41)
-                .background(
-                    Color(hex: "#86C1C7").opacity(0.11)
-                )
-                .cornerRadius(7)
-
-                .overlay(
-                    RoundedRectangle(cornerRadius: 10).stroke(
-                        Color.primary, lineWidth: 1.5))
+                .frame(width: 300, height: 50)
+                .background(Color.white)
+                .cornerRadius(10)
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary, lineWidth: 1.5))
         }
     }
 
@@ -115,10 +79,10 @@ struct UserProfileView: View {
             showDeleteAccountAlert.toggle()
         } label: {
             Text("Delete Account")
-                .frame(width: 300, height: 41)
+                .frame(width: 300, height: 50)
                 .foregroundStyle(.white)
                 .background(.red)
-                .cornerRadius(7)
+                .cornerRadius(10)
         }
         .confirmationDialog(
             "Are you sure you want to delete your account? This action is permanent and cannot be undone. To proceed, you will need to reauthenticate your account.",
@@ -140,19 +104,20 @@ struct UserProfileView: View {
         }
     }
 
-    func profileRow(label: String, value: String) -> some View {
-        VStack(alignment: .leading) {
+    func profileRow(label: String, value: String?) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
             Text(label)
                 .fontWeight(.semibold)
-            Text(value)
-                .foregroundColor(.gray)
+            Text(value ?? "error")
+                .foregroundColor(.secondary)
         }
-        .padding(.vertical, 1)
     }
 }
 
 #Preview {
-    UserProfileView()
-        .environment(AuthenticationManager())
-        .environment(HomeScreenRouter())
+    NavigationStack {
+        UserProfileView()
+            .environment(AuthenticationManager())
+            .environment(HomeScreenRouter())
+    }
 }

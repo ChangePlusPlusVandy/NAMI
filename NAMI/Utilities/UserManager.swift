@@ -15,11 +15,10 @@ final class UserManager {
     let db = Firestore.firestore()
     var userID: String { Auth.auth().currentUser?.uid ?? "" }
 
-    private var currentUser: NamiUser?
+    var currentUser: NamiUser?
 
 
-    private init () {
-    }
+    private init () {}
 
     // Expose current user
     func getCurrentUser() -> NamiUser? {
