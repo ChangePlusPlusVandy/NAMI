@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-import FirebaseAuth
-
 
 struct UserOnboardingView: View {
     @State var newUser = NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "")
@@ -51,28 +49,7 @@ struct UserOnboardingView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
             }
         }.scrollDismissesKeyboard(.interactively)
-
     }
-    
-    private func prefillUserData() {
-            if let currentUser = Auth.auth().currentUser {
-                // Pre-fill name from display name if available
-                if let displayName = currentUser.displayName {
-                    let names = displayName.split(separator: " ")
-                    if !names.isEmpty {
-                        newUser.firstName = String(names[0])
-                        if names.count > 1 {
-                            newUser.lastName = String(names[names.count - 1])
-                        }
-                    }
-                }
-                
-                // Pre-fill email if available
-                if let email = currentUser.email {
-                    newUser.email = email
-                }
-            }
-        }
 
     var isConfirmButtonDisabled : Bool {
         newUser.firstName == "" ||
