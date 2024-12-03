@@ -87,7 +87,6 @@ struct EventCreateView : View {
                         .frame(width: 10)
                     
                     Text("Repeat")
-                        .bold()
                         .font(.title2)
                     
                     Spacer()
