@@ -11,27 +11,58 @@ struct UserProfileView: View {
     @Environment(AuthenticationManager.self) var authManager
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @State private var showDeleteAccountAlert = false
+    @State private var showUserTypePopover = false
 
     var body: some View {
+        ZStack(alignment: .center) {
+            VStack (alignment: .leading) {
 
-        VStack (alignment: .leading) {
+                VStack (alignment: .leading, spacing: 30) {
+                    profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
+                    profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
+                    profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
+                    profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
+                    profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("User Type")
+                                .fontWeight(.semibold)
 
-            VStack (alignment: .leading, spacing: 35) {
-                profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
-                profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
-                profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
-                profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
-                profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
+                            Button {
+                                withAnimation(.snappy(duration: 0.25)) {
+                                    showUserTypePopover.toggle()
+                                }
+                            } label: {
+                                Image(systemName: "info.circle")
+                            }
+
+                        }
+                        Text(UserManager.shared.currentUser?.userType.description ?? "error")
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.top, 40)
+                .padding(.bottom, 20)
+
+                Spacer()
+
+                VStack (alignment: .center, spacing: 15) {
+                    donateButton
+                    signOutButton
+                    deleteAccountButton
+                }
             }
-            .padding(.top, 50)
-            .padding(.bottom, 20)
 
-            Spacer()
-
-            VStack (alignment: .center, spacing: 15) {
-                donateButton
-                signOutButton
-                deleteAccountButton
+            if showUserTypePopover {
+                ZStack {
+                    Color.black.opacity(0.4)
+                        .edgesIgnoringSafeArea(.all)
+                        .onTapGesture {
+                            showUserTypePopover.toggle()
+                        }
+                        .transition(.opacity)
+                    PopOverMenu()
+                }
             }
         }
         .toolbar {
@@ -116,5 +147,61 @@ struct UserProfileView: View {
         UserProfileView()
             .environment(AuthenticationManager())
             .environment(HomeScreenRouter())
+    }
+}
+
+
+struct PopOverMenu: View {
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Button {
+            } label: {
+                HStack {
+
+                    VStack(alignment: .leading) {
+                        Text("Apply to Become a Volunteer")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+
+                        Text("Join our team and make a difference by volunteering your time.")
+                            .font(.caption)
+                            .multilineTextAlignment(.leading)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.compact.forward")
+                }
+            }
+
+            Rectangle()
+                .fill(Color.clear)
+                .frame(height: 1)
+                .background(Color.white.opacity(0.2))
+                .padding(.horizontal)
+
+            Button {
+                // Action for requesting admin approval
+            } label: {
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text("Request Admin Approval")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+
+                        Text("Get access to admin privileges by submitting your request.")
+                            .font(.caption)
+                            .multilineTextAlignment(.leading)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.compact.forward")
+                }
+            }
+        }
+        .padding()
+        .foregroundStyle(.white)
+        .background(Color(hex: "185fb8"))
+        .cornerRadius(16)
+        .padding(.horizontal, 30)
     }
 }

@@ -13,6 +13,19 @@ enum UserType : Codable {
     case admin
     case volunteer
     case member
+
+    var description: String {
+        switch self {
+        case .superAdmin:
+            return "Super Admin"
+        case .admin:
+            return "Admin"
+        case .volunteer:
+            return "Volunteer"
+        case .member:
+            return "Member"
+        }
+    }
 }
 
 struct NamiUser: Codable, Identifiable {

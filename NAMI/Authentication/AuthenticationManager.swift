@@ -182,7 +182,8 @@ extension AuthenticationManager {
 
     func handleSignInWithAppleCompletion(_ result: Result<ASAuthorization, Error>) {
         if case .failure(let failure) = result {
-            errorMessage = failure.localizedDescription
+            print(failure.localizedDescription)
+            // errorMessage = failure.localizedDescription
         }
         else if case .success(let authorization) = result {
             if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
