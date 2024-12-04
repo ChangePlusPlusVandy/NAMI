@@ -39,18 +39,11 @@ struct EventCardView: View {
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 250)
-        //.cornerRadius(20)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
         .contentShape(Rectangle())
 
     }
 
-    /// Converts the startTime and endTime to the user's current time zone, then formats the adjusted times
-    /// to a string with the format "startTime - endTime userTimeZone".
-    /// - Parameters:
-    ///   - startTime: The start time of an event
-    ///   - endTime: The end time of an event
-    /// - Returns: A formatted string representing the duration of the event in the user's current time zone
     private func formatEventDurationWithTimeZone(startTime: Date, endTime: Date) -> String {
         // This assumes NAMI posts events in central time, may need to change later
         let initTimeZone = TimeZone(identifier: "America/Chicago")!
@@ -85,7 +78,6 @@ struct EventCardView: View {
             .background(eventCategory.color)
             .clipShape(RoundedRectangle(cornerRadius: 5))
     }
-
 
     func meetingModeCapsuleView(meetingMode: MeetingMode) -> some View {
         HStack(spacing: 3) {
