@@ -32,7 +32,7 @@ struct UserOnboardingView: View {
 
                 Button {
                     Task {
-                        newUser.userType = authManager.userType
+                      //  newUser.userType = authManager.userType
                         await UserManager.shared.createNewUser(newUser: newUser)
                     }
                     authManager.isFirstTimeSignIn = false

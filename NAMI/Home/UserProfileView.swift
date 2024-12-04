@@ -28,14 +28,15 @@ struct UserProfileView: View {
                             Text("User Type")
                                 .fontWeight(.semibold)
 
-                            Button {
-                                withAnimation(.snappy(duration: 0.25)) {
-                                    showUserTypePopover.toggle()
+                            if UserManager.shared.currentUser?.userType != .admin {
+                                Button {
+                                    withAnimation(.snappy(duration: 0.2)) {
+                                        showUserTypePopover.toggle()
+                                    }
+                                } label: {
+                                    Image(systemName: "info.circle")
                                 }
-                            } label: {
-                                Image(systemName: "info.circle")
                             }
-
                         }
                         Text(UserManager.shared.currentUser?.userType.description ?? "error")
                             .foregroundColor(.secondary)

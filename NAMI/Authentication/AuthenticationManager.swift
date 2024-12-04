@@ -26,7 +26,6 @@ enum AuthenticationState {
     var errorMessage: String = ""
     var user: User?
     var isFirstTimeSignIn = false
-    var userType: UserType = .member
 
     init() {
         registerAuthStateHandler()
@@ -202,7 +201,7 @@ extension AuthenticationManager {
                 let credential = OAuthProvider.credential(providerID: .apple,
                                                           idToken: idTokenString,
                                                           rawNonce: nonce)
-                
+
                 Task {
                     do {
                         let result = try await Auth.auth().signIn(with: credential)

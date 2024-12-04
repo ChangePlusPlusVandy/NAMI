@@ -29,6 +29,10 @@ final class UserManager {
         return currentUser
     }
 
+    func clearCurrentUser() {
+        currentUser = nil
+    }
+
     // Update the user info and refresh cache
     func updateUserInfo(updatedUser: NamiUser) async -> Bool {
         do {

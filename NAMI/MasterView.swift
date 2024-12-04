@@ -19,20 +19,32 @@ struct MasterView: View {
                 ProgressView()
 
             case .unauthenticated:
-                AppWelcomeView()
+                LoginView()
                     .environment(authManager)
+                    .task {
+                        do {
+                            try await Task.sleep(nanoseconds: 2_000_000_000)
+                            UserManager.shared.clearCurrentUser()
+                        } catch {
+                            print("Error \(error.localizedDescription)")
+                        }
+                    }
 
             case .authenticated:
-                AppView()
-                    .environment(authManager)
-                    .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
-                        UserOnboardingView()
-                            .environment(authManager)
-                            .interactiveDismissDisabled()
-                    }
-                    .task {
-                        await UserManager.shared.fetchUser()
-                    }
+                if UserManager.shared.currentUser == nil {
+                    ProgressView()
+                        .task {
+                            await UserManager.shared.fetchUser()
+                        }
+                } else {
+                    AppView()
+                        .environment(authManager)
+                        .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
+                            UserOnboardingView()
+                                .environment(authManager)
+                                .interactiveDismissDisabled()
+                        }
+                }
             }
         }
         .animation(.default, value: authManager.authenticationState)
@@ -42,6 +54,5 @@ struct MasterView: View {
         .alert(isPresented: $showAlert) {
             Alert(title: Text("Error"), message: Text(authManager.errorMessage), dismissButton: .default(Text("OK")) {authManager.errorMessage = ""})
         }
-
     }
 }
