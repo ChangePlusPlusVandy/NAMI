@@ -11,33 +11,6 @@ struct UserProfileEditView: View {
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @State var user: NamiUser = (UserManager.shared.getCurrentUser() ?? NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: ""))
     var body: some View {
-        HStack {
-            Button {
-                homeScreenRouter.navigateBack()
-            } label: {
-                Text("Cancel")
-                    .foregroundStyle(Color.NAMIDarkBlue)
-            }
-
-            Spacer()
-
-            Text("Edit Profile")
-                .bold()
-
-            Spacer()
-
-            Button {
-                Task {
-                    await UserManager.shared.updateUserInfo(updatedUser: user)
-                }
-                homeScreenRouter.navigateBack()
-            } label: {
-                Text("Save")
-                    .foregroundStyle(Color.NAMIDarkBlue)
-            }
-        }
-        .padding()
-
         ScrollView (showsIndicators: false) {
             VStack(alignment: .leading, spacing: 35) {
                 Spacer(minLength: 20)
@@ -53,7 +26,31 @@ struct UserProfileEditView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
-        .toolbar(.hidden)
+        .navigationTitle("Edit Profile")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    homeScreenRouter.navigateBack()
+                } label: {
+                    Text("Cancel")
+                        .foregroundStyle(Color.NAMIDarkBlue)
+                }
+            }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task {
+                        await UserManager.shared.updateUserInfo(updatedUser: user)
+                    }
+                    homeScreenRouter.navigateBack()
+                } label: {
+                    Text("Save")
+                        .foregroundStyle(Color.NAMIDarkBlue)
+                }
+            }
+        }
     }
 }
 
