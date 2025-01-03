@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct ChatView: View {
+    @State private var showChatUnavilable = false // State variable to control the pop-up
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 50) {
 
-                    Text( "You are not alone! If you are struggling with your mental health, the NAMI HelpLine is here for you. Connect with a NAMI HelpLine volunteer today.")
+                    Text("You are not alone! If you are struggling with your mental health, the NAMI HelpLine is here for you. Connect with a NAMI HelpLine volunteer today.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .padding(.vertical, 20)
@@ -31,7 +32,8 @@ struct ChatView: View {
                         .font(.body)
 
                     Button {
-
+                        // Show the pop-up
+                        showChatUnavilable = true
                     } label: {
                         Text("Start a Chat")
                             .padding(.horizontal, 10)
@@ -46,6 +48,11 @@ struct ChatView: View {
                 .padding(.horizontal, 25)
             }
             .navigationTitle("NAMI HelpLine")
+            .overlay {
+                if showChatUnavilable {
+                    ChatUnavailableView(isPresented: $showChatUnavilable) // Show ChatCardView as an overlay
+                }
+            }
         }
     }
 
