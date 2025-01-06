@@ -113,6 +113,11 @@ struct EventCreationView : View {
                 }
             }
 
+            Section(header: Text("Event Leader")) {
+                TextField("Name", text: $newEvent.leaderName)
+                TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
+            }
+
             Section(header: Text("Meeting Mode")) {
                 Picker("", selection: $newEvent.meetingMode) {
                     Text(MeetingMode.inPerson(location: "").displayName)
@@ -125,21 +130,16 @@ struct EventCreationView : View {
 
                 switch newEvent.meetingMode {
                 case .inPerson:
-                    TextEditorWithPlaceholder(minHeight: 150, bindText: $inputMeetingModeText, placeHolder: "Enter event address")
+                    TextEditorWithPlaceholder(minHeight: 100, bindText: $inputMeetingModeText, placeHolder: "Enter event address")
                         .autocorrectionDisabled()
                 case .virtual:
-                    TextEditorWithPlaceholder(minHeight: 150, bindText: $inputMeetingModeText, placeHolder: "Enter event zoom link")
+                    TextEditorWithPlaceholder(minHeight: 100, bindText: $inputMeetingModeText, placeHolder: "Enter event zoom link")
                         .autocorrectionDisabled()
                 }
             }
 
             Section(header: Text("Event Description")) {
                 TextEditorWithPlaceholder(minHeight: 300, bindText: $newEvent.about, placeHolder: "Enter event details")
-            }
-
-            Section(header: Text("Event Leader")) {
-                TextField("Name", text: $newEvent.leaderName)
-                TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
             }
         }
         .scrollDismissesKeyboard(.interactively)
