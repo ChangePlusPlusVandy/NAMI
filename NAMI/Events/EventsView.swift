@@ -35,7 +35,16 @@ struct EventsView: View {
                         EventCardView(event: event)
                             .environment(eventsViewRouter)
                             .listRowSeparator(.hidden, edges: .all)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false){
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true){
+                                if UserManager.shared.userType == .admin {
+                                    Button("", systemImage: "trash") {
+                                        if event.id != nil {
+                                            let ref = Firestore.firestore().collection("events").document(event.id!)
+                                            ref.delete()
+                                        }
+                                    }
+                                    .tint(Color.red)
+                                }
                                 Button("", systemImage: "calendar.badge.plus") {}
                                     .tint(Color.NAMIDarkBlue)
                             }
