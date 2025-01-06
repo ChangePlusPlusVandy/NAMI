@@ -6,24 +6,41 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
-struct Event: Identifiable, Equatable, Hashable {
-    let id = UUID()
+struct Event: Identifiable, Equatable, Hashable, Codable {
+    @DocumentID var id: String?
     var title: String
     var startTime: Date
     var endTime: Date
-    var repeatType: RepeatType = .never
-    var endRepeatDate: Date = Date()
+    var repeatType: RepeatType
+    var endRepeat: Bool
+    var endRepeatDate: Date
     var about: String
+    var leaderName: String
+    var leaderPhoneNumber: String
 
     var meetingMode: MeetingMode
     var eventCategory: EventCategory
     var eventSeries: EventSeries?
-
-    static var dummyEvent = Event(title: "This is an event by NAMI", startTime: Date(), endTime: Date(), repeatType: .never, about: "This is what the event is about", meetingMode: .virtual(link: "www.zoom.com"), eventCategory: .familyEducation, eventSeries: EventSeries(name: "NAMI Family to Family"))
 }
 
-enum RepeatType: String, CaseIterable, Identifiable {
+extension Event {
+    static var dummyEvent = Event(title: "Dummy",
+                                  startTime: Date(),
+                                  endTime: Date(),
+                                  repeatType: .never,
+                                  endRepeat: false,
+                                  endRepeatDate: Date(),
+                                  about: "This is what the event is about",
+                                  leaderName: "Dana",
+                                  leaderPhoneNumber: "123-456-7890",
+                                  meetingMode: .virtual(link: "www.zoom.com"),
+                                  eventCategory: .familyEducation,
+                                  eventSeries: EventSeries(name: "NAMI Family to Family"))
+}
+
+enum RepeatType: String, CaseIterable, Identifiable, Codable {
     case never = "Never"
     case daily = "Every Day"
     case weekly = "Every Week"
@@ -35,7 +52,7 @@ enum RepeatType: String, CaseIterable, Identifiable {
     var id: String {self.rawValue}
 }
 
-enum MeetingMode: Equatable, Hashable {
+enum MeetingMode: Equatable, Hashable, Codable {
 
     case inPerson(location: String)
     case virtual(link: String)
@@ -57,9 +74,18 @@ enum MeetingMode: Equatable, Hashable {
             return "laptopcomputer.and.iphone"
         }
     }
+
+    func updateLocationOrLink(with newValue: String) -> Self {
+        switch self {
+        case .inPerson:
+            return .inPerson(location: newValue)
+        case .virtual:
+            return .virtual(link: newValue)
+        }
+    }
 }
 
-enum EventCategory: String, CaseIterable, Identifiable {
+enum EventCategory: String, CaseIterable, Identifiable, Codable {
     case familySupport = "Family/Caregiver Support"
     case familyEducation = "Family/Caregiver Education"
     case peerSupport = "Peer Support"
@@ -84,7 +110,7 @@ enum EventCategory: String, CaseIterable, Identifiable {
     }
 }
 
-struct EventSeries: Identifiable, Hashable {
-    let id = UUID()
-    let name: String
+struct EventSeries: Identifiable, Hashable, Codable {
+    var id = UUID()
+    var name: String
 }

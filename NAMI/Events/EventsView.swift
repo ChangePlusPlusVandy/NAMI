@@ -6,19 +6,32 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct EventsView: View {
-    @State var eventsManager = EventsManager()
     @State var eventsViewRouter = EventsViewRouter()
     @Environment(TabsControl.self) var tabVisibilityControls
 
+    @State var searchText: String = ""
+    @State var selectedMeetingMode: MeetingMode?
+    @State var selectedCategory: EventCategory?
+
+    @FirestoreQuery(collectionPath: "events", predicates: []) var events: [Event]
+
+    var filteredEvents: [Event] {
+        events.filter { event in
+            (selectedCategory == nil || event.eventCategory == selectedCategory) &&
+            (searchText.isEmpty || event.title.localizedCaseInsensitiveContains(searchText) || event.about.localizedCaseInsensitiveContains(searchText)) &&
+            (selectedMeetingMode == nil || event.meetingMode.displayName == selectedMeetingMode?.displayName)
+        }
+    }
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
                 List {
                     eventsMenuFilter
                         .listRowSeparator(.hidden, edges: .all)
-                    ForEach(eventsManager.filteredEvents) {event in
+                    ForEach(filteredEvents) {event in
                         EventCardView(event: event)
                             .environment(eventsViewRouter)
                             .listRowSeparator(.hidden, edges: .all)
@@ -34,7 +47,7 @@ struct EventsView: View {
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
-                .searchable(text: $eventsManager.searchText, placement: .navigationBarDrawer(displayMode: .automatic))
+                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
                 .refreshable {}
             }
             .navigationTitle("Events")
@@ -74,9 +87,9 @@ struct EventsView: View {
             HStack {
                 Menu{
                     let selected = Binding(
-                        get: { eventsManager.selectedCategory },
+                        get: { selectedCategory },
                         set: {
-                            self.eventsManager.selectedCategory = $0 == self.eventsManager.selectedCategory ? nil : $0
+                            selectedCategory = $0 == selectedCategory ? nil : $0
                         }
                     )
 
@@ -86,20 +99,20 @@ struct EventsView: View {
                         }
                     }
                 } label: {
-                    Label(eventsManager.selectedCategory?.rawValue ?? "All Categories", systemImage: "chevron.down")
+                    Label(selectedCategory?.rawValue ?? "All Categories", systemImage: "chevron.down")
                 }
 
                 Menu {
                     let selected = Binding(
-                        get: { eventsManager.selectedMeetingMode },
-                        set: { self.eventsManager.selectedMeetingMode = $0 == self.eventsManager.selectedMeetingMode ? nil : $0 }
+                        get: { selectedMeetingMode },
+                        set: { selectedMeetingMode = $0 == selectedMeetingMode ? nil : $0 }
                     )
                     Picker("Mode", selection: selected) {
                         Label("Virtual", systemImage: "laptopcomputer.and.iphone").tag(MeetingMode.virtual(link: ""))
                         Label("In Person", systemImage: "person.3").tag(MeetingMode.inPerson(location: ""))
                     }
                 } label: {
-                    Label(eventsManager.selectedMeetingMode?.displayName ?? "All Modes", systemImage: "chevron.down")
+                    Label(selectedMeetingMode?.displayName ?? "All Modes", systemImage: "chevron.down")
                 }
             }
             .labelStyle(CustomFilterLabelStyle())

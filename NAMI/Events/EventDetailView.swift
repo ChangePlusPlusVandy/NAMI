@@ -10,10 +10,6 @@ import SwiftUI
 struct EventDetailView: View {
     @Environment(EventsViewRouter.self) var eventsViewRouter
     var event: Event
-    var sessionLeader: String = "Amy Cliff"
-    var contact: String = "909-000-1827"
-    var series: String = "Ex: Family-To-Family Class- In-Person"
-    var eventCategories: String = "Ex: Education, NAMI \nFamily-to-Family, NAMI \nWilliamson and Maury County TN"
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 20) {
@@ -30,8 +26,11 @@ struct EventDetailView: View {
                         .font(.title3.bold())
                         .padding(.vertical, 3)
 
-                    Text(sessionLeader)
-                    Text(contact)
+                    if event.leaderName.isEmpty, event.leaderPhoneNumber.isEmpty {
+                        Text("N/A")
+                    }
+                    Text(event.leaderName)
+                    Text(event.leaderPhoneNumber)
                 }
 
                 meetingModeSection
@@ -44,19 +43,13 @@ struct EventDetailView: View {
                 }
 
                 VStack(alignment: .leading) {
-                    Text("Series:")
+                    Text("Event Category:")
                         .font(.title3.bold())
                         .padding(.vertical, 3)
-                    Text(series)
-                }
-
-                VStack(alignment: .leading) {
-                    Text("Event Categories:")
-                        .font(.title3.bold())
-                        .padding(.vertical, 3)
-                    Text(eventCategories)
+                    Text(event.eventCategory.rawValue)
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .font(.footnote)
             .padding(.horizontal, 20)
             .padding(.bottom, 20)

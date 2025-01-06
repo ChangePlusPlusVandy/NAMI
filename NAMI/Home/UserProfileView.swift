@@ -36,6 +36,7 @@ struct UserProfileView: View {
                                 } label: {
                                     Image(systemName: "info.circle")
                                 }
+                                .sensoryFeedback(.success, trigger: showUserTypePopover)
                             }
                         }
                         Text(UserManager.shared.currentUser?.userType.description ?? "error")
@@ -176,9 +177,8 @@ struct PopOverMenu: View {
             }
 
             Rectangle()
-                .fill(Color.clear)
+                .fill(Color.gray)
                 .frame(height: 1)
-                .background(Color.white.opacity(0.2))
                 .padding(.horizontal)
 
             Button {
@@ -200,8 +200,7 @@ struct PopOverMenu: View {
             }
         }
         .padding()
-        .foregroundStyle(.white)
-        .background(Color(hex: "185fb8"))
+        .background(Color(uiColor: UIColor.systemBackground))
         .cornerRadius(16)
         .padding(.horizontal, 30)
     }
