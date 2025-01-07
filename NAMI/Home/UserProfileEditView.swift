@@ -9,7 +9,7 @@ import SwiftUI
 
 struct UserProfileEditView: View {
     @Environment(HomeScreenRouter.self) var homeScreenRouter
-    @State var user: NamiUser = (UserManager.shared.getCurrentUser() ?? NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: ""))
+    @State var user: NamiUser = (UserManager.shared.getCurrentUser() ?? NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "", registeredEventsIds: []))
     var body: some View {
         ScrollView (showsIndicators: false) {
             VStack(alignment: .leading, spacing: 35) {

@@ -35,6 +35,7 @@ struct MasterView: View {
                     ProgressView()
                         .task {
                             await UserManager.shared.fetchUser()
+                            UserManager.shared.startListeningForUserChanges()
                         }
                 } else {
                     AppView()

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserOnboardingView: View {
-    @State var newUser = NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "")
+    @State var newUser = NamiUser(userType: .member, firstName: "", lastName: "", email: "", phoneNumber: "", zipCode: "", registeredEventsIds: [])
     @Environment(AuthenticationManager.self) var authManager
     @Environment(\.dismiss) var dismiss
 

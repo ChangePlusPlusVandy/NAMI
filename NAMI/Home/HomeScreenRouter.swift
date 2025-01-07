@@ -14,6 +14,7 @@ final class HomeScreenRouter {
         case userProfileView
         case userProfileEditView
         case adminEventCreationView
+        case eventDetailView(event: Event)
     }
 
     var navPath = NavigationPath()

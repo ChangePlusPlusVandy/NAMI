@@ -95,6 +95,7 @@ struct UserProfileView: View {
     var signOutButton: some View {
         Button {
             authManager.signOut()
+            UserManager.shared.stopListeningForUserChanges()
         } label: {
 
             Text("Log out")

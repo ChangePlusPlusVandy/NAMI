@@ -6,15 +6,12 @@
 //
 
 import SwiftUI
-import FirebaseFirestore
 
 struct EventCreationView : View {
 
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(TabsControl.self) var tabVisibilityControls
-    @State private var alertMessage: String? = nil
-    @State private var showAlert = false
 
     @State var newEvent = Event(title: "",
                                 startTime: Date(),
@@ -26,9 +23,11 @@ struct EventCreationView : View {
                                 leaderName: "",
                                 leaderPhoneNumber: "",
                                 meetingMode: .inPerson(location: ""),
-                                eventCategory: .familySupport)
+                                eventCategory: .familySupport,
+                                registeredUsersIds: [])
 
     @State private var inputMeetingModeText: String = ""
+    @State private var showAlert = false
 
     var body: some View {
         Form {
@@ -150,7 +149,7 @@ struct EventCreationView : View {
         .alert(isPresented: $showAlert) {
             Alert(
                 title: Text("Error Submitting Event"),
-                message: Text(alertMessage ?? "Something went wrong."),
+                message: Text("Something went wrong."),
                 dismissButton: .default(Text("OK"))
             )
         }
@@ -169,9 +168,11 @@ struct EventCreationView : View {
                 Button {
                     newEvent.meetingMode = newEvent.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
 
-                    if addEventToDatabase() {
+                    if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
                         homeScreenRouter.navigateBack()
                         eventsViewRouter.navigateBack()
+                    } else {
+                        showAlert = true
                     }
                 } label: {
                     Text("Submit")
@@ -180,17 +181,6 @@ struct EventCreationView : View {
                 }
                 .disabled(newEvent.title.isEmpty)
             }
-        }
-    }
-
-    private func addEventToDatabase() -> Bool {
-        do {
-            try Firestore.firestore().collection("events").addDocument(from: newEvent)
-            return true
-        } catch {
-            alertMessage = error.localizedDescription
-            showAlert = true
-            return false
         }
     }
 }

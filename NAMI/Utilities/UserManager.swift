@@ -19,8 +19,8 @@ final class UserManager {
 
     var currentUser: NamiUser?
     var userType: UserType = .member
-
-
+    private var listenerRegistration: ListenerRegistration?
+    
     private init () {}
 
     // Expose current user
@@ -39,6 +39,7 @@ final class UserManager {
             try db.collection("users").document(userID).setData(from: updatedUser, merge: true)
             currentUser = updatedUser
             userType = updatedUser.userType
+            print("User information is updated \(String(describing: currentUser))")
             return true
         } catch {
             errorMessage = error.localizedDescription
@@ -53,6 +54,7 @@ final class UserManager {
         do {
             currentUser = try await db.collection("users").document(userID).getDocument().data(as: NamiUser.self)
             userType = currentUser?.userType ?? .member
+            print("User information is fetched \(String(describing: currentUser))")
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)
@@ -66,6 +68,7 @@ final class UserManager {
             try db.collection("users").document(userID).setData(from: newUser)
             currentUser = newUser
             userType = newUser.userType
+            print("User information is created \(String(describing: currentUser))")
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)
@@ -76,5 +79,48 @@ final class UserManager {
     func deleteUserInfo(userIDTarget: String) {
         db.collection("users").document(userIDTarget).delete()
         currentUser = nil
+        print("User information is deleted \(String(describing: currentUser))")
+    }
+
+    func startListeningForUserChanges() {
+        // Remove any existing listener first (just to be safe)
+        stopListeningForUserChanges()
+
+        guard !userID.isEmpty else { return }
+
+        listenerRegistration = db.collection("users")
+            .document(userID)
+            .addSnapshotListener { [weak self] snapshot, error in
+                guard let self = self else { return }
+
+                if let error = error {
+                    self.errorMessage = "Error in snapshot listener: \(error.localizedDescription)"
+                    print(self.errorMessage)
+                    return
+                }
+
+                // If the document doesn't exist, set currentUser to nil
+                guard let snapshot = snapshot, snapshot.exists else {
+                    self.currentUser = nil
+                    self.userType = .member
+                    return
+                }
+
+                do {
+                    // Convert the snapshot data to NamiUser
+                    let user = try snapshot.data(as: NamiUser.self)
+                    self.currentUser = user
+                    self.userType = user.userType
+                    print("User information is listened \(String(describing: currentUser))")
+                } catch {
+                    self.errorMessage = "Error decoding user: \(error.localizedDescription)"
+                    print(self.errorMessage)
+                }
+            }
+    }
+
+    func stopListeningForUserChanges() {
+        listenerRegistration?.remove()
+        listenerRegistration = nil
     }
 }

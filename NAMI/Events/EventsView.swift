@@ -16,7 +16,9 @@ struct EventsView: View {
     @State var selectedMeetingMode: MeetingMode?
     @State var selectedCategory: EventCategory?
 
-    @FirestoreQuery(collectionPath: "events", predicates: []) var events: [Event]
+    @FirestoreQuery(collectionPath: "events",
+                    predicates: [],
+                    animation: .default) var events: [Event]
 
     var filteredEvents: [Event] {
         events.filter { event in
@@ -43,7 +45,6 @@ struct EventsView: View {
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
                 .searchable(text: $searchText)
-                .refreshable {}
             }
             .navigationTitle("Events")
             .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
@@ -51,6 +52,7 @@ struct EventsView: View {
                 case .eventDetailView(let event):
                     EventDetailView(event: event)
                         .environment(eventsViewRouter)
+                        .environment(HomeScreenRouter())
                 case .eventCreationView:
                     EventCreationView()
                         .environment(eventsViewRouter)
@@ -126,18 +128,24 @@ struct EventsView: View {
                     if UserManager.shared.userType == .admin {
                         Button("", systemImage: "trash") { showConfirmationDialog = true}
                             .tint(.red)
-                    } else {
-                        Button("Register Event", systemImage: "calendar.badge.plus") {}
-                            .tint(Color.NAMIDarkBlue)
                     }
+                        Button("", systemImage: "calendar.badge.plus") {
+                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                        }
+                        .tint(Color.NAMIDarkBlue)
+
                 }
                 .contextMenu {
                     if UserManager.shared.userType == .admin {
-                        Button("Delete Events", systemImage: "trash", role: .destructive) { showConfirmationDialog = true}
-                    } else {
-                        Button("Register Event", systemImage: "calendar.badge.plus") {}
-                            .tint(Color.NAMIDarkBlue)
+                        Button("Delete Events", systemImage: "trash", role: .destructive) {
+                            showConfirmationDialog = true
+                        }
                     }
+                        Button("Register Event", systemImage: "calendar.badge.plus") {
+                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                        }
+                        .tint(Color.NAMIDarkBlue)
+
                 }
                 .confirmationDialog(
                     "Are you sure you want to delete this event?",
@@ -145,8 +153,8 @@ struct EventsView: View {
                     titleVisibility: .visible
                 ) {
                     Button("Delete event", role: .destructive) {
-                        if let targetEventID = event.id {
-                            Firestore.firestore().collection("events").document(targetEventID).delete()
+                        if let targetEventId = event.id {
+                            EventsManager.shared.deleteEventFromDatabase(eventId: targetEventId)
                         }
                     }
                 }

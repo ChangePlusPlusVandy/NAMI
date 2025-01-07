@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EventDetailView: View {
     @Environment(EventsViewRouter.self) var eventsViewRouter
+    @Environment(HomeScreenRouter.self) var homeScreenRouter
     var event: Event
     var body: some View {
         ScrollView(showsIndicators: false) {
@@ -49,10 +50,10 @@ struct EventDetailView: View {
                     Text(event.eventCategory.rawValue)
                 }
             }
+            .padding(.horizontal, 40)
+            .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.footnote)
-            .padding(.horizontal, 20)
-            .padding(.bottom, 20)
         }
         .navigationTitle("")
     }
@@ -96,4 +97,5 @@ struct EventDetailView: View {
 #Preview {
     EventDetailView(event: Event.dummyEvent)
         .environment(EventsViewRouter())
+        .environment(HomeScreenRouter())
 }

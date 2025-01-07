@@ -23,6 +23,8 @@ struct Event: Identifiable, Equatable, Hashable, Codable {
     var meetingMode: MeetingMode
     var eventCategory: EventCategory
     var eventSeries: EventSeries?
+
+    var registeredUsersIds: [String]
 }
 
 extension Event {
@@ -37,7 +39,8 @@ extension Event {
                                   leaderPhoneNumber: "123-456-7890",
                                   meetingMode: .virtual(link: "www.zoom.com"),
                                   eventCategory: .familyEducation,
-                                  eventSeries: EventSeries(name: "NAMI Family to Family"))
+                                  eventSeries: EventSeries(name: "NAMI Family to Family"),
+                                  registeredUsersIds: [])
 }
 
 enum RepeatType: String, CaseIterable, Identifiable, Codable {

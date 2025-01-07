@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct HomeView: View {
-
     @Environment(AuthenticationManager.self) var authManager
     @Environment(TabsControl.self) var tabVisibilityControls
     @State var homeScreenRouter = HomeScreenRouter()
+    @State private var viewModel = HomeViewModel()
+    @State private var hasAppeared = false
 
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
@@ -25,12 +27,18 @@ struct HomeView: View {
                     .foregroundStyle(.secondary)
                     .padding()
                 List {
-                    EventCardView(event: Event.dummyEvent)
-                        .listRowSeparator(.hidden)
+                    ForEach(viewModel.registeredEvents) { event in
+                        CustomEventCardView(event: event)
+                            .environment(homeScreenRouter)
+                            .onTapGesture {
+                                tabVisibilityControls.makeHidden()
+                                homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                            }
+                    }
                 }
-                .ignoresSafeArea()
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
+                .refreshable {viewModel.refreshRegisteredEvents()}
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
@@ -46,6 +54,10 @@ struct HomeView: View {
                     EventCreationView()
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
+                case .eventDetailView(let event):
+                    EventDetailView(event: event)
+                        .environment(homeScreenRouter)
+                        .environment(EventsViewRouter())
                 }
             }
             .onChange(of: homeScreenRouter.navPath) {
@@ -53,6 +65,43 @@ struct HomeView: View {
                     tabVisibilityControls.makeVisible()
                 }
             }
+            .onChange(of: UserManager.shared.currentUser?.registeredEventsIds) {
+                viewModel.refreshRegisteredEvents()
+            }
+            .onAppear {
+                if !hasAppeared {
+                    viewModel.refreshRegisteredEvents()
+                    hasAppeared = true
+                }
+            }
+        }
+    }
+
+    struct CustomEventCardView: View {
+        let event: Event
+        @State var showConfirmationDialog = false
+        var body: some View {
+            EventCardView(event: event)
+                .listRowSeparator(.hidden, edges: .all)
+                .contextMenu {
+                    Button("Cancel Registration", systemImage: "calendar.badge.minus") { showConfirmationDialog = true}
+                        .tint(.red)
+                }
+                .swipeActions {
+                    Button("", systemImage: "calendar.badge.minus") { showConfirmationDialog = true}
+                        .tint(.red)
+                }
+                .confirmationDialog(
+                    "Are you sure you want to cancel registration for this event?",
+                    isPresented: $showConfirmationDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button("Cancel Registration", role: .destructive) {
+                        if let targetEventId = event.id {
+                            EventsManager.shared.cancelRegistrationForEvent(eventId: targetEventId, userId: UserManager.shared.userID)
+                        }
+                    }
+                }
         }
     }
 
@@ -87,6 +136,25 @@ struct HomeView: View {
     }
 }
 
+@Observable
+@MainActor
+class HomeViewModel {
+    var registeredEvents: [Event] = []
+    private let db = Firestore.firestore()
+
+    func refreshRegisteredEvents() {
+        Task {
+            let query = db.collection("events")
+                .whereField(FieldPath.documentID(), in: UserManager.shared.currentUser?.registeredEventsIds ?? [])
+            let documents = try await query.getDocuments().documents
+            let events = documents.compactMap { try? $0.data(as: Event.self) }
+            print("Registered events are refreshed")
+            withAnimation {
+                registeredEvents = events
+            }
+        }
+    }
+}
 
 #Preview {
     HomeView()

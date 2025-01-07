@@ -38,5 +38,7 @@ struct NamiUser: Codable, Identifiable {
     var phoneNumber: String
     var zipCode: String
 
-    static var errorUser = NamiUser(userType: .member, firstName: "Error", lastName: "Error", email: "error.com", phoneNumber: "error", zipCode: "123")
+    var registeredEventsIds: [String]
+
+    static var errorUser = NamiUser(userType: .member, firstName: "Error", lastName: "Error", email: "error.com", phoneNumber: "error", zipCode: "123", registeredEventsIds: [])
 }
