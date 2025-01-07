@@ -9,9 +9,9 @@ import SwiftUI
 import FirebaseFirestore
 
 struct EventsView: View {
-    @State var eventsViewRouter = EventsViewRouter()
     @Environment(TabsControl.self) var tabVisibilityControls
 
+    @State var eventsViewRouter = EventsViewRouter()
     @State var searchText: String = ""
     @State var selectedMeetingMode: MeetingMode?
     @State var selectedCategory: EventCategory?
@@ -32,22 +32,8 @@ struct EventsView: View {
                     eventsMenuFilter
                         .listRowSeparator(.hidden, edges: .all)
                     ForEach(filteredEvents) {event in
-                        EventCardView(event: event)
+                        CustomEventsCardView(event: event)
                             .environment(eventsViewRouter)
-                            .listRowSeparator(.hidden, edges: .all)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true){
-                                if UserManager.shared.userType == .admin {
-                                    Button("", systemImage: "trash") {
-                                        if event.id != nil {
-                                            let ref = Firestore.firestore().collection("events").document(event.id!)
-                                            ref.delete()
-                                        }
-                                    }
-                                    .tint(Color.red)
-                                }
-                                Button("", systemImage: "calendar.badge.plus") {}
-                                    .tint(Color.NAMIDarkBlue)
-                            }
                             .onTapGesture {
                                 tabVisibilityControls.makeHidden()
                                 eventsViewRouter.navigate(to: .eventDetailView(event: event))
@@ -56,7 +42,7 @@ struct EventsView: View {
                 }
                 .listStyle(.plain)
                 .scrollIndicators(.hidden)
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
+                .searchable(text: $searchText)
                 .refreshable {}
             }
             .navigationTitle("Events")
@@ -127,6 +113,43 @@ struct EventsView: View {
             .labelStyle(CustomFilterLabelStyle())
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
+        }
+    }
+
+    struct CustomEventsCardView: View {
+        @State private var showConfirmationDialog = false
+        let event: Event
+        var body: some View {
+            EventCardView(event: event)
+                .listRowSeparator(.hidden, edges: .all)
+                .swipeActions(edge: .trailing, allowsFullSwipe: false){
+                    if UserManager.shared.userType == .admin {
+                        Button("", systemImage: "trash") { showConfirmationDialog = true}
+                            .tint(.red)
+                    } else {
+                        Button("Register Event", systemImage: "calendar.badge.plus") {}
+                            .tint(Color.NAMIDarkBlue)
+                    }
+                }
+                .contextMenu {
+                    if UserManager.shared.userType == .admin {
+                        Button("Delete Events", systemImage: "trash", role: .destructive) { showConfirmationDialog = true}
+                    } else {
+                        Button("Register Event", systemImage: "calendar.badge.plus") {}
+                            .tint(Color.NAMIDarkBlue)
+                    }
+                }
+                .confirmationDialog(
+                    "Are you sure you want to delete this event?",
+                    isPresented: $showConfirmationDialog,
+                    titleVisibility: .visible
+                ) {
+                    Button("Delete event", role: .destructive) {
+                        if let targetEventID = event.id {
+                            Firestore.firestore().collection("events").document(targetEventID).delete()
+                        }
+                    }
+                }
         }
     }
 }

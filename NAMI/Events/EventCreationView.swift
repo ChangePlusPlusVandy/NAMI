@@ -26,7 +26,7 @@ struct EventCreationView : View {
                                 leaderName: "",
                                 leaderPhoneNumber: "",
                                 meetingMode: .inPerson(location: ""),
-                                eventCategory: .familyEducation)
+                                eventCategory: .familySupport)
 
     @State private var inputMeetingModeText: String = ""
 
