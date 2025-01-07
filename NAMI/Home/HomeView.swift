@@ -144,8 +144,12 @@ class HomeViewModel {
 
     func refreshRegisteredEvents() {
         Task {
+            var registeredEventsIds = UserManager.shared.currentUser?.registeredEventsIds ?? []
+            if registeredEventsIds.isEmpty {
+                registeredEventsIds.append("temp")
+            }
             let query = db.collection("events")
-                .whereField(FieldPath.documentID(), in: UserManager.shared.currentUser?.registeredEventsIds ?? [])
+                .whereField(FieldPath.documentID(), in: registeredEventsIds)
             let documents = try await query.getDocuments().documents
             let events = documents.compactMap { try? $0.data(as: Event.self) }
             print("Registered events are refreshed")
