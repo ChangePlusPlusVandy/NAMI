@@ -17,38 +17,34 @@ struct EventDetailView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(event.title)
                         .font(.title.bold())
-                    Text("\(formattedDate(event.startTime))")
+                    eventDateFormatted()
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 15)
 
+                Text(event.about)
+
                 VStack(alignment: .leading) {
-                    Text("Session Leader/s:")
-                        .font(.title3.bold())
+                    Text("Session Leader:")
+                        .font(.headline.bold())
                         .padding(.vertical, 3)
 
                     if event.leaderName.isEmpty, event.leaderPhoneNumber.isEmpty {
                         Text("N/A")
+                    } else {
+                        Text(event.leaderName)
+                        Text(event.leaderPhoneNumber)
                     }
-                    Text(event.leaderName)
-                    Text(event.leaderPhoneNumber)
-                }
-
-                meetingModeSection
-
-                VStack(alignment: .leading) {
-                    Text("About:")
-                        .font(.title3.bold())
-                        .padding(.vertical, 3)
-                    Text(event.about)
                 }
 
                 VStack(alignment: .leading) {
                     Text("Event Category:")
-                        .font(.title3.bold())
+                        .font(.headline.bold())
                         .padding(.vertical, 3)
                     Text(event.eventCategory.rawValue)
                 }
+
+                meetingModeSection
             }
             .padding(.horizontal, 40)
             .padding(.bottom, 20)
@@ -61,24 +57,43 @@ struct EventDetailView: View {
     @ViewBuilder
     private var meetingModeSection: some View {
         VStack(alignment: .leading) {
-            Text("Meeting Mode:")
-                .font(.title3.bold())
+            Text("Location:")
+                .font(.headline.bold())
                 .padding(.vertical, 3)
             switch event.meetingMode {
-            case .inPerson:
-                Text("In Person")
+            case .inPerson(let location):
+                if !location.isEmpty {
+                    Menu {
+                        Button("Open in Apple Maps") {
+                            openAddressInMap(address: location)
+                        }
+                        Button("Open in Google Maps") {
+                            openAddressInGoogleMap(address: location)
+                        }
+                        Button("Copy Address to Clipboard") {
+                            UIPasteboard.general.string = location
+                        }
+                    } label: {
+                        HStack{
+                            Text(location).foregroundStyle(.blue)
+                            Image(systemName: "mappin.and.ellipse")
+                        }
+                    }
+                }
             case .virtual(let link):
-                Text("Virtual")
-
-                HStack {
-                    if let url = URL(string: link) {
-                        Link(link, destination: url)
-                            .foregroundStyle(.blue)
-
-                        Button {
-                            UIPasteboard.general.string = link
-                        } label: {
-                            Image(systemName: "doc.on.doc")
+                if !link.isEmpty {
+                    HStack {
+                        if let url = URL(string: link) {
+                            Menu {
+                                Button("Open in Safari") {
+                                    UIApplication.shared.open(url)
+                                }
+                                Button("Copy Link to Clipboard") {
+                                    UIPasteboard.general.string = link
+                                }
+                            } label: {
+                                Text(link).foregroundStyle(.blue)
+                            }
                         }
                     }
                 }
@@ -86,11 +101,10 @@ struct EventDetailView: View {
         }
     }
 
-    private func formattedDate(_ date: Date) -> String {
+    func eventDateFormatted() -> some View {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        return formatter.string(from: date)
+        formatter.dateFormat = "MMM d"
+        return Text("\(formatter.string(from: event.startTime)),  \(formatEventDurationWithTimeZone(startTime: event.startTime, endTime: event.endTime))")
     }
 }
 

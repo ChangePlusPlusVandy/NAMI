@@ -40,3 +40,23 @@ struct TextEditorWithPlaceholder: View {
             )
     }
 }
+
+func formatEventDurationWithTimeZone(startTime: Date, endTime: Date) -> String {
+    return "\(startTime.formatted(date: .omitted, time: .shortened)) - \(endTime.formatted(date: .omitted, time: .shortened)) CST"
+}
+
+import MapKit
+
+func openAddressInMap(address: String){
+    let formattedAddress = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+    if let url = URL(string: "http://maps.apple.com/?q=\(formattedAddress)") {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+}
+
+func openAddressInGoogleMap(address: String){
+    let formattedAddress = address.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+    if let url = URL(string: "comgooglemaps://?q=\(formattedAddress)") {
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+    }
+}

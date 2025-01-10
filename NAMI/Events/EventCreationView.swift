@@ -14,8 +14,8 @@ struct EventCreationView : View {
     @Environment(TabsControl.self) var tabVisibilityControls
 
     @State var newEvent = Event(title: "",
-                                startTime: Date(),
-                                endTime: Date(timeIntervalSinceNow: 3600),
+                                startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
+                                endTime: Date(timeInterval: 3600, since: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!),
                                 repeatType: .never,
                                 endRepeat: false,
                                 endRepeatDate: Date(),
@@ -35,7 +35,7 @@ struct EventCreationView : View {
                 TextField("Title", text: $newEvent.title)
             }
 
-            Section {
+            Section(footer: Text("Note: time zone is in CST")){
                 DatePicker("Starts", selection: $newEvent.startTime)
                 DatePicker("Ends", selection: $newEvent.endTime)
             }

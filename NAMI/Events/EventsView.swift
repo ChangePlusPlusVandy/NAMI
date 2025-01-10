@@ -17,7 +17,7 @@ struct EventsView: View {
     @State var selectedCategory: EventCategory?
 
     @FirestoreQuery(collectionPath: "events",
-                    predicates: [],
+                    predicates: [.order(by: "startTime", descending: false)],
                     animation: .default) var events: [Event]
 
     var filteredEvents: [Event] {

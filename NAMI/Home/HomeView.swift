@@ -150,6 +150,7 @@ class HomeViewModel {
             }
             let query = db.collection("events")
                 .whereField(FieldPath.documentID(), in: registeredEventsIds)
+                .order(by: "startTime", descending: false)
             let documents = try await query.getDocuments().documents
             let events = documents.compactMap { try? $0.data(as: Event.self) }
             print("Registered events are refreshed")

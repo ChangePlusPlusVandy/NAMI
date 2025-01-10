@@ -44,17 +44,6 @@ struct EventCardView: View {
 
     }
 
-    private func formatEventDurationWithTimeZone(startTime: Date, endTime: Date) -> String {
-        // This assumes NAMI posts events in central time, may need to change later
-        let initTimeZone = TimeZone(identifier: "America/Chicago")!
-        let userTimeZone = TimeZone.current
-
-        let adjustedStartTime = startTime.convertToTimeZone(initTimeZone: initTimeZone, targetTimeZone: userTimeZone)
-        let adjustedEndTime = endTime.convertToTimeZone(initTimeZone: initTimeZone, targetTimeZone: userTimeZone)
-
-        return "\(adjustedStartTime.formatted(date: .omitted, time: .shortened)) - \(adjustedEndTime.formatted(date: .omitted, time: .shortened)) \(userTimeZone.abbreviation()!)"
-    }
-
     func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
         Text(eventCategory.rawValue)
             .font(.caption)
