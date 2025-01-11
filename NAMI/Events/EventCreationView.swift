@@ -5,6 +5,7 @@
 //  Created by Riley Koo on 12/2/24.
 //
 
+import PhotosUI
 import SwiftUI
 
 struct EventCreationView : View {
@@ -28,13 +29,15 @@ struct EventCreationView : View {
 
     @State private var inputMeetingModeText: String = ""
     @State private var showAlert = false
+    
+    @State private var eventImageItem: PhotosPickerItem?
+    @State private var eventImage: Image?
 
     var body: some View {
         Form {
             Section {
                 TextField("Title", text: $newEvent.title)
             }
-
             Section(footer: Text("Note: time zone is in CST")){
                 DatePicker("Starts", selection: $newEvent.startTime)
                 DatePicker("Ends", selection: $newEvent.endTime)
@@ -115,6 +118,25 @@ struct EventCreationView : View {
             Section(header: Text("Event Leader")) {
                 TextField("Name", text: $newEvent.leaderName)
                 TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
+                
+
+                Section {
+                    PhotosPicker("Select Image", selection: $eventImageItem, matching: .images)
+                    
+                    eventImage?
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 300, maxHeight: 300)
+                }
+                .onChange(of: eventImageItem) {
+                    Task {
+                        if let loaded = try? await eventImageItem?.loadTransferable(type: Image.self) {
+                            eventImage = loaded
+                        } else {
+                            print("Failed")
+                        }
+                    }
+                }
             }
 
             Section(header: Text("Meeting Mode")) {
