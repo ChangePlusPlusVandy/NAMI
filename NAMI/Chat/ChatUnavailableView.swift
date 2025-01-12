@@ -55,7 +55,6 @@ If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are 
                             .padding(.leading, 10) // Add space between buttons
                     }
                 }
-                
                 Spacer() // Spacer below the buttons
             }
             .padding(20)
