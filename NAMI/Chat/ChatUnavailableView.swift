@@ -4,12 +4,9 @@
 //
 //  Created by Sophie Zhuang on 1/2/25.
 //
-
 import SwiftUI
-
 struct ChatUnavailableView: View {
     @Binding var isPresented: Bool // Binding to control visibility
-
     var body: some View {
         ZStack {
             // Background overlay
@@ -19,11 +16,12 @@ struct ChatUnavailableView: View {
                     isPresented = false // Dismiss on tap outside
                 }
             
-            // Popup card
+            // Popup card with dark grey background
             VStack(alignment: .leading, spacing: 20) {
                 // Title text
                 Text("Oh no, you’re reaching NAMI’s helpline outside of office hours")
                     .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(.white) // White text color for dark mode
                     .multilineTextAlignment(.leading)
                 
                 // Body text
@@ -31,6 +29,7 @@ struct ChatUnavailableView: View {
 If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are experiencing a mental health crisis during this time, please call 855-274-7471 OR Call/Text 988.
 """)
                     .font(.system(size: 16))
+                    .foregroundColor(.white) // White text color for dark mode
                     .multilineTextAlignment(.leading)
                     .lineSpacing(4)
                 
@@ -44,7 +43,7 @@ If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are 
                     }) {
                         Text("Action 2")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(Color.purple)
+                            .foregroundColor(Color.white) // Button color
                     }
                     
                     Button(action: {
@@ -52,7 +51,7 @@ If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are 
                     }) {
                         Text("Action 1")
                             .font(.system(size: 14, weight: .semibold))
-                            .foregroundColor(Color.purple)
+                            .foregroundColor(Color.white) // Button color
                             .padding(.leading, 10) // Add space between buttons
                     }
                 }
@@ -60,14 +59,16 @@ If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are 
                 Spacer() // Spacer below the buttons
             }
             .padding(20)
-            .background(Color.white)
+            .background(Color.black) // Dark gray background for the popup card
             .cornerRadius(20)
             .frame(maxWidth: .infinity, maxHeight: 400) // Adjusted height for a taller card
             .padding(.horizontal, 20)
         }
     }
 }
-
 #Preview {
     ChatUnavailableView(isPresented: .constant(true))
 }
+
+
+
