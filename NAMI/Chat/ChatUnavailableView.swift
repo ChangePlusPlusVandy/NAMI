@@ -16,7 +16,7 @@ struct ChatUnavailableView: View {
                     isPresented = false // Dismiss on tap outside
                 }
             
-            // Popup card with dark grey background
+            // Popup card with dark background
             VStack(alignment: .leading, spacing: 20) {
                 // Title text
                 Text("Oh no, you’re reaching NAMI’s helpline outside of office hours")
@@ -58,7 +58,7 @@ If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are 
                 Spacer() // Spacer below the buttons
             }
             .padding(20)
-            .background(Color.black) // Dark gray background for the popup card
+            .background(Color.black) // Dark background for the popup card
             .cornerRadius(20)
             .frame(maxWidth: .infinity, maxHeight: 400) // Adjusted height for a taller card
             .padding(.horizontal, 20)
