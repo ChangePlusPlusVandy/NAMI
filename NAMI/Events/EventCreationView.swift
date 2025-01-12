@@ -25,7 +25,8 @@ struct EventCreationView : View {
                                 leaderPhoneNumber: "",
                                 meetingMode: .inPerson(location: ""),
                                 eventCategory: .familySupport,
-                                registeredUsersIds: [])
+                                registeredUsersIds: [],
+                                imageURL: "")
 
     @State private var inputMeetingModeText: String = ""
     @State private var showAlert = false
@@ -188,6 +189,13 @@ struct EventCreationView : View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
+                    do {
+                        Task {
+                            guard let data = try await eventImageItem?.loadTransferable(type: Data.self) else { return }
+                            newEvent.imageURL = EventsManager.shared.imageToURL(data: data, newEvent: newEvent)
+                        }
+                    }
+                    
                     newEvent.meetingMode = newEvent.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
 
                     if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
