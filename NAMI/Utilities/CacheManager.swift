@@ -21,7 +21,7 @@ final class CacheManager {
     // Separate Context For Cache Operations
     let context: ModelContext? = {
         guard let container = try? ModelContainer(for: Cache.self) else { return nil }
-        let context = ModelContext(container: container)
+        let context = ModelContext(container)
         return context
     }()
 
