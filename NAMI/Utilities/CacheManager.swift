@@ -25,6 +25,48 @@ final class CacheManager {
         return context
     }()
 
+    // Cache Limit - TODO: make a note about this
+    let cacheLimit: Int = 20
+
+    init() {
+        removeExpiredItems()
+    }
+    
+    private func removeExpiredItems() {
+        guard let context else { return }
+        
+        let todayDate: Date = .now
+        let predicate = #Predicate<Cache> { todayDate > $0.expiration }
+        let descriptor = FetchDescriptor(predicate: predicate)
+        
+        do {
+            try context.enumerate(descriptor) {
+                context.delete($0)
+            }
+            
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    private func verifyLimits() throws {
+        guard let context else { return }
+        let countDescriptor = FetchDescriptor<Cache>()
+        let count = try context.fetchCount(countDescriptor)
+        
+        if count >= cacheLimit {
+            /// By removing the first oldest item each time it's inserted, you can ensure the
+            /// specified limit
+            var fetchDescriptor = FetchDescriptor<Cache>(sortBy: [.init(\.creation, order: .forward)])
+            fetchDescriptor.fetchLimit = 1
+            
+            if let oldCache = try context.fetch(fetchDescriptor).first {
+                context.delete(oldCache)
+            }
+        }
+    }
+
     // CRUD Operations
     func insert(id: String, data: Data, expirationDays: Int) throws {
         guard let context else { return }
@@ -33,6 +75,8 @@ final class CacheManager {
         if let cache = try get(id: id) {
             context.delete(cache)
         }
+        
+        try verifyLimits()
         
         let expiration = calculateExpirationDate(expirationDays)
         let cache = Cache(cacheID: id, data: data, expiration: expiration)
