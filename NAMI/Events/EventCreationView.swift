@@ -119,6 +119,19 @@ struct EventCreationView : View {
             Section(header: Text("Event Leader")) {
                 TextField("Name", text: $newEvent.leaderName)
                 TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
+                if newEvent.leaderName == "" && newEvent.leaderPhoneNumber == "" {
+                    Button {
+                        if UserManager.shared.currentUser == nil {
+                            Task {
+                                await UserManager.shared.fetchUser()
+                            }
+                        }
+                        newEvent.leaderName = "\(UserManager.shared.currentUser!.firstName) \(UserManager.shared.currentUser!.lastName)"
+                        newEvent.leaderPhoneNumber = "\(UserManager.shared.currentUser!.phoneNumber)"
+                    } label: {
+                        Text("I am the event leader")
+                    }
+                }
             }
 
             Section(header: Text("Event Image")) {
