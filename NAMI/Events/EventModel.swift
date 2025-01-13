@@ -25,7 +25,6 @@ struct Event: Identifiable, Equatable, Hashable, Codable {
     var eventSeries: EventSeries?
 
     var registeredUsersIds: [String]
-    
     var imageURL: String
 }
 

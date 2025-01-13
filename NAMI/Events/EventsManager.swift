@@ -14,6 +14,7 @@ import FirebaseStorage
 class EventsManager {
     static let shared = EventsManager()
     let db = Firestore.firestore()
+    let storage = Storage.storage()
     var errorMessage = ""
 
     func addEventToDatabase(newEvent: Event) -> Bool {
@@ -39,29 +40,20 @@ class EventsManager {
         db.collection("events").document(eventId).updateData(["registeredUsersIds": FieldValue.arrayRemove([userId])])
         db.collection("users").document(userId).updateData(["registeredEventsIds": FieldValue.arrayRemove([eventId])])
     }
-    
-    func imageToURL(data: Data?, newEvent: Event) -> String {
-        //from https://firebase.google.com/docs/storage/ios/upload-files
-        let storage = Storage.storage()
-        let storageRef = storage.reference()
-        let ref = storageRef.child("images/\(UUID().uuidString).jpg")
-        var ret = ""
-        _ = ref.putData(data!, metadata: nil) { (metadata, error) in
-            guard metadata != nil else {
-                print("Error uploading image")
-                return
-            }
-            ref.downloadURL { (url, error) in
-                guard let downloadURL = url else {
-                    print("Error downloading image")
-                    return
-                }
-                print("\(downloadURL)")
-                ret = "\(downloadURL)"
-            }
-        }
-        return ret
-    }
 
+    func uploadImageToStorage(image: UIImage?) async -> String {
+        guard let imageData = image?.jpegData(compressionQuality: 0.3) else { return "" }
+        let ref = storage.reference().child("eventImages/\(UUID().uuidString).jpg")
+
+        do {
+            let _ = try await ref.putDataAsync(imageData)
+            let imageURL = try await ref.downloadURL()
+            print("image uploaded: \(imageURL.absoluteString)")
+            return imageURL.absoluteString
+        } catch {
+            errorMessage = error.localizedDescription
+            return ""
+        }
+    }
 }
 

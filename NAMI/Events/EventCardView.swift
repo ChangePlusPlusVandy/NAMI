@@ -10,49 +10,33 @@ import SwiftUI
 struct EventCardView: View {
 
     var event: Event
+
     var body: some View {
-        ZStack {
-            if event.imageURL != "" {
-                AsyncImage(url: URL(string: event.imageURL)) { image in
-                    image.resizable()
-                } placeholder: {
-                    Color.red
-                }
-                .frame(width: 128, height: 128)
-                .clipShape(.rect(cornerRadius: 25))
-            }
-            VStack(alignment: .leading) {
-                eventCategoryCapsuleView(eventCategory: event.eventCategory)
-                
-                Spacer()
-                Text(event.title)
-                    .font(.title3.bold())
-                
-                Spacer()
-                Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
-                
-                Text(formatEventDurationWithTimeZone(startTime: event.startTime, endTime: event.endTime))
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
-                
-                Spacer()
-                HStack {
-                    meetingModeCapsuleView(meetingMode: event.meetingMode)
-                    
-                    if let series = event.eventSeries {
-                        eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
-                    }
+        VStack(alignment: .leading) {
+            eventCategoryCapsuleView(eventCategory: event.eventCategory)
+            Spacer()
+            Text(event.title)
+                .font(.title3.bold())
+            Spacer()
+            Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
+                .foregroundStyle(.secondary)
+                .font(.caption)
+            Text(formatEventDurationWithTimeZone(startTime: event.startTime, endTime: event.endTime))
+                .foregroundStyle(.secondary)
+                .font(.caption)
+            Spacer()
+            HStack {
+                meetingModeCapsuleView(meetingMode: event.meetingMode)
+                if let series = event.eventSeries {
+                    eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
                 }
             }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(height: 250)
-            .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
-            .contentShape(Rectangle())
-            
         }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 250)
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
+        .contentShape(Rectangle())
     }
 
     func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {

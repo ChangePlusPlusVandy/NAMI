@@ -190,20 +190,18 @@ struct EventCreationView : View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    do {
-                        Task {
-                            guard let data = try await eventImageItem?.loadTransferable(type: Data.self) else { return }
-                            newEvent.imageURL = EventsManager.shared.imageToURL(data: data, newEvent: newEvent)
-                        }
-                    }
-                    
                     newEvent.meetingMode = newEvent.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
 
-                    if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
-                        homeScreenRouter.navigateBack()
-                        eventsViewRouter.navigateBack()
-                    } else {
-                        showAlert = true
+                    Task {
+                        newEvent.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
+                        print("This is new event url: \(newEvent.imageURL)")
+
+                        if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
+                            homeScreenRouter.navigateBack()
+                            eventsViewRouter.navigateBack()
+                        } else {
+                            showAlert = true
+                        }
                     }
                 } label: {
                     Text("Submit")
