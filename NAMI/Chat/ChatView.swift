@@ -32,8 +32,7 @@ struct ChatView: View {
                         .font(.body)
 
                     Button {
-                        // Show the pop-up
-                        showChatUnavilable = true
+                        withAnimation(.snappy) {showChatUnavilable = true}
                     } label: {
                         Text("Start a Chat")
                             .padding(.horizontal, 10)
@@ -50,7 +49,7 @@ struct ChatView: View {
             .navigationTitle("NAMI HelpLine")
             .overlay {
                 if showChatUnavilable {
-                    ChatUnavailableView(isPresented: $showChatUnavilable) // Show ChatCardView as an overlay
+                    ChatUnavailableView(isPresented: $showChatUnavilable)
                 }
             }
         }
