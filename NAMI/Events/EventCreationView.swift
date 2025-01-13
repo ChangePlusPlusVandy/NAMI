@@ -135,6 +135,7 @@ struct EventCreationView : View {
                 Task {
                     if let loaded = try? await eventImageItem?.loadTransferable(type: Data.self) {
                         eventImage = UIImage(data: loaded)
+                        eventImage = eventImage!.aspectFittedToHeight(200)
                     } else {
                         print("Failed")
                     }
@@ -220,5 +221,18 @@ struct EventCreationView : View {
             .environment(HomeScreenRouter())
             .environment(EventsViewRouter())
             .environment(TabsControl())
+    }
+}
+
+extension UIImage {
+    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
+        let scale = newHeight / self.size.height
+        let newWidth = self.size.width * scale
+        let newSize = CGSize(width: newWidth, height: newHeight)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+
+        return renderer.image { _ in
+            self.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 }
