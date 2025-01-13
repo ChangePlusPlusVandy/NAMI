@@ -32,7 +32,7 @@ struct EventCreationView : View {
     @State private var showAlert = false
     
     @State private var eventImageItem: PhotosPickerItem?
-    @State private var eventImage: Image?
+    @State private var eventImage: UIImage?
 
     var body: some View {
         Form {
@@ -119,23 +119,24 @@ struct EventCreationView : View {
             Section(header: Text("Event Leader")) {
                 TextField("Name", text: $newEvent.leaderName)
                 TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
-                
+            }
 
-                Section {
-                    PhotosPicker("Select Image", selection: $eventImageItem, matching: .images)
-                    
-                    eventImage?
+            Section(header: Text("Event Image")) {
+                PhotosPicker("Select Image", selection: $eventImageItem, matching: .images)
+
+                if let eventImage {
+                    Image(uiImage: eventImage)
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: 300, maxHeight: 300)
                 }
-                .onChange(of: eventImageItem) {
-                    Task {
-                        if let loaded = try? await eventImageItem?.loadTransferable(type: Image.self) {
-                            eventImage = loaded
-                        } else {
-                            print("Failed")
-                        }
+            }
+            .onChange(of: eventImageItem) {
+                Task {
+                    if let loaded = try? await eventImageItem?.loadTransferable(type: Data.self) {
+                        eventImage = UIImage(data: loaded)
+                    } else {
+                        print("Failed")
                     }
                 }
             }
