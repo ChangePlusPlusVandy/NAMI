@@ -22,6 +22,12 @@ struct EventDetailView: View {
                 }
                 .padding(.vertical, 15)
 
+                AsyncImage(url: URL(string: event.imageURL)) { image in
+                    image.resizable()
+                        .scaledToFit()
+                } placeholder: {
+                }
+
                 Text(event.about)
 
                 VStack(alignment: .leading) {
