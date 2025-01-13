@@ -25,8 +25,7 @@ final class CacheManager {
         return context
     }()
 
-    // Cache Limit - TODO: make a note about this
-    let cacheLimit: Int = 20
+    let cacheLimit: Int = 30
 
     init() {
         removeExpiredItems()
