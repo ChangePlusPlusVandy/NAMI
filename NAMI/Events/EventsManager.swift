@@ -30,6 +30,16 @@ class EventsManager {
     func deleteEventFromDatabase(eventId: String) {
         db.collection("events").document(eventId).delete()
     }
+    
+    func deleteImageFromDataBase(imageUrl: String) async {
+        if imageUrl != "" {
+            do {
+                try await storage.reference(for: URL(string: imageUrl)!).delete()
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
 
     func registerUserForEvent(eventId: String, userId: String) {
         db.collection("events").document(eventId).updateData(["registeredUsersIds": FieldValue.arrayUnion([userId])])

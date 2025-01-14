@@ -154,6 +154,9 @@ struct EventsView: View {
                 ) {
                     Button("Delete event", role: .destructive) {
                         if let targetEventId = event.id {
+                            Task {
+                                await EventsManager.shared.deleteImageFromDataBase(imageUrl: event.imageURL)
+                            }
                             EventsManager.shared.deleteEventFromDatabase(eventId: targetEventId)
                         }
                     }
