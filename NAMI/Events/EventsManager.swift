@@ -16,6 +16,21 @@ class EventsManager {
     let db = Firestore.firestore()
     let storage = Storage.storage()
     var errorMessage = ""
+    
+    let dummyEvent = Event(title: "",
+         startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
+         endTime: Date(timeInterval: 3600, since: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!),
+         repeatType: .never,
+         endRepeat: false,
+         endRepeatDate: Date(),
+         about: "",
+         leaderName: "",
+         leaderPhoneNumber: "",
+         meetingMode: .inPerson(location: ""),
+         eventCategory: .familySupport,
+         eventSeries: "",
+         registeredUsersIds: [],
+         imageURL: "")
 
     func addEventToDatabase(newEvent: Event) -> Bool {
         do {
@@ -66,6 +81,17 @@ class EventsManager {
             } catch {
                 errorMessage = error.localizedDescription
             }
+        }
+    }
+    
+    func updateEventFromDatabase(event: Event) -> Bool {
+        if event.id != nil {
+            deleteEventFromDatabase(eventId: event.id!)
+            return addEventToDatabase(newEvent: event)
+//            db.collection("events").document(event.id!).updateData(["title": event.title, "about": event.about, "endRepeat": event.endRepeat, "endRepeatDate": event.endRepeatDate, "endTime": event.endTime, "eventCategory": event.eventCategory.rawValue, "eventSeries": event.eventSeries, "imageURL": event.imageURL, "leaderName": event.leaderName, "leaderPhoneNumber": event.leaderPhoneNumber, "meetingMode": event.meetingMode.displayName, "repeatType": event.repeatType.rawValue, "registeredUsersIds": event.registeredUsersIds, "startTime": event.startTime])
+        } else {
+            print("Error updating event")
+            return false
         }
     }
 }

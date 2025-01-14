@@ -13,7 +13,7 @@ final class HomeScreenRouter {
     public enum Destination: Hashable {
         case userProfileView
         case userProfileEditView
-        case adminEventCreationView
+        case adminEventCreationView(event: Event)
         case eventDetailView(event: Event)
     }
 

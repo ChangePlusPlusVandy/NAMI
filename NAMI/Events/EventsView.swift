@@ -53,8 +53,8 @@ struct EventsView: View {
                     EventDetailView(event: event)
                         .environment(eventsViewRouter)
                         .environment(HomeScreenRouter())
-                case .eventCreationView:
-                    EventCreationView()
+                case .eventCreationView(let event):
+                    EventCreationView(event: event)
                         .environment(eventsViewRouter)
                         .environment(HomeScreenRouter())
                 }
@@ -68,7 +68,7 @@ struct EventsView: View {
                 if UserManager.shared.userType == .admin {
                     ToolbarItem(placement: .topBarTrailing){
                         Button {
-                            eventsViewRouter.navigate(to: .eventCreationView)
+                            eventsViewRouter.navigate(to: .eventCreationView(event: EventsManager.shared.dummyEvent))
                             tabVisibilityControls.makeHidden()
                         } label: {
                             Image(systemName: "plus.app")

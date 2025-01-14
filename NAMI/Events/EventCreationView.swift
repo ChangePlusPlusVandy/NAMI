@@ -16,7 +16,8 @@ struct EventCreationView : View {
     @State var isImageCompressing = false
     @State var isUploading = false
 
-    @State var newEvent = Event(title: "",
+    var event: Event
+    @State var newEvent: Event = Event(title: "",
                                 startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
                                 endTime: Date(timeInterval: 3600, since: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!),
                                 repeatType: .never,
@@ -36,6 +37,8 @@ struct EventCreationView : View {
     
     @State private var eventImageItem: PhotosPickerItem?
     @State private var eventImage: UIImage?
+    
+    @State private var toUpdate: Bool = false
 
     var body: some View {
         Form {
@@ -217,12 +220,23 @@ struct EventCreationView : View {
                         newEvent.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
                         print("This is new event url: \(newEvent.imageURL)")
 
-                        if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
-                            isUploading = false
-                            homeScreenRouter.navigateBack()
-                            eventsViewRouter.navigateBack()
-                        } else {
-                            showAlert = true
+                        if toUpdate {
+                            if EventsManager.shared.updateEventFromDatabase(event: newEvent) {
+                                isUploading = false
+                                homeScreenRouter.navigateBack()
+                                eventsViewRouter.navigateBack()
+                            } else {
+                                showAlert = true
+                            }
+                        }
+                        else {
+                            if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
+                                isUploading = false
+                                homeScreenRouter.navigateBack()
+                                eventsViewRouter.navigateBack()
+                            } else {
+                                showAlert = true
+                            }
                         }
                     }
                 } label: {
@@ -238,6 +252,14 @@ struct EventCreationView : View {
                 .disabled(isAbleToSubmit())
             }
         }
+        .onAppear {
+            if event != EventsManager.shared.dummyEvent {
+                newEvent = event
+                toUpdate = true
+            } else {
+                toUpdate = false
+            }
+        }
     }
 
     func isAbleToSubmit() -> Bool {
@@ -247,7 +269,7 @@ struct EventCreationView : View {
 
 #Preview {
     NavigationStack {
-        EventCreationView()
+        EventCreationView(event: EventsManager.shared.dummyEvent)
             .environment(HomeScreenRouter())
             .environment(EventsViewRouter())
             .environment(TabsControl())
