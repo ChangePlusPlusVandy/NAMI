@@ -22,11 +22,7 @@ struct EventDetailView: View {
                 }
                 .padding(.vertical, 15)
 
-                AsyncImage(url: URL(string: event.imageURL)) { image in
-                    image.resizable()
-                        .scaledToFit()
-                } placeholder: {
-                }
+                CachedAsyncImage(url: event.imageURL)
 
                 Text(event.about)
 
