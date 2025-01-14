@@ -27,6 +27,7 @@ struct EventCreationView : View {
                                 leaderPhoneNumber: "",
                                 meetingMode: .inPerson(location: ""),
                                 eventCategory: .familySupport,
+                                eventSeries: "",
                                 registeredUsersIds: [],
                                 imageURL: "")
 
@@ -118,6 +119,11 @@ struct EventCreationView : View {
                 }
             }
 
+            Section(header: Text("Event Series")) {
+                TextField("Enter name", text: $newEvent.eventSeries)
+
+            }
+
             Section(header: Text("Event Leader")) {
                 TextField("Name", text: $newEvent.leaderName)
                 TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
@@ -130,7 +136,6 @@ struct EventCreationView : View {
                         Spacer()
                         if isImageCompressing {
                             ProgressView()
-                                .frame(maxWidth: .infinity, alignment: .trailing)
                         }
                     }
                 }

@@ -22,7 +22,7 @@ struct Event: Identifiable, Equatable, Hashable, Codable {
 
     var meetingMode: MeetingMode
     var eventCategory: EventCategory
-    var eventSeries: EventSeries?
+    var eventSeries: String
 
     var registeredUsersIds: [String]
     var imageURL: String
@@ -40,7 +40,7 @@ extension Event {
                                   leaderPhoneNumber: "123-456-7890",
                                   meetingMode: .virtual(link: "www.zoom.com"),
                                   eventCategory: .familyEducation,
-                                  eventSeries: EventSeries(name: "NAMI Family to Family"),
+                                  eventSeries: "",
                                   registeredUsersIds: [],
                                   imageURL: "")
 }
@@ -113,9 +113,4 @@ enum EventCategory: String, CaseIterable, Identifiable, Codable {
             return Color.SpecialEvents
         }
     }
-}
-
-struct EventSeries: Identifiable, Hashable, Codable {
-    var id = UUID()
-    var name: String
 }

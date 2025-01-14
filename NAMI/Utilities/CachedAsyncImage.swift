@@ -23,7 +23,9 @@ struct CachedAsyncImage: View {
                     .task {
                         await cacheImage()
                     }
-            } placeholder: { }
+            } placeholder: {
+                EmptyView()
+            }
         }
     }
 

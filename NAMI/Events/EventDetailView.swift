@@ -13,7 +13,7 @@ struct EventDetailView: View {
     var event: Event
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text(event.title)
                         .font(.title.bold())
@@ -26,26 +26,40 @@ struct EventDetailView: View {
                         MeetingModeCapsule(meetingMode: event.meetingMode)
                     }
                 }
-                .padding(.vertical, 15)
+                .padding(.top, 15)
 
                 CachedAsyncImage(url: event.imageURL)
 
                 Text(event.about)
+                    .padding(.vertical, 15)
 
-                VStack(alignment: .leading) {
-                    Text("Session Leader:")
-                        .font(.headline.bold())
-                        .padding(.vertical, 3)
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading) {
+                        Text("Session Leader:")
+                            .font(.headline.bold())
+                            .padding(.vertical, 3)
 
-                    if event.leaderName.isEmpty, event.leaderPhoneNumber.isEmpty {
-                        Text("N/A")
-                    } else {
-                        Text(event.leaderName)
-                        Text(event.leaderPhoneNumber)
+                        if event.leaderName.isEmpty, event.leaderPhoneNumber.isEmpty {
+                            Text("N/A")
+                        } else {
+                            Text(event.leaderName)
+                            Text(event.leaderPhoneNumber)
+                        }
                     }
-                }
 
-                meetingLocation
+                    VStack(alignment: .leading) {
+                        Text("Event Series")
+                            .font(.headline.bold())
+                            .padding(.vertical, 3)
+
+                        if event.eventSeries.isEmpty {
+                            Text("N/A")
+                        } else {
+                            Text(event.eventSeries)
+                        }
+                    }
+                    meetingLocation
+                }
             }
             .padding(.horizontal, 40)
             .padding(.bottom, 20)
