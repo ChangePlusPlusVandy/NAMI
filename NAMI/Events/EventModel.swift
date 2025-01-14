@@ -51,8 +51,7 @@ enum RepeatType: String, CaseIterable, Identifiable, Codable {
     case weekly = "Every Week"
     case biweekly = "Every 2 Weeks"
     case monthly = "Every Month"
-    case yearly = "Every Yeaer"
-    case custom = "Custom"
+    case yearly = "Every Year"
 
     var id: String {self.rawValue}
 }
