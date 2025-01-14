@@ -39,30 +39,6 @@ struct EventCardView: View {
         .contentShape(Rectangle())
     }
 
-    func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
-        Text(eventCategory.rawValue)
-            .font(.caption)
-            .foregroundColor(
-                eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-            )
-            .padding(.horizontal, 5)
-            .padding(.vertical, 2)
-            .background(eventCategory.color)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-    }
-
-    func eventSeriesCapsuleView(eventSeries: EventSeries, eventCategory: EventCategory) -> some View {
-        Text(eventSeries.name)
-            .font(.caption)
-            .padding(.horizontal, 5)
-            .padding(.vertical, 2)
-            .foregroundColor(
-                eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-            )
-            .background(eventCategory.color)
-            .clipShape(RoundedRectangle(cornerRadius: 5))
-    }
-
     func meetingModeCapsuleView(meetingMode: MeetingMode) -> some View {
         HStack(spacing: 3) {
             Image(systemName: meetingMode.iconName)
@@ -76,6 +52,30 @@ struct EventCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 5))
         .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary, lineWidth: 1))
     }
+}
+
+func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
+    Text(eventCategory.rawValue)
+        .font(.caption)
+        .foregroundColor(
+            eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+        )
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .background(eventCategory.color)
+        .clipShape(RoundedRectangle(cornerRadius: 5))
+}
+
+func eventSeriesCapsuleView(eventSeries: EventSeries, eventCategory: EventCategory) -> some View {
+    Text(eventSeries.name)
+        .font(.caption)
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
+        .foregroundColor(
+            eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+        )
+        .background(eventCategory.color)
+        .clipShape(RoundedRectangle(cornerRadius: 5))
 }
 
 extension Date {

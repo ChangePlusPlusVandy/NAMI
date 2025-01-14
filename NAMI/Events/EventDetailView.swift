@@ -17,6 +17,14 @@ struct EventDetailView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(event.title)
                         .font(.title.bold())
+                    
+                    HStack {
+                        eventCategoryCapsuleView(eventCategory: event.eventCategory)
+                        if let series = event.eventSeries {
+                            eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
+                        }
+                    }
+                    
                     eventDateFormatted()
                         .foregroundStyle(.secondary)
                 }
@@ -37,13 +45,6 @@ struct EventDetailView: View {
                         Text(event.leaderName)
                         Text(event.leaderPhoneNumber)
                     }
-                }
-
-                VStack(alignment: .leading) {
-                    Text("Event Category:")
-                        .font(.headline.bold())
-                        .padding(.vertical, 3)
-                    Text(event.eventCategory.rawValue)
                 }
 
                 meetingModeSection
