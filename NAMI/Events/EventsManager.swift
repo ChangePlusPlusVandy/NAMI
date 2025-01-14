@@ -30,16 +30,6 @@ class EventsManager {
     func deleteEventFromDatabase(eventId: String) {
         db.collection("events").document(eventId).delete()
     }
-    
-    func deleteImageFromDataBase(imageUrl: String) async {
-        if imageUrl != "" {
-            do {
-                try await storage.reference(for: URL(string: imageUrl)!).delete()
-            } catch {
-                errorMessage = error.localizedDescription
-            }
-        }
-    }
 
     func registerUserForEvent(eventId: String, userId: String) {
         db.collection("events").document(eventId).updateData(["registeredUsersIds": FieldValue.arrayUnion([userId])])
@@ -52,7 +42,7 @@ class EventsManager {
     }
 
     func uploadImageToStorage(image: UIImage?) async -> String {
-        guard let imageData = image?.jpegData(compressionQuality: 0.3) else { return "" }
+        guard let imageData = image?.jpegData(compressionQuality: 1) else { return "" }
         let ref = storage.reference().child("eventImages/\(UUID().uuidString).jpg")
 
         do {
@@ -65,5 +55,17 @@ class EventsManager {
             return ""
         }
     }
-}
 
+    func deleteImageFromStorage(imageURL: String) {
+        Task {
+            do {
+                if !imageURL.isEmpty
+                {
+                    try await storage.reference(forURL: imageURL).delete()
+                }
+            } catch {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+}

@@ -13,6 +13,8 @@ struct EventCreationView : View {
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(TabsControl.self) var tabVisibilityControls
+    @State var isImageCompressing = false
+    @State var isUploading = false
 
     @State var newEvent = Event(title: "",
                                 startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
@@ -119,23 +121,19 @@ struct EventCreationView : View {
             Section(header: Text("Event Leader")) {
                 TextField("Name", text: $newEvent.leaderName)
                 TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
-                if newEvent.leaderName == "" && newEvent.leaderPhoneNumber == "" {
-                    Button {
-                        if UserManager.shared.currentUser == nil {
-                            Task {
-                                await UserManager.shared.fetchUser()
-                            }
-                        }
-                        newEvent.leaderName = "\(UserManager.shared.currentUser!.firstName) \(UserManager.shared.currentUser!.lastName)"
-                        newEvent.leaderPhoneNumber = "\(UserManager.shared.currentUser!.phoneNumber)"
-                    } label: {
-                        Text("I am the event leader")
-                    }
-                }
             }
 
             Section(header: Text("Event Image")) {
-                PhotosPicker("Select Image", selection: $eventImageItem, matching: .images)
+                PhotosPicker(selection: $eventImageItem, matching: .images) {
+                    HStack{
+                        Text("Select Image")
+                        Spacer()
+                        if isImageCompressing {
+                            ProgressView()
+                                .frame(maxWidth: .infinity, alignment: .trailing)
+                        }
+                    }
+                }
 
                 if let eventImage {
                     Image(uiImage: eventImage)
@@ -146,11 +144,14 @@ struct EventCreationView : View {
             }
             .onChange(of: eventImageItem) {
                 Task {
-                    if let loaded = try? await eventImageItem?.loadTransferable(type: Data.self) {
-                        eventImage = UIImage(data: loaded)
-                        eventImage = eventImage!.aspectFittedToHeight(200)
+                    if let loadedData = try? await eventImageItem?.loadTransferable(type: Data.self),
+                       let image = UIImage(data: loadedData)
+                    {
+                        isImageCompressing = true
+                        eventImage = await ImageCompressor.compressAsync(image: image, maxByte: 800000)
+                        isImageCompressing = false
                     } else {
-                        print("Failed")
+                        print("Failed to compress image")
                     }
                 }
             }
@@ -207,10 +208,12 @@ struct EventCreationView : View {
                     newEvent.meetingMode = newEvent.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
 
                     Task {
+                        withAnimation(.snappy) { isUploading = true }
                         newEvent.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
                         print("This is new event url: \(newEvent.imageURL)")
 
                         if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
+                            isUploading = false
                             homeScreenRouter.navigateBack()
                             eventsViewRouter.navigateBack()
                         } else {
@@ -218,13 +221,22 @@ struct EventCreationView : View {
                         }
                     }
                 } label: {
-                    Text("Submit")
-                        .bold()
-                        .foregroundStyle(newEvent.title.isEmpty ? .gray : Color.NAMIDarkBlue)
+                    HStack {
+                        Text("Submit")
+                            .bold()
+                            .foregroundStyle(isAbleToSubmit() ? .gray : Color.NAMIDarkBlue)
+                        if isUploading {
+                            ProgressView()
+                        }
+                    }
                 }
-                .disabled(newEvent.title.isEmpty)
+                .disabled(isAbleToSubmit())
             }
         }
+    }
+
+    func isAbleToSubmit() -> Bool {
+        newEvent.title.isEmpty || isUploading || isImageCompressing
     }
 }
 
@@ -234,18 +246,5 @@ struct EventCreationView : View {
             .environment(HomeScreenRouter())
             .environment(EventsViewRouter())
             .environment(TabsControl())
-    }
-}
-
-extension UIImage {
-    func aspectFittedToHeight(_ newHeight: CGFloat) -> UIImage {
-        let scale = newHeight / self.size.height
-        let newWidth = self.size.width * scale
-        let newSize = CGSize(width: newWidth, height: newHeight)
-        let renderer = UIGraphicsImageRenderer(size: newSize)
-
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: newSize))
-        }
     }
 }

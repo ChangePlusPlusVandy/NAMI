@@ -129,10 +129,10 @@ struct EventsView: View {
                         Button("", systemImage: "trash") { showConfirmationDialog = true}
                             .tint(.red)
                     }
-                        Button("", systemImage: "calendar.badge.plus") {
-                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                        }
-                        .tint(Color.NAMIDarkBlue)
+                    Button("", systemImage: "calendar.badge.plus") {
+                        EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                    }
+                    .tint(Color.NAMIDarkBlue)
 
                 }
                 .contextMenu {
@@ -141,10 +141,10 @@ struct EventsView: View {
                             showConfirmationDialog = true
                         }
                     }
-                        Button("Register Event", systemImage: "calendar.badge.plus") {
-                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                        }
-                        .tint(Color.NAMIDarkBlue)
+                    Button("Register Event", systemImage: "calendar.badge.plus") {
+                        EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                    }
+                    .tint(Color.NAMIDarkBlue)
 
                 }
                 .confirmationDialog(
@@ -154,9 +154,7 @@ struct EventsView: View {
                 ) {
                     Button("Delete event", role: .destructive) {
                         if let targetEventId = event.id {
-                            Task {
-                                await EventsManager.shared.deleteImageFromDataBase(imageUrl: event.imageURL)
-                            }
+                            EventsManager.shared.deleteImageFromStorage(imageURL: event.imageURL)
                             EventsManager.shared.deleteEventFromDatabase(eventId: targetEventId)
                         }
                     }
