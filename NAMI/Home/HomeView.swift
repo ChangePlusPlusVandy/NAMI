@@ -22,23 +22,27 @@ struct HomeView: View {
                     .font(.largeTitle.bold())
                     .padding([.bottom, .horizontal])
                     .padding(.top, 10)
-                Text("My Upcoming Events")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .padding()
-                List {
-                    ForEach(viewModel.registeredEvents) { event in
-                        CustomEventCardView(event: event)
-                            .environment(homeScreenRouter)
-                            .onTapGesture {
-                                tabVisibilityControls.makeHidden()
-                                homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                            }
+                if UserManager.shared.userType == .admin {
+
+                } else {
+                    Text("My Upcoming Events")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .padding()
+                    List {
+                        ForEach(viewModel.registeredEvents) { event in
+                            CustomEventCardView(event: event)
+                                .environment(homeScreenRouter)
+                                .onTapGesture {
+                                    tabVisibilityControls.makeHidden()
+                                    homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                }
+                        }
                     }
+                    .listStyle(.plain)
+                    .scrollIndicators(.hidden)
+                    .refreshable {viewModel.refreshRegisteredEvents()}
                 }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
-                .refreshable {viewModel.refreshRegisteredEvents()}
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
