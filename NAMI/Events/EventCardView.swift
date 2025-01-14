@@ -13,10 +13,11 @@ struct EventCardView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            eventCategoryCapsuleView(eventCategory: event.eventCategory)
+            EventCategoryCapsule(eventCategory: event.eventCategory)
             Spacer()
             Text(event.title)
                 .font(.title3.bold())
+                .lineLimit(3)
             Spacer()
             Text(event.startTime.formatted(date: .abbreviated, time: .omitted))
                 .foregroundStyle(.secondary)
@@ -25,24 +26,24 @@ struct EventCardView: View {
                 .foregroundStyle(.secondary)
                 .font(.caption)
             Spacer()
-            HStack {
-                meetingModeCapsuleView(meetingMode: event.meetingMode)
-                if let series = event.eventSeries {
-                    eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
-                }
-            }
+            MeetingModeCapsule(meetingMode: event.meetingMode)
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(height: 250)
+        .frame(height: 200)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
         .contentShape(Rectangle())
     }
+}
 
-    func meetingModeCapsuleView(meetingMode: MeetingMode) -> some View {
+struct MeetingModeCapsule: View{
+    let meetingMode: MeetingMode
+    var body: some View {
         HStack(spacing: 3) {
             Image(systemName: meetingMode.iconName)
-                .controlSize(.mini)
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: 20)
             Text(meetingMode.displayName)
         }
         .font(.caption)
@@ -50,32 +51,23 @@ struct EventCardView: View {
         .padding(.vertical, 2)
         .background(Color(UIColor.systemGray5))
         .clipShape(RoundedRectangle(cornerRadius: 5))
-        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 5).strokeBorder(Color.secondary, lineWidth: 1))
     }
 }
 
-func eventCategoryCapsuleView(eventCategory: EventCategory) -> some View {
-    Text(eventCategory.rawValue)
-        .font(.caption)
-        .foregroundColor(
-            eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-        )
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
-        .background(eventCategory.color)
-        .clipShape(RoundedRectangle(cornerRadius: 5))
-}
-
-func eventSeriesCapsuleView(eventSeries: EventSeries, eventCategory: EventCategory) -> some View {
-    Text(eventSeries.name)
-        .font(.caption)
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
-        .foregroundColor(
-            eventCategory == EventCategory.peerSupport ? Color.black : Color.white
-        )
-        .background(eventCategory.color)
-        .clipShape(RoundedRectangle(cornerRadius: 5))
+struct EventCategoryCapsule: View {
+    let eventCategory: EventCategory
+    var body: some View {
+        Text(eventCategory.rawValue)
+            .font(.caption)
+            .foregroundColor(
+                eventCategory == EventCategory.peerSupport ? Color.black : Color.white
+            )
+            .padding(.horizontal, 5)
+            .padding(.vertical, 2)
+            .background(eventCategory.color)
+            .clipShape(RoundedRectangle(cornerRadius: 5))
+    }
 }
 
 extension Date {

@@ -14,19 +14,17 @@ struct EventDetailView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: 8) {
                     Text(event.title)
                         .font(.title.bold())
-                    
-                    HStack {
-                        eventCategoryCapsuleView(eventCategory: event.eventCategory)
-                        if let series = event.eventSeries {
-                            eventSeriesCapsuleView(eventSeries: series, eventCategory: event.eventCategory)
-                        }
-                    }
-                    
+
                     eventDateFormatted()
                         .foregroundStyle(.secondary)
+
+                    HStack {
+                        EventCategoryCapsule(eventCategory: event.eventCategory)
+                        MeetingModeCapsule(meetingMode: event.meetingMode)
+                    }
                 }
                 .padding(.vertical, 15)
 
@@ -47,7 +45,7 @@ struct EventDetailView: View {
                     }
                 }
 
-                meetingModeSection
+                meetingLocation
             }
             .padding(.horizontal, 40)
             .padding(.bottom, 20)
@@ -58,7 +56,7 @@ struct EventDetailView: View {
     }
 
     @ViewBuilder
-    private var meetingModeSection: some View {
+    private var meetingLocation: some View {
         VStack(alignment: .leading) {
             Text("Location:")
                 .font(.headline.bold())
@@ -82,6 +80,8 @@ struct EventDetailView: View {
                             Image(systemName: "mappin.and.ellipse")
                         }
                     }
+                } else {
+                    Text("N/A")
                 }
             case .virtual(let link):
                 if !link.isEmpty {
@@ -99,6 +99,8 @@ struct EventDetailView: View {
                             }
                         }
                     }
+                } else {
+                    Text("N/A")
                 }
             }
         }
