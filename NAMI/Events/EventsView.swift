@@ -88,7 +88,7 @@ struct EventsView: View {
     var eventsMenuFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-                Menu{
+                Menu {
                     let selected = Binding(
                         get: { selectedCategory },
                         set: {

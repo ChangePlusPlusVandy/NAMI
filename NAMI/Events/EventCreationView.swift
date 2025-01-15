@@ -186,6 +186,7 @@ struct EventCreationView : View {
                 dismissButton: .default(Text("OK"))
             )
         }
+        .onAppear(perform: fetchCurrentEventImage)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
@@ -203,6 +204,7 @@ struct EventCreationView : View {
 
                     Task {
                         withAnimation(.snappy) { isUploading = true }
+                        EventsManager.shared.deleteImageFromStorage(imageURL: event.imageURL)
                         event.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
                         print("This is new event url: \(event.imageURL)")
 
@@ -232,6 +234,17 @@ struct EventCreationView : View {
 
     func isAbleToSubmit() -> Bool {
         event.title.isEmpty || isUploading || isImageCompressing
+    }
+
+    func fetchCurrentEventImage() {
+        guard let url = URL(string: event.imageURL) else { return }
+        DispatchQueue.global().async {
+            guard let data = try? Data(contentsOf: url) else { return }
+            DispatchQueue.main.async {
+                guard let dataImage = UIImage(data: data) else { return }
+                eventImage = dataImage
+            }
+        }
     }
 }
 

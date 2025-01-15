@@ -18,12 +18,12 @@ struct HomeView: View {
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
-                Text("Welcome")
-                    .font(.largeTitle.bold())
-                    .padding([.bottom, .horizontal])
-                    .padding(.top, 10)
 
                 if UserManager.shared.userType == .member {
+                    Text("Welcome")
+                        .font(.largeTitle.bold())
+                        .padding([.bottom, .horizontal])
+                        .padding(.top, 10)
                     Text("My Upcoming Events")
                         .font(.callout)
                         .foregroundStyle(.secondary)

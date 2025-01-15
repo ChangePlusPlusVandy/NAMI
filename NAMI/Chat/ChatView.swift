@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChatView: View {
-    @State private var showChatUnavilable = false // State variable to control the pop-up
+    @State private var showChatUnavailable = false
 
     var body: some View {
         NavigationStack {
@@ -32,7 +32,7 @@ struct ChatView: View {
                         .font(.body)
 
                     Button {
-                        withAnimation(.snappy) {showChatUnavilable = true}
+                        withAnimation(.snappy) {showChatUnavailable = true}
                     } label: {
                         Text("Start a Chat")
                             .padding(.horizontal, 10)
@@ -43,13 +43,15 @@ struct ChatView: View {
                     }
                     .padding(.top, 20)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .sensoryFeedback(.success, trigger: showChatUnavailable)
+
                 }
                 .padding(.horizontal, 25)
             }
             .navigationTitle("NAMI HelpLine")
             .overlay {
-                if showChatUnavilable {
-                    ChatUnavailableView(isPresented: $showChatUnavilable)
+                if showChatUnavailable {
+                    ChatUnavailableView(isPresented: $showChatUnavailable)
                 }
             }
         }
