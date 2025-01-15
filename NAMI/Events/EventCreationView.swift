@@ -13,46 +13,32 @@ struct EventCreationView : View {
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(TabsControl.self) var tabVisibilityControls
+
     @State var isImageCompressing = false
     @State var isUploading = false
 
-    var event: Event
-    @State var newEvent: Event = Event(title: "",
-                                startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
-                                endTime: Date(timeInterval: 3600, since: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!),
-                                repeatType: .never,
-                                endRepeat: false,
-                                endRepeatDate: Date(),
-                                about: "",
-                                leaderName: "",
-                                leaderPhoneNumber: "",
-                                meetingMode: .inPerson(location: ""),
-                                eventCategory: .familySupport,
-                                eventSeries: "",
-                                registeredUsersIds: [],
-                                imageURL: "")
-
     @State private var inputMeetingModeText: String = ""
     @State private var showAlert = false
-    
+
     @State private var eventImageItem: PhotosPickerItem?
     @State private var eventImage: UIImage?
-    
-    @State private var toUpdate: Bool = false
+
+    @State var event: Event
+    var isEdit: Bool
 
     var body: some View {
         Form {
             Section {
-                TextField("Title", text: $newEvent.title)
+                TextField("Title", text: $event.title)
             }
             Section(footer: Text("Note: time zone is in CST")){
-                DatePicker("Starts", selection: $newEvent.startTime)
-                DatePicker("Ends", selection: $newEvent.endTime)
+                DatePicker("Starts", selection: $event.startTime)
+                DatePicker("Ends", selection: $event.endTime)
             }
             .tint(Color.NAMIDarkBlue)
-            .onChange(of: newEvent.startTime) {
-                if newEvent.startTime > newEvent.endTime {
-                    newEvent.endTime = newEvent.startTime + 3600
+            .onChange(of: event.startTime) {
+                if event.startTime > event.endTime {
+                    event.endTime = event.startTime + 3600
                 }
             }
 
@@ -61,32 +47,32 @@ struct EventCreationView : View {
                     Text("Repeat")
                     Spacer()
                     Menu {
-                        Picker("Category", selection: $newEvent.repeatType) {
+                        Picker("Category", selection: $event.repeatType) {
                             ForEach(RepeatType.allCases){ category in
                                 Text(category.rawValue).tag(category)
                             }
                         }
                     } label: {
                         HStack {
-                            Text(newEvent.repeatType.rawValue)
+                            Text(event.repeatType.rawValue)
                             Image(systemName: "chevron.up.chevron.down")
                                 .imageScale(.small)
                         }
                         .foregroundStyle(.secondary)
                     }
                 }
-                if newEvent.repeatType != .never {
+                if event.repeatType != .never {
                     HStack {
                         Text("End Repeat")
                         Spacer()
                         Menu {
-                            Picker("Category", selection: $newEvent.endRepeat) {
+                            Picker("Category", selection: $event.endRepeat) {
                                 Text("Never").tag(false)
                                 Text("On Date").tag(true)
                             }
                         } label: {
                             HStack {
-                                Text(newEvent.endRepeat ? "On Date" : "Never")
+                                Text(event.endRepeat ? "On Date" : "Never")
                                 Image(systemName: "chevron.up.chevron.down")
                                     .imageScale(.small)
                             }
@@ -95,8 +81,8 @@ struct EventCreationView : View {
                     }
                 }
 
-                if newEvent.repeatType != .never && newEvent.endRepeat {
-                    DatePicker("End Date", selection: $newEvent.endRepeatDate, displayedComponents: .date)
+                if event.repeatType != .never && event.endRepeat {
+                    DatePicker("End Date", selection: $event.endRepeatDate, displayedComponents: .date)
                         .tint(Color.NAMIDarkBlue)
                 }
             }
@@ -106,14 +92,14 @@ struct EventCreationView : View {
                     Text("Event Category")
                     Spacer()
                     Menu {
-                        Picker("Category", selection: $newEvent.eventCategory) {
+                        Picker("Category", selection: $event.eventCategory) {
                             ForEach(EventCategory.allCases){ category in
                                 Text(category.rawValue).tag(category)
                             }
                         }
                     } label: {
                         HStack {
-                            Text(newEvent.eventCategory.rawValue)
+                            Text(event.eventCategory.rawValue)
                             Image(systemName: "chevron.up.chevron.down")
                                 .imageScale(.small)
                         }
@@ -123,13 +109,13 @@ struct EventCreationView : View {
             }
 
             Section(header: Text("Event Series")) {
-                TextField("Enter name", text: $newEvent.eventSeries)
+                TextField("Enter name", text: $event.eventSeries)
 
             }
 
             Section(header: Text("Event Leader")) {
-                TextField("Name", text: $newEvent.leaderName)
-                TextField("Phone Number", text: $newEvent.leaderPhoneNumber).keyboardType(.phonePad)
+                TextField("Name", text: $event.leaderName)
+                TextField("Phone Number", text: $event.leaderPhoneNumber).keyboardType(.phonePad)
             }
 
             Section(header: Text("Event Image")) {
@@ -165,16 +151,16 @@ struct EventCreationView : View {
             }
 
             Section(header: Text("Meeting Mode")) {
-                Picker("", selection: $newEvent.meetingMode) {
+                Picker("", selection: $event.meetingMode) {
                     Text(MeetingMode.inPerson(location: "").displayName)
                         .tag(MeetingMode.inPerson(location: ""))
                     Text(MeetingMode.virtual(link: "").displayName)
                         .tag(MeetingMode.virtual(link: ""))
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: newEvent.meetingMode) { inputMeetingModeText = "" }
+                .onChange(of: event.meetingMode) { inputMeetingModeText = "" }
 
-                switch newEvent.meetingMode {
+                switch event.meetingMode {
                 case .inPerson:
                     TextEditorWithPlaceholder(minHeight: 100, bindText: $inputMeetingModeText, placeHolder: "Enter event address")
                         .autocorrectionDisabled()
@@ -185,12 +171,12 @@ struct EventCreationView : View {
             }
 
             Section(header: Text("Event Description")) {
-                TextEditorWithPlaceholder(minHeight: 300, bindText: $newEvent.about, placeHolder: "Enter event details")
+                TextEditorWithPlaceholder(minHeight: 300, bindText: $event.about, placeHolder: "Enter event details")
             }
         }
         .scrollDismissesKeyboard(.interactively)
         .scrollIndicators(.hidden)
-        .navigationTitle("Create Event")
+        .navigationTitle(isEdit ? "Edit Event" : "Create Event")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .alert(isPresented: $showAlert) {
@@ -213,32 +199,22 @@ struct EventCreationView : View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    newEvent.meetingMode = newEvent.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
+                    event.meetingMode = event.meetingMode.updateLocationOrLink(with: inputMeetingModeText)
 
                     Task {
                         withAnimation(.snappy) { isUploading = true }
-                        newEvent.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
-                        print("This is new event url: \(newEvent.imageURL)")
+                        event.imageURL = await EventsManager.shared.uploadImageToStorage(image: eventImage)
+                        print("This is new event url: \(event.imageURL)")
 
-                        if toUpdate {
-                            if EventsManager.shared.updateEventFromDatabase(event: newEvent) {
-                                isUploading = false
-                                homeScreenRouter.navigateBack()
-                                eventsViewRouter.navigateBack()
-                            } else {
-                                showAlert = true
-                            }
-                        }
-                        else {
-                            if EventsManager.shared.addEventToDatabase(newEvent: newEvent) {
-                                isUploading = false
-                                homeScreenRouter.navigateBack()
-                                eventsViewRouter.navigateBack()
-                            } else {
-                                showAlert = true
-                            }
+                        if EventsManager.shared.addEventToDatabase(newEvent: event, isEdit: isEdit) {
+                            isUploading = false
+                            homeScreenRouter.navigateToRoot()
+                            eventsViewRouter.navigateToRoot()
+                        } else {
+                            showAlert = true
                         }
                     }
+
                 } label: {
                     HStack {
                         Text("Submit")
@@ -252,24 +228,16 @@ struct EventCreationView : View {
                 .disabled(isAbleToSubmit())
             }
         }
-        .onAppear {
-            if event != EventsManager.shared.dummyEvent {
-                newEvent = event
-                toUpdate = true
-            } else {
-                toUpdate = false
-            }
-        }
     }
 
     func isAbleToSubmit() -> Bool {
-        newEvent.title.isEmpty || isUploading || isImageCompressing
+        event.title.isEmpty || isUploading || isImageCompressing
     }
 }
 
 #Preview {
     NavigationStack {
-        EventCreationView(event: EventsManager.shared.dummyEvent)
+        EventCreationView(event: Event.newEvent, isEdit: false)
             .environment(HomeScreenRouter())
             .environment(EventsViewRouter())
             .environment(TabsControl())

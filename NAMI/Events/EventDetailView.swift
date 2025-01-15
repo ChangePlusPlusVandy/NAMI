@@ -60,18 +60,6 @@ struct EventDetailView: View {
                     }
                     meetingLocation
                 }
-                HStack {
-                    if UserManager.shared.userType == .admin {
-                        Spacer()
-                        Button {
-                            eventsViewRouter.navigate(to: .eventCreationView(event: event))
-                        } label: {
-                            Text("Edit Event")
-                                .bold()
-                        }
-                        Spacer()
-                    }
-                }
             }
             .padding(.horizontal, 40)
             .padding(.bottom, 20)
@@ -79,6 +67,15 @@ struct EventDetailView: View {
             .font(.footnote)
         }
         .navigationTitle("")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if UserManager.shared.userType == .admin {
+                    Button("Edit") {
+                        eventsViewRouter.navigate(to: .eventUpdateView(event: event))
+                    }
+                }
+            }
+        }
     }
 
     @ViewBuilder

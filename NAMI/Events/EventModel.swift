@@ -43,6 +43,21 @@ extension Event {
                                   eventSeries: "",
                                   registeredUsersIds: [],
                                   imageURL: "")
+
+    static var newEvent = Event(title: "",
+                                startTime: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!,
+                                endTime: Date(timeInterval: 3600, since: Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!),
+                                repeatType: .never,
+                                endRepeat: false,
+                                endRepeatDate: Date(),
+                                about: "",
+                                leaderName: "",
+                                leaderPhoneNumber: "",
+                                meetingMode: .inPerson(location: ""),
+                                eventCategory: .familySupport,
+                                eventSeries: "",
+                                registeredUsersIds: [],
+                                imageURL: "")
 }
 
 enum RepeatType: String, CaseIterable, Identifiable, Codable {
