@@ -27,6 +27,7 @@ struct EventsView: View {
             (selectedMeetingMode == nil || event.meetingMode.displayName == selectedMeetingMode?.displayName)
         }
     }
+
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
@@ -36,6 +37,7 @@ struct EventsView: View {
                     ForEach(filteredEvents) {event in
                         CustomEventsCardView(event: event)
                             .environment(eventsViewRouter)
+                            .environment(tabVisibilityControls)
                             .onTapGesture {
                                 tabVisibilityControls.makeHidden()
                                 eventsViewRouter.navigate(to: .eventDetailView(event: event))
@@ -53,8 +55,12 @@ struct EventsView: View {
                     EventDetailView(event: event)
                         .environment(eventsViewRouter)
                         .environment(HomeScreenRouter())
-                case .eventCreationView:
-                    EventCreationView()
+                case .eventCreationView(let event):
+                    EventCreationView(event: event, isEdit: false)
+                        .environment(eventsViewRouter)
+                        .environment(HomeScreenRouter())
+                case .eventUpdateView(let event):
+                    EventCreationView(event: event, isEdit: true)
                         .environment(eventsViewRouter)
                         .environment(HomeScreenRouter())
                 }
@@ -68,7 +74,7 @@ struct EventsView: View {
                 if UserManager.shared.userType == .admin {
                     ToolbarItem(placement: .topBarTrailing){
                         Button {
-                            eventsViewRouter.navigate(to: .eventCreationView)
+                            eventsViewRouter.navigate(to: .eventCreationView(event: Event.newEvent))
                             tabVisibilityControls.makeHidden()
                         } label: {
                             Image(systemName: "plus.app")
@@ -120,6 +126,9 @@ struct EventsView: View {
 
     struct CustomEventsCardView: View {
         @State private var showConfirmationDialog = false
+        @Environment(EventsViewRouter.self) var eventsViewRouter
+        @Environment(TabsControl.self) var tabVisibilityControls
+
         let event: Event
         var body: some View {
             EventCardView(event: event)
@@ -129,23 +138,32 @@ struct EventsView: View {
                         Button("", systemImage: "trash") { showConfirmationDialog = true}
                             .tint(.red)
                     }
-                    Button("", systemImage: "calendar.badge.plus") {
-                        EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+
+                    if UserManager.shared.userType == .member {
+                        Button("", systemImage: "calendar.badge.plus") {
+                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                        }
+                        .tint(Color.NAMIDarkBlue)
                     }
-                    .tint(Color.NAMIDarkBlue)
 
                 }
                 .contextMenu {
                     if UserManager.shared.userType == .admin {
-                        Button("Delete Events", systemImage: "trash", role: .destructive) {
+                        Button("Delete Event", systemImage: "trash", role: .destructive) {
                             showConfirmationDialog = true
                         }
+                        Button("Edit Event", systemImage: "pencil") {
+                            eventsViewRouter.navigate(to: .eventUpdateView(event: event))
+                            tabVisibilityControls.makeHidden()
+                        }
                     }
-                    Button("Register Event", systemImage: "calendar.badge.plus") {
-                        EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                    }
-                    .tint(Color.NAMIDarkBlue)
 
+                    if UserManager.shared.userType == .member {
+                        Button("Register Event", systemImage: "calendar.badge.plus") {
+                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                        }
+                        .tint(Color.NAMIDarkBlue)
+                    }
                 }
                 .confirmationDialog(
                     "Are you sure you want to delete this event?",

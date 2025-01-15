@@ -16,10 +16,16 @@ class EventsManager {
     let db = Firestore.firestore()
     let storage = Storage.storage()
     var errorMessage = ""
-
-    func addEventToDatabase(newEvent: Event) -> Bool {
+    
+    func addEventToDatabase(newEvent: Event, isEdit: Bool) -> Bool {
         do {
-            try db.collection("events").addDocument(from: newEvent)
+            if isEdit,
+               let newEventId = newEvent.id
+            {
+                try db.collection("events").document(newEventId).setData(from: newEvent)
+            } else {
+                try db.collection("events").addDocument(from: newEvent)
+            }
             return true
         } catch {
             errorMessage = error.localizedDescription

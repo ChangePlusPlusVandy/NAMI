@@ -12,7 +12,8 @@ final class EventsViewRouter {
 
     public enum Destination: Hashable {
         case eventDetailView(event: Event)
-        case eventCreationView
+        case eventCreationView(event: Event)
+        case eventUpdateView(event: Event)
     }
 
     var navPath = NavigationPath()

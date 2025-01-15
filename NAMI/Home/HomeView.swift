@@ -23,23 +23,25 @@ struct HomeView: View {
                     .padding([.bottom, .horizontal])
                     .padding(.top, 10)
 
-                Text("My Upcoming Events")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-                    .padding()
-                List {
-                    ForEach(viewModel.registeredEvents) { event in
-                        CustomEventCardView(event: event)
-                            .environment(homeScreenRouter)
-                            .onTapGesture {
-                                tabVisibilityControls.makeHidden()
-                                homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                            }
+                if UserManager.shared.userType == .member {
+                    Text("My Upcoming Events")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .padding()
+                    List {
+                        ForEach(viewModel.registeredEvents) { event in
+                            CustomEventCardView(event: event)
+                                .environment(homeScreenRouter)
+                                .onTapGesture {
+                                    tabVisibilityControls.makeHidden()
+                                    homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                }
+                        }
                     }
+                    .listStyle(.plain)
+                    .scrollIndicators(.hidden)
+                    .refreshable {viewModel.refreshRegisteredEvents()}
                 }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
-                .refreshable {viewModel.refreshRegisteredEvents()}
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
@@ -51,8 +53,8 @@ struct HomeView: View {
                 case .userProfileEditView:
                     UserProfileEditView()
                         .environment(homeScreenRouter)
-                case .adminEventCreationView:
-                    EventCreationView()
+                case .adminEventCreationView(let event):
+                    EventCreationView(event: event, isEdit: false)
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 case .eventDetailView(let event):
@@ -119,7 +121,7 @@ struct HomeView: View {
             ToolbarItem(placement: .topBarTrailing){
                 Button{
                     tabVisibilityControls.makeHidden()
-                    homeScreenRouter.navigate(to: .adminEventCreationView)
+                    homeScreenRouter.navigate(to: .adminEventCreationView(event: Event.newEvent))
                 } label: {
                     Image(systemName: "plus.app")
                 }
