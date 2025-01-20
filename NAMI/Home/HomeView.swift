@@ -19,7 +19,8 @@ struct HomeView: View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
 
-                if UserManager.shared.userType == .member {
+                // MARK: Temporaily enable for testing
+                //if UserManager.shared.userType == .member {
                     Text("Welcome")
                         .font(.largeTitle.bold())
                         .padding([.bottom, .horizontal])
@@ -41,7 +42,7 @@ struct HomeView: View {
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
                     .refreshable {viewModel.refreshRegisteredEvents()}
-                }
+                //}
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
@@ -58,7 +59,7 @@ struct HomeView: View {
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 case .eventDetailView(let event):
-                    EventDetailView(event: event)
+                    EventDetailView(event: event, revealLocation: true)
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 }

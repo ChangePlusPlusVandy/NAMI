@@ -11,6 +11,7 @@ struct EventDetailView: View {
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(HomeScreenRouter.self) var homeScreenRouter
     var event: Event
+    var revealLocation = false // Hide event addresses or Zoom links until users register.
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading) {
@@ -30,12 +31,15 @@ struct EventDetailView: View {
 
                 CachedAsyncImage(url: event.imageURL)
 
-                Text(event.about)
-                    .padding(.vertical, 15)
+                if !event.about.isEmpty {
+                    Text(event.about)
+                        .padding(.vertical, 15)
+                }
 
                 VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .leading) {
-                        if !event.leaderName.isEmpty, !event.leaderPhoneNumber.isEmpty {
+                    if !event.leaderName.isEmpty, !event.leaderPhoneNumber.isEmpty {
+                        VStack(alignment: .leading) {
+
                             Text("Session Leader:")
                                 .font(.headline.bold())
                                 .padding(.vertical, 3)
@@ -45,8 +49,8 @@ struct EventDetailView: View {
                         }
                     }
 
-                    VStack(alignment: .leading) {
-                        if !event.eventSeries.isEmpty {
+                    if !event.eventSeries.isEmpty {
+                        VStack(alignment: .leading) {
                             Text("Event Series")
                                 .font(.headline.bold())
                                 .padding(.vertical, 3)
@@ -81,48 +85,53 @@ struct EventDetailView: View {
             Text("Location:")
                 .font(.headline.bold())
                 .padding(.vertical, 3)
-            switch event.meetingMode {
-            case .inPerson(let location):
-                if !location.isEmpty {
-                    Menu {
-                        Button("Open in Apple Maps") {
-                            openAddressInMap(address: location)
-                        }
-                        Button("Open in Google Maps") {
-                            openAddressInGoogleMap(address: location)
-                        }
-                        Button("Copy Address to Clipboard") {
-                            UIPasteboard.general.string = location
-                        }
-                    } label: {
-                        HStack{
-                            Text(location).foregroundStyle(.blue)
-                            Image(systemName: "mappin.and.ellipse")
-                        }
-                    }
-                } else {
-                    Text("N/A")
-                }
-                
-            case .virtual(let link):
-                if !link.isEmpty {
-                    HStack {
-                        if let url = URL(string: link) {
-                            Menu {
-                                Button("Open in Safari") {
-                                    UIApplication.shared.open(url)
-                                }
-                                Button("Copy Link to Clipboard") {
-                                    UIPasteboard.general.string = link
-                                }
-                            } label: {
-                                Text(link).foregroundStyle(.blue)
+            if revealLocation {
+                switch event.meetingMode {
+                case .inPerson(let location):
+                    if !location.isEmpty {
+                        Menu {
+                            Button("Open in Apple Maps") {
+                                openAddressInMap(address: location)
+                            }
+                            Button("Open in Google Maps") {
+                                openAddressInGoogleMap(address: location)
+                            }
+                            Button("Copy Address to Clipboard") {
+                                UIPasteboard.general.string = location
+                            }
+                        } label: {
+                            HStack{
+                                Text(location).foregroundStyle(.blue)
+                                Image(systemName: "mappin.and.ellipse")
                             }
                         }
+                    } else {
+                        Text("N/A")
                     }
-                } else {
-                    Text("N/A")
+
+                case .virtual(let link):
+                    if !link.isEmpty {
+                        HStack {
+                            if let url = URL(string: link) {
+                                Menu {
+                                    Button("Open in Safari") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                    Button("Copy Link to Clipboard") {
+                                        UIPasteboard.general.string = link
+                                    }
+                                } label: {
+                                    Text(link).foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                    } else {
+                        Text("N/A")
+                    }
                 }
+            } else {
+                Text("Event address/link will be provided once registered")
+                    .foregroundStyle(.gray)
             }
         }
     }

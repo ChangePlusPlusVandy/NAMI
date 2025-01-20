@@ -139,12 +139,13 @@ struct EventsView: View {
                             .tint(.red)
                     }
 
-                    if UserManager.shared.userType == .member {
+                    // MARK: Temporarily enable for testing
+                    //if UserManager.shared.userType == .member {
                         Button("", systemImage: "calendar.badge.plus") {
                             EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
                         }
                         .tint(Color.NAMIDarkBlue)
-                    }
+                    //}
 
                 }
                 .contextMenu {
