@@ -117,7 +117,7 @@ struct HomeView: View {
                 .frame(width: 100, height: 100)
         }
 
-        if UserManager.shared.userType == .admin {
+        if UserManager.shared.isAdmin() {
             ToolbarItem(placement: .topBarTrailing){
                 Button{
                     tabVisibilityControls.makeHidden()

@@ -35,29 +35,26 @@ struct EventDetailView: View {
 
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading) {
-                        Text("Session Leader:")
-                            .font(.headline.bold())
-                            .padding(.vertical, 3)
+                        if !event.leaderName.isEmpty, !event.leaderPhoneNumber.isEmpty {
+                            Text("Session Leader:")
+                                .font(.headline.bold())
+                                .padding(.vertical, 3)
 
-                        if event.leaderName.isEmpty, event.leaderPhoneNumber.isEmpty {
-                            Text("N/A")
-                        } else {
                             Text(event.leaderName)
                             Text(event.leaderPhoneNumber)
                         }
                     }
 
                     VStack(alignment: .leading) {
-                        Text("Event Series")
-                            .font(.headline.bold())
-                            .padding(.vertical, 3)
+                        if !event.eventSeries.isEmpty {
+                            Text("Event Series")
+                                .font(.headline.bold())
+                                .padding(.vertical, 3)
 
-                        if event.eventSeries.isEmpty {
-                            Text("N/A")
-                        } else {
                             Text(event.eventSeries)
                         }
                     }
+
                     meetingLocation
                 }
             }
@@ -69,7 +66,7 @@ struct EventDetailView: View {
         .navigationTitle("")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                if UserManager.shared.userType == .admin {
+                if UserManager.shared.isAdmin() {
                     Button("Edit") {
                         eventsViewRouter.navigate(to: .eventUpdateView(event: event))
                     }
@@ -106,6 +103,7 @@ struct EventDetailView: View {
                 } else {
                     Text("N/A")
                 }
+                
             case .virtual(let link):
                 if !link.isEmpty {
                     HStack {

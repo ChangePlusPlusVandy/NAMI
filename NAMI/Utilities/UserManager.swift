@@ -33,6 +33,10 @@ final class UserManager {
         currentUser = nil
     }
 
+    func isAdmin() -> Bool {
+        userType == .admin || userType == .superAdmin
+    }
+
     // Update the user info and refresh cache
     func updateUserInfo(updatedUser: NamiUser) async -> Bool {
         do {

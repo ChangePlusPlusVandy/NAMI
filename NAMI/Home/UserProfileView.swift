@@ -28,7 +28,7 @@ struct UserProfileView: View {
                             Text("User Type")
                                 .fontWeight(.semibold)
 
-                            if UserManager.shared.currentUser?.userType != .admin {
+                            if UserManager.shared.userType == .member {
                                 Button {
                                     withAnimation(.snappy(duration: 0.2)) {
                                         showUserTypePopover.toggle()

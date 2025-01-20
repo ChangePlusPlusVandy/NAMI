@@ -71,7 +71,7 @@ struct EventsView: View {
                 }
             }
             .toolbar {
-                if UserManager.shared.userType == .admin {
+                if UserManager.shared.isAdmin() {
                     ToolbarItem(placement: .topBarTrailing){
                         Button {
                             eventsViewRouter.navigate(to: .eventCreationView(event: Event.newEvent))
@@ -134,7 +134,7 @@ struct EventsView: View {
             EventCardView(event: event)
                 .listRowSeparator(.hidden, edges: .all)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false){
-                    if UserManager.shared.userType == .admin {
+                    if UserManager.shared.isAdmin() {
                         Button("", systemImage: "trash") { showConfirmationDialog = true}
                             .tint(.red)
                     }
@@ -148,7 +148,7 @@ struct EventsView: View {
 
                 }
                 .contextMenu {
-                    if UserManager.shared.userType == .admin {
+                    if UserManager.shared.isAdmin() {
                         Button("Delete Event", systemImage: "trash", role: .destructive) {
                             showConfirmationDialog = true
                         }

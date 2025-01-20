@@ -28,8 +28,8 @@ struct EventCreationView : View {
 
     var body: some View {
         Form {
-            Section {
-                TextField("Title", text: $event.title)
+            Section(header: Text("Event Title*")) {
+                TextField("Enter event title", text: $event.title)
             }
             Section(footer: Text("Note: time zone is in CST")){
                 DatePicker("Starts", selection: $event.startTime)
@@ -150,7 +150,7 @@ struct EventCreationView : View {
                 }
             }
 
-            Section(header: Text("Meeting Mode")) {
+            Section(header: Text("Meeting Mode*")) {
                 Picker("", selection: $event.meetingMode) {
                     Text(MeetingMode.inPerson(location: "").displayName)
                         .tag(MeetingMode.inPerson(location: ""))
@@ -170,7 +170,7 @@ struct EventCreationView : View {
                 }
             }
 
-            Section(header: Text("Event Description")) {
+            Section(header: Text("Event Description*")) {
                 TextEditorWithPlaceholder(minHeight: 300, bindText: $event.about, placeHolder: "Enter event details")
             }
         }
@@ -233,7 +233,7 @@ struct EventCreationView : View {
     }
 
     func isAbleToSubmit() -> Bool {
-        event.title.isEmpty || isUploading || isImageCompressing
+        event.title.isEmpty || isUploading || isImageCompressing || event.about.isEmpty
     }
 
     func fetchCurrentEventImage() {
