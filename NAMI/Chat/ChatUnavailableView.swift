@@ -17,16 +17,20 @@ struct ChatUnavailableView: View {
                 }
 
             VStack(spacing: 40) {
-                VStack(alignment: .leading, spacing: 15) {
+                VStack(alignment: .leading, spacing: 30) {
                     Text("Oh no, you’re reaching NAMI’s helpline outside of office hours")
                         .font(.title3)
                         .bold()
 
-                    Text("""
-If you would prefer to call the helpline - 615-891-4724 (9a-5p M-F). If you are experiencing a mental health crisis during this time, please call 855-274-7471 OR Call/Text 988.
-""")
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("If you are experiencing a mental health crisis during this time, please call or text 988")
+                            .font(.callout)
+
+                        Text("The 988 Suicide & Crisis Lifeline is available 24/7")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
                 }
-                .font(.headline)
 
                 Button {
                     withAnimation (.snappy) { isPresented.toggle() }

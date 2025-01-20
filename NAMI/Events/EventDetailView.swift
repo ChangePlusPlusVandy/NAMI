@@ -62,7 +62,7 @@ struct EventDetailView: View {
                     meetingLocation
                 }
             }
-            .padding(.horizontal, 40)
+            .padding(.horizontal, 30)
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity, alignment: .leading)
             .font(.footnote)

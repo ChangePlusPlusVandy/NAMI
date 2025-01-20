@@ -15,11 +15,13 @@ struct CachedAsyncImage: View {
             cachedImage
                 .resizable()
                 .scaledToFit()
+                .padding(.vertical, 10)
         } else {
             AsyncImage(url: URL(string: url)) { image in
                 image
                     .resizable()
                     .scaledToFit()
+                    .padding(.vertical, 10)
                     .task {
                         await cacheImage()
                     }

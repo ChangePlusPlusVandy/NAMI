@@ -13,23 +13,32 @@ struct ChatView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 50) {
+                VStack(alignment: .leading, spacing: 40) {
 
-                    Text("You are not alone! If you are struggling with your mental health, the NAMI HelpLine is here for you. Connect with a NAMI HelpLine volunteer today.")
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .padding(.vertical, 20)
+                    VStack(alignment: .leading, spacing: 13) {
+                        Text("In Need Of Help Or Support?")
+                            .font(.headline)
+                            .padding(.top, 35)
+                        Text("You are not alone! If you are struggling with your mental health, the NAMI HelpLine is here for you. Connect with a NAMI HelpLine volunteer today.")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
 
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Available:")
+                    VStack(alignment: .leading, spacing: 13) {
+                        Text("Hours Available")
                             .font(.headline)
                         Text("Monday Through Friday, 10 A.M. – 10 P.M. ET.")
                             .font(.body)
                             .foregroundStyle(.secondary)
                     }
 
-                    contactInfo
-                        .font(.body)
+                    VStack(alignment: .leading, spacing: 13) {
+                        Text("Are you experiencing a mental health crisis?")
+                            .font(.headline)
+                        Text("Please call or text 988, available 24/7/365")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
 
                     Button {
                         withAnimation(.snappy) {showChatUnavailable = true}
@@ -46,27 +55,15 @@ struct ChatView: View {
                     .sensoryFeedback(.success, trigger: showChatUnavailable)
 
                 }
-                .padding(.horizontal, 25)
+                .padding(.horizontal, 30)
             }
-            .navigationTitle("NAMI HelpLine")
+            .navigationTitle("HelpLine")
             .overlay {
                 if showChatUnavailable {
                     ChatUnavailableView(isPresented: $showChatUnavailable)
                 }
             }
         }
-    }
-
-    var contactInfo: some View {
-        Text("Call ")
-        + Text("1-800-950-NAMI (6264)")
-            .underline()
-        + Text(", text \"HelpLine\" to ")
-        + Text("62640")
-            .underline()
-        + Text(" or email us at ")
-        + Text("helpline@nami.org")
-            .underline()
     }
 }
 
