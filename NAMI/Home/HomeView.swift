@@ -28,7 +28,7 @@ struct HomeView: View {
                     Text("My Upcoming Events")
                         .font(.callout)
                         .foregroundStyle(.secondary)
-                        .padding()
+                        .padding(10)
                     List {
                         ForEach(viewModel.registeredEvents) { event in
                             CustomEventCardView(event: event)
@@ -112,10 +112,12 @@ struct HomeView: View {
     @ToolbarContentBuilder
     var homeViewToolBar: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading){
-            Image("NAMIHeaderLogo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100, height: 100)
+            HStack(spacing: 0) {
+                Image("NAMIDavidson")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 28)
+            }
         }
 
         if UserManager.shared.isAdmin() {
