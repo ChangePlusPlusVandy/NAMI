@@ -52,7 +52,7 @@ struct ChatView: View {
                     }
                     .padding(.top, 20)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .sensoryFeedback(.success, trigger: showChatUnavailable)
+                    .sensoryFeedback(.impact(weight:.heavy), trigger: showChatUnavailable)
 
                 }
                 .padding(.horizontal, 30)

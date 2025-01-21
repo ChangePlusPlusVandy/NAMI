@@ -45,6 +45,15 @@ struct AppView: View {
             } label: {
                 Label("Chat", systemImage: "message")
             }
+
+            if UserManager.shared.userType == .superAdmin {
+                Tab(value: 3) {
+                    MemberView()
+                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                } label: {
+                    Label("Member", systemImage: "checkmark.seal.fill")
+                }
+            }
         }
         .environment(tabVisiblityControls)
         .sensoryFeedback(.impact(weight: .heavy), trigger: tabSelection)

@@ -137,15 +137,22 @@ struct EventsView: View {
                     if UserManager.shared.isAdmin() {
                         Button("", systemImage: "trash") { showConfirmationDialog = true}
                             .tint(.red)
+
+                        Button("", systemImage: "pencil") {
+                            eventsViewRouter.navigate(to: .eventUpdateView(event: event))
+                            tabVisibilityControls.makeHidden()
+                        }
                     }
 
-                    // MARK: Temporarily enable for testing
+                    // MARK: Temporarily enable for admin for testing
                     //if UserManager.shared.userType == .member {
                         Button("", systemImage: "calendar.badge.plus") {
                             EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
                         }
                         .tint(Color.NAMIDarkBlue)
                     //}
+
+
 
                 }
                 .contextMenu {

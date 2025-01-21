@@ -36,7 +36,7 @@ struct UserProfileView: View {
                                 } label: {
                                     Image(systemName: "info.circle")
                                 }
-                                .sensoryFeedback(.success, trigger: showUserTypePopover)
+                                .sensoryFeedback(.impact(weight: .heavy), trigger: showUserTypePopover)
                             }
                         }
                         Text(UserManager.shared.currentUser?.userType.description ?? "error")

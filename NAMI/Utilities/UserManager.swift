@@ -127,4 +127,8 @@ final class UserManager {
         listenerRegistration?.remove()
         listenerRegistration = nil
     }
+
+    func updateSpecificNamiUserType(userIDtoBeUpdated: String, newUserType: UserType) {
+        db.collection("users").document(userIDtoBeUpdated).updateData(["userType": newUserType.rawValue])
+    }
 }

@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseFirestore
 
-enum UserType : Codable {
+enum UserType : String, Codable {
     case superAdmin
     case admin
     case volunteer

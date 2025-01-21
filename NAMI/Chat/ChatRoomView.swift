@@ -15,6 +15,7 @@ struct ChatRoomView: View {
         "assumenda est, omnis dolor repellendus",
         "Nam libero tempore, cum soluta"
     ]
+
     var body: some View {
         VStack {
             // Header with chat name
