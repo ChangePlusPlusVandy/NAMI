@@ -9,6 +9,9 @@ import SwiftUI
 import FirebaseFirestore
 
 struct MemberView: View {
+    @Environment(TabsControl.self) var tabVisibilityControls
+    @State var memberRouter = MemberRouter()
+
     @FirestoreQuery(collectionPath: "users",
                     predicates: [.whereField("userType", isEqualTo: UserType.superAdmin.rawValue)],
                     animation: .default) var superAdmins: [NamiUser]
@@ -23,31 +26,65 @@ struct MemberView: View {
 
     @State var showMemberInfoSheet = false
     @State var tappedUser: NamiUser?
+    @State var searchText = ""
 
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $memberRouter.navPath) {
             List {
-                Section(header: Text("Super Admin")) {
-                    ForEach(superAdmins) { user in
-                        MemberColumnView(user: user)
-                    }
-                }
-                
-                Section(header: Text("Admins")) {
-                    ForEach(admins) { user in
-                        memberCellButton(user: user, tappedUser: $tappedUser, showMemberInfoSheet: $showMemberInfoSheet)
-                    }
-                }
-                
-                Section(header: Text("Volunteers")) {
-                    ForEach(volunteers) { user in
-                        memberCellButton(user: user, tappedUser: $tappedUser, showMemberInfoSheet: $showMemberInfoSheet)
-                    }
-                }
+                createSection(title: "Super Admin", users: superAdmins)
+                createSection(title: "Admins", users: admins)
+                createSection(title: "Volunteers", users: volunteers)
             }
+            .searchable(text: $searchText)
             .navigationTitle("NAMI Members")
             .sheet(isPresented: $showMemberInfoSheet){ MemberInfoSheet(user: $tappedUser)}
+            .onChange(of: memberRouter.navPath) {
+                if memberRouter.navPath.isEmpty {
+                    tabVisibilityControls.makeVisible()
+                }
+            }
+            .navigationDestination(for: MemberRouter.Destination.self) { destination in
+                switch destination {
+                case .adminPromotionView:
+                    PromotionView(promotionType: .admin)
+                        .environment(memberRouter)
+                case .volunteerPromotionView:
+                    PromotionView(promotionType: .volunteer)
+                        .environment(memberRouter)
+                }
+            }
+        }
+    }
+
+    private func createSection(title: String, users: [NamiUser]) -> some View {
+        let filteredUsers = users.filter { searchText.isEmpty || $0.firstName.localizedCaseInsensitiveContains(searchText) ||
+            $0.lastName.localizedCaseInsensitiveContains(searchText)
+        }
+
+        return Section(header: Text(title)) {
+            if title == "Admins", searchText.isEmpty {
+                Text("Add new Admins")
+                    .bold()
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        tabVisibilityControls.makeHidden()
+                        memberRouter.navigate(to: .adminPromotionView)
+                    }
+            } else if title == "Volunteers", searchText.isEmpty {
+                Text("Add new Volunteers")
+                    .bold()
+                    .padding(.vertical, 8)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        tabVisibilityControls.makeHidden()
+                        memberRouter.navigate(to: .volunteerPromotionView)
+                    }
+            }
+            ForEach(filteredUsers) { user in
+                memberCellButton(user: user, tappedUser: $tappedUser, showMemberInfoSheet: $showMemberInfoSheet)
+            }
         }
     }
 

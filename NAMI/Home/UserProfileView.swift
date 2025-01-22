@@ -51,8 +51,12 @@ struct UserProfileView: View {
                 VStack (alignment: .center, spacing: 15) {
                     donateButton
                     signOutButton
-                    deleteAccountButton
+                    if UserManager.shared.userType != .superAdmin {
+                        deleteAccountButton
+                    }
                 }
+                
+                Spacer()
             }
 
             if showUserTypePopover {
