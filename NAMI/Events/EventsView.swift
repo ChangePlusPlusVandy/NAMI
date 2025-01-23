@@ -144,14 +144,13 @@ struct EventsView: View {
                         }
                     }
 
-                    // MARK: Temporarily enable for admin for testing
-                    //if UserManager.shared.userType == .member {
-                        Button("", systemImage: "calendar.badge.plus") {
-                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                        }
-                        .tint(Color.NAMIDarkBlue)
-                    //}
-
+// MARK: Register button should only be enabled in EventDetailView
+//                    if UserManager.shared.userType == .member {
+//                        Button("", systemImage: "calendar.badge.plus") {
+//                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+//                        }
+//                        .tint(Color.NAMIDarkBlue)
+//                    }
 
 
                 }
@@ -165,13 +164,12 @@ struct EventsView: View {
                             tabVisibilityControls.makeHidden()
                         }
                     }
-
-                    if UserManager.shared.userType == .member {
-                        Button("Register Event", systemImage: "calendar.badge.plus") {
-                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                        }
-                        .tint(Color.NAMIDarkBlue)
-                    }
+//                    if UserManager.shared.userType == .member {
+//                        Button("Register Event", systemImage: "calendar.badge.plus") {
+//                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+//                        }
+//                        .tint(Color.NAMIDarkBlue)
+//                    }
                 }
                 .confirmationDialog(
                     "Are you sure you want to delete this event?",

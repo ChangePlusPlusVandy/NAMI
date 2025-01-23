@@ -59,7 +59,7 @@ struct HomeView: View {
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 case .eventDetailView(let event):
-                    EventDetailView(event: event, revealLocation: true)
+                    EventDetailView(event: event, isRegistered: true)
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 }

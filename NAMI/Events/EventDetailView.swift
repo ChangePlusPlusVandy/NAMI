@@ -10,62 +10,85 @@ import SwiftUI
 struct EventDetailView: View {
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(HomeScreenRouter.self) var homeScreenRouter
+
+    @State var showConfirmation = false
+    @State var showSuccessSheet = false
+
     var event: Event
-    var revealLocation = false // Hide event addresses or Zoom links until users register.
+    var isRegistered = false // Hide event addresses or Zoom links until users register.
+
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(event.title)
-                        .font(.title.bold())
+        ZStack {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(event.title)
+                            .font(.title.bold())
 
-                    eventDateFormatted()
-                        .foregroundStyle(.secondary)
+                        eventDateFormatted()
+                            .foregroundStyle(.secondary)
 
-                    HStack {
-                        EventCategoryCapsule(eventCategory: event.eventCategory)
-                        MeetingModeCapsule(meetingMode: event.meetingMode)
-                    }
-                }
-                .padding(.top, 15)
-
-                CachedAsyncImage(url: event.imageURL)
-
-                if !event.about.isEmpty {
-                    Text(event.about)
-                        .padding(.vertical, 15)
-                }
-
-                VStack(alignment: .leading, spacing: 20) {
-                    if !event.leaderName.isEmpty, !event.leaderPhoneNumber.isEmpty {
-                        VStack(alignment: .leading) {
-
-                            Text("Session Leader:")
-                                .font(.headline.bold())
-                                .padding(.vertical, 3)
-
-                            Text(event.leaderName)
-                            Text(event.leaderPhoneNumber)
+                        HStack {
+                            EventCategoryCapsule(eventCategory: event.eventCategory)
+                            MeetingModeCapsule(meetingMode: event.meetingMode)
                         }
                     }
+                    .padding(.top, 15)
 
-                    if !event.eventSeries.isEmpty {
-                        VStack(alignment: .leading) {
-                            Text("Event Series")
-                                .font(.headline.bold())
-                                .padding(.vertical, 3)
+                    CachedAsyncImage(url: event.imageURL)
 
-                            Text(event.eventSeries)
-                        }
+                    if !event.about.isEmpty {
+                        Text(event.about)
+                            .padding(.vertical, 15)
                     }
 
-                    meetingLocation
+                    VStack(alignment: .leading, spacing: 20) {
+                        if !event.leaderName.isEmpty, !event.leaderPhoneNumber.isEmpty {
+                            VStack(alignment: .leading) {
+
+                                Text("Session Leader:")
+                                    .font(.headline.bold())
+                                    .padding(.vertical, 3)
+
+                                Text(event.leaderName)
+                                Text(event.leaderPhoneNumber)
+                            }
+                        }
+
+                        if !event.eventSeries.isEmpty {
+                            VStack(alignment: .leading) {
+                                Text("Event Series")
+                                    .font(.headline.bold())
+                                    .padding(.vertical, 3)
+
+                                Text(event.eventSeries)
+                            }
+                        }
+
+                        meetingLocation
+                    }
                 }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.footnote)
             }
-            .padding(.horizontal, 30)
-            .padding(.bottom, 20)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .font(.footnote)
+
+            if !isRegistered {
+                registerButton
+            }
+
+            if showSuccessSheet {
+                EventRegisteredSuccessSheet(isPresented: $showSuccessSheet)
+            }
+
+        }
+        .sensoryFeedback(.impact(weight: .heavy), trigger: showSuccessSheet)
+        .confirmationDialog("Are you sure you want to register for this event?", isPresented: $showConfirmation) {
+            Button("Register") {
+                EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
+                withAnimation(.snappy) { showSuccessSheet = true }
+            }
         }
         .navigationTitle("")
         .toolbar {
@@ -79,13 +102,30 @@ struct EventDetailView: View {
         }
     }
 
+    var registerButton: some View {
+        Button {
+            showConfirmation = true
+        } label: {
+            Label("Register", systemImage: "calendar.badge.plus")
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.NAMIDarkBlue)
+                .cornerRadius(20)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .shadow(radius: 1)
+        .padding(30)
+        .padding(.vertical, 20)
+        .ignoresSafeArea()
+    }
+
     @ViewBuilder
     private var meetingLocation: some View {
         VStack(alignment: .leading) {
             Text("Location:")
                 .font(.headline.bold())
                 .padding(.vertical, 3)
-            if revealLocation {
+            if isRegistered {
                 switch event.meetingMode {
                 case .inPerson(let location):
                     if !location.isEmpty {

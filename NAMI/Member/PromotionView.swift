@@ -13,26 +13,28 @@ struct PromotionView: View {
     @State var userNotFouneError = false
     @State var searchResult: NamiUser?
     @State var showConfirmation = false
-
+    
     @FocusState private var isKeyboardFocused: Bool
-
+    
     var promotionType = PromotionType.admin
-
+    
     @Environment(TabsControl.self) var tabVisibilityControls
     @Environment(MemberRouter.self) var memberRouter
-
+    
     var body: some View {
         ScrollView(showsIndicators: false) {
             searchBar
-
+            
             if userNotFouneError {
                 Text("No user found with this email.")
                     .foregroundColor(.red)
             }
-
+            
             if let user = searchResult {
                 if user.userType == promotionType.userType(){
                     Text("This user is already the \(promotionType.rawValue)")
+                } else if user.userType == .superAdmin {
+                    Text("Super admin cannot be changed")
                 } else {
                     VStack(alignment: .leading, spacing: 25) {
                         profileRow(label: "First Name:", value: user.firstName)
@@ -64,7 +66,7 @@ struct PromotionView: View {
             }
         }
     }
-
+    
     var confirmationButton: some View {
         Button {
             showConfirmation = true
@@ -78,7 +80,7 @@ struct PromotionView: View {
                 .cornerRadius(25)
         }
     }
-
+    
     var searchBar: some View {
         HStack {
             TextField("Enter email address", text: $searchEmail)
@@ -86,7 +88,7 @@ struct PromotionView: View {
                 .overlay(RoundedRectangle(cornerRadius: 10.0).strokeBorder(.gray, style: StrokeStyle(lineWidth: 1.0)))
                 .focused($isKeyboardFocused)
                 .keyboardType(.emailAddress)
-
+            
             Button {
                 userNotFouneError = false
                 searchResult = nil
@@ -103,14 +105,14 @@ struct PromotionView: View {
             }.disabled(searchEmail.isEmpty)
         }
     }
-
+    
     private func fetchSearchUser(searchEmail: String) {
         let db = Firestore.firestore()
-
+        
         let query = db.collection("users")
             .whereField("email", isEqualTo: searchEmail)
             .limit(to: 1)
-
+        
         Task {
             do {
                 let querySnapshot = try await query.getDocuments()
@@ -123,13 +125,13 @@ struct PromotionView: View {
                 print("error fetching user: \(error.localizedDescription)")
             }
         }
-
+        
     }
-
+    
     enum PromotionType: String {
         case admin = "Admin"
         case volunteer = "Volunteer"
-
+        
         func userType() -> UserType {
             if self == .admin {
                 return .admin
@@ -138,7 +140,7 @@ struct PromotionView: View {
             }
         }
     }
-
+    
     func profileRow(label: String, value: String?) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(label)

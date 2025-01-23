@@ -28,7 +28,6 @@ struct MemberView: View {
     @State var tappedUser: NamiUser?
     @State var searchText = ""
 
-
     var body: some View {
         NavigationStack(path: $memberRouter.navPath) {
             List {
@@ -64,23 +63,25 @@ struct MemberView: View {
 
         return Section(header: Text(title)) {
             if title == "Admins", searchText.isEmpty {
-                Text("Add new Admins")
-                    .bold()
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        tabVisibilityControls.makeHidden()
-                        memberRouter.navigate(to: .adminPromotionView)
-                    }
+                Button{
+                    tabVisibilityControls.makeHidden()
+                    memberRouter.navigate(to: .adminPromotionView)
+                } label: {
+                    Text("Add new Admins")
+                        .bold()
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle())
+                }
             } else if title == "Volunteers", searchText.isEmpty {
-                Text("Add new Volunteers")
-                    .bold()
-                    .padding(.vertical, 8)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        tabVisibilityControls.makeHidden()
-                        memberRouter.navigate(to: .volunteerPromotionView)
-                    }
+                Button{
+                    tabVisibilityControls.makeHidden()
+                    memberRouter.navigate(to: .volunteerPromotionView)
+                } label: {
+                    Text("Add new Volunteers")
+                        .bold()
+                        .padding(.vertical, 8)
+                        .contentShape(Rectangle())
+                }
             }
             ForEach(filteredUsers) { user in
                 memberCellButton(user: user, tappedUser: $tappedUser, showMemberInfoSheet: $showMemberInfoSheet)

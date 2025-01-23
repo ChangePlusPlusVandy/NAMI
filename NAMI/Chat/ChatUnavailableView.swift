@@ -4,6 +4,7 @@
 //
 //  Created by Sophie Zhuang on 1/2/25.
 //
+
 import SwiftUI
 struct ChatUnavailableView: View {
     @Binding var isPresented: Bool
@@ -51,6 +52,7 @@ struct ChatUnavailableView: View {
         }
     }
 }
+
 #Preview {
     ChatUnavailableView(isPresented: .constant(true))
 }
