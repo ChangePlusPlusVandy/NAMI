@@ -11,11 +11,20 @@ struct EventDetailView: View {
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(HomeScreenRouter.self) var homeScreenRouter
 
-    @State var showConfirmation = false
+    @State var showRegisterConfirmation = false
+    @State var showCancelConfirmation = false
     @State var showSuccessSheet = false
 
     var event: Event
-    var isRegistered = false // Hide event addresses or Zoom links until users register.
+    // Hide event addresses or Zoom links until users register.
+    //var isRegistered = false
+    var isRegistered: Bool {
+        if let registeredEvents = UserManager.shared.currentUser?.registeredEventsIds {
+            return registeredEvents.contains(event.id ?? "")
+        } else {
+            return false
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -74,7 +83,9 @@ struct EventDetailView: View {
                 .font(.footnote)
             }
 
-            if !isRegistered {
+            if isRegistered {
+                cancelButton
+            } else {
                 registerButton
             }
 
@@ -84,10 +95,26 @@ struct EventDetailView: View {
 
         }
         .sensoryFeedback(.impact(weight: .heavy), trigger: showSuccessSheet)
-        .confirmationDialog("Are you sure you want to register for this event?", isPresented: $showConfirmation) {
+        .confirmationDialog(
+            "Are you sure you want to register for this event?",
+            isPresented: $showRegisterConfirmation)
+        {
             Button("Register") {
                 EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
                 withAnimation(.snappy) { showSuccessSheet = true }
+            }
+        }
+        .confirmationDialog(
+            "Are you sure you want to cancel registration for this event?",
+            isPresented: $showCancelConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Cancel Registration", role: .destructive) {
+                if let targetEventId = event.id {
+                    EventsManager.shared.cancelRegistrationForEvent(eventId: targetEventId, userId: UserManager.shared.userID)
+                    eventsViewRouter.navigateToRoot()
+                    homeScreenRouter.navigateToRoot()
+                }
             }
         }
         .navigationTitle("")
@@ -104,12 +131,29 @@ struct EventDetailView: View {
 
     var registerButton: some View {
         Button {
-            showConfirmation = true
+            showRegisterConfirmation = true
         } label: {
             Label("Register", systemImage: "calendar.badge.plus")
                 .foregroundColor(.white)
                 .padding()
                 .background(Color.NAMIDarkBlue)
+                .cornerRadius(20)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+        .shadow(radius: 1)
+        .padding(30)
+        .padding(.vertical, 20)
+        .ignoresSafeArea()
+    }
+
+    var cancelButton: some View {
+        Button {
+            showCancelConfirmation = true
+        } label: {
+            Label("Cancel", systemImage: "calendar.badge.minus")
+                .foregroundColor(.white)
+                .padding()
+                .background(Color.NAMITealBlue)
                 .cornerRadius(20)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)

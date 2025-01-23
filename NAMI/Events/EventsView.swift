@@ -131,7 +131,7 @@ struct EventsView: View {
 
         let event: Event
         var body: some View {
-            EventCardView(event: event)
+            EventCardView(event: event, showRegistered: true)
                 .listRowSeparator(.hidden, edges: .all)
                 .swipeActions(edge: .trailing, allowsFullSwipe: false){
                     if UserManager.shared.isAdmin() {

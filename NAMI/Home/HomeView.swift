@@ -59,7 +59,7 @@ struct HomeView: View {
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 case .eventDetailView(let event):
-                    EventDetailView(event: event, isRegistered: true)
+                    EventDetailView(event: event)
                         .environment(homeScreenRouter)
                         .environment(EventsViewRouter())
                 }
@@ -85,7 +85,7 @@ struct HomeView: View {
         let event: Event
         @State var showConfirmationDialog = false
         var body: some View {
-            EventCardView(event: event)
+            EventCardView(event: event, showRegistered: false)
                 .listRowSeparator(.hidden, edges: .all)
                 .contextMenu {
                     Button("Cancel Registration", systemImage: "calendar.badge.minus") { showConfirmationDialog = true}

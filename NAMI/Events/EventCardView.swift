@@ -10,6 +10,7 @@ import SwiftUI
 struct EventCardView: View {
 
     var event: Event
+    var showRegistered: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -32,6 +33,17 @@ struct EventCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(height: 200)
         .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.secondary, lineWidth: 1))
+        .overlay {
+            if showRegistered,
+               let registeredEvents = UserManager.shared.currentUser?.registeredEventsIds,
+               registeredEvents.contains(event.id ?? "")
+            {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(.yellow)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    .padding()
+            }
+        }
         .contentShape(Rectangle())
     }
 }
@@ -78,6 +90,6 @@ extension Date {
 }
 
 #Preview {
-    EventCardView(event: Event.dummyEvent)
+    EventCardView(event: Event.dummyEvent, showRegistered: false)
         .padding(.horizontal, 10)
 }
