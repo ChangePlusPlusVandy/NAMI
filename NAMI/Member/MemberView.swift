@@ -13,10 +13,6 @@ struct MemberView: View {
     @State var memberRouter = MemberRouter()
 
     @FirestoreQuery(collectionPath: "users",
-                    predicates: [.whereField("userType", isEqualTo: UserType.superAdmin.rawValue)],
-                    animation: .default) var superAdmins: [NamiUser]
-
-    @FirestoreQuery(collectionPath: "users",
                     predicates: [.whereField("userType", isEqualTo: UserType.admin.rawValue)],
                     animation: .default) var admins: [NamiUser]
 
@@ -31,7 +27,6 @@ struct MemberView: View {
     var body: some View {
         NavigationStack(path: $memberRouter.navPath) {
             List {
-                createSection(title: "Super Admin", users: superAdmins)
                 createSection(title: "Admins", users: admins)
                 createSection(title: "Volunteers", users: volunteers)
             }

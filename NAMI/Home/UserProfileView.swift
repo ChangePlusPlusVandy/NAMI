@@ -27,17 +27,17 @@ struct UserProfileView: View {
                         HStack {
                             Text("User Type")
                                 .fontWeight(.semibold)
-
-                            if UserManager.shared.userType == .member {
-                                Button {
-                                    withAnimation(.snappy(duration: 0.2)) {
-                                        showUserTypePopover.toggle()
-                                    }
-                                } label: {
-                                    Image(systemName: "info.circle")
-                                }
-                                .sensoryFeedback(.impact(weight: .heavy), trigger: showUserTypePopover)
-                            }
+// MARK: Temporarily disable
+//                            if UserManager.shared.userType == .member {
+//                                Button {
+//                                    withAnimation(.snappy(duration: 0.2)) {
+//                                        showUserTypePopover.toggle()
+//                                    }
+//                                } label: {
+//                                    Image(systemName: "info.circle")
+//                                }
+//                                .sensoryFeedback(.impact(weight: .heavy), trigger: showUserTypePopover)
+//                            }
                         }
                         Text(UserManager.shared.currentUser?.userType.description ?? "error")
                             .foregroundColor(.secondary)

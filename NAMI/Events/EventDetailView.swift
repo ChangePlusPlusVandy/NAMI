@@ -83,10 +83,12 @@ struct EventDetailView: View {
                 .font(.footnote)
             }
 
-            if isRegistered {
-                cancelButton
-            } else {
-                registerButton
+            if UserManager.shared.userType == .member {
+                if isRegistered {
+                    cancelButton
+                } else {
+                    registerButton
+                }
             }
 
             if showSuccessSheet {

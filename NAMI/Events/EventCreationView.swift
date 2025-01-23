@@ -32,8 +32,8 @@ struct EventCreationView : View {
                 TextField("Enter event title", text: $event.title)
             }
             Section(footer: Text("Note: time zone is in CST")){
-                DatePicker("Starts", selection: $event.startTime)
-                DatePicker("Ends", selection: $event.endTime)
+                DatePicker("Starts", selection: $event.startTime, in: Date()...)
+                DatePicker("Ends", selection: $event.endTime, in: Date()...)
             }
             .tint(Color.NAMIDarkBlue)
             .onChange(of: event.startTime) {
@@ -82,8 +82,16 @@ struct EventCreationView : View {
                 }
 
                 if event.repeatType != .never && event.endRepeat {
-                    DatePicker("End Date", selection: $event.endRepeatDate, displayedComponents: .date)
+                    DatePicker("End Date",
+                               selection: $event.endRepeatDate,
+                               in: Date()...,
+                               displayedComponents: .date)
                         .tint(Color.NAMIDarkBlue)
+                        .onChange(of: event.endTime) {
+                            if event.endRepeatDate < event.endTime {
+                                event.endRepeatDate = event.endTime
+                            }
+                        }
                 }
             }
 

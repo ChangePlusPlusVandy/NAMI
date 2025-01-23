@@ -13,14 +13,12 @@ struct HomeView: View {
     @Environment(TabsControl.self) var tabVisibilityControls
     @State var homeScreenRouter = HomeScreenRouter()
     @State private var viewModel = HomeViewModel()
-    @State private var hasAppeared = false
 
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
 
-                // MARK: Temporaily enable for testing
-                //if UserManager.shared.userType == .member {
+                if UserManager.shared.userType == .member {
                     Text("Welcome")
                         .font(.largeTitle.bold())
                         .padding([.bottom, .horizontal])
@@ -42,7 +40,13 @@ struct HomeView: View {
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
                     .refreshable {viewModel.refreshRegisteredEvents()}
-                //}
+                } else {
+                    ScrollView {
+                        Text("This is the admin dashboard")
+                            .edgesIgnoringSafeArea(.all)
+                            .padding(.top, 200)
+                    }
+                }
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
@@ -73,10 +77,7 @@ struct HomeView: View {
                 viewModel.refreshRegisteredEvents()
             }
             .onAppear {
-                if !hasAppeared {
-                    viewModel.refreshRegisteredEvents()
-                    hasAppeared = true
-                }
+                viewModel.refreshRegisteredEvents()
             }
         }
     }
@@ -160,6 +161,7 @@ class HomeViewModel {
             let documents = try await query.getDocuments().documents
             let events = documents.compactMap { try? $0.data(as: Event.self) }
             print("Registered events are refreshed")
+            print("registered evnets count \(registeredEvents.count)")
             withAnimation {
                 registeredEvents = events
             }
