@@ -14,7 +14,7 @@ struct CalendarEventsView: View {
     @State private var currentMonth: Date = Date()
     @State private var selectedDate: Date = Date()
     @State private var isCalendarView: Bool = true
-    @State private var showJumpToDate: Bool = false
+    @State private var showMonthYearPicker: Bool = false
     
     // Filter state
     @State private var searchText: String = ""
@@ -47,7 +47,8 @@ struct CalendarEventsView: View {
                 onPreviousMonth: previousMonth,
                 onNextMonth: nextMonth,
                 onToggleViewMode: toggleViewMode,
-                isCalendarView: isCalendarView
+                isCalendarView: isCalendarView,
+                showMonthYearPicker: $showMonthYearPicker
             )
             
             // Filter menu (reused from EventsView)
@@ -136,12 +137,15 @@ struct CalendarEventsView: View {
             }
         }
         .searchable(text: $searchText)
-        .sheet(isPresented: $showJumpToDate) {
-            JumpToDateView(
-                isPresented: $showJumpToDate,
-                selectedDate: $selectedDate,
+        .sheet(isPresented: $showMonthYearPicker) {
+            MonthYearPickerView(
+                isPresented: $showMonthYearPicker,
+                selectedDate: $currentMonth,
                 onDateSelected: { date in
-                    currentMonth = date
+                    withAnimation {
+                        currentMonth = date
+                        selectedDate = date
+                    }
                 }
             )
         }
@@ -159,7 +163,7 @@ struct CalendarEventsView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showJumpToDate = true
+                    showMonthYearPicker = true
                 } label: {
                     Image(systemName: "calendar")
                 }
