@@ -1,71 +1,9 @@
 //
-//  CalendarHeaderView.swift
+//  MonthYearPickerView.swift
 //  NAMI
 //
 
 import SwiftUI
-
-struct CalendarHeaderView: View {
-    let currentMonth: Date
-    let onPreviousMonth: () -> Void
-    let onNextMonth: () -> Void
-    let onToggleViewMode: () -> Void
-    let isCalendarView: Bool
-    @Binding var showMonthYearPicker: Bool
-    
-    private let calendar = Calendar.current
-    
-    private var monthYearString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: currentMonth)
-    }
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            // List/Calendar toggle
-            HStack {
-                Button(action: onToggleViewMode) {
-                    Text("List")
-                        .foregroundStyle(!isCalendarView ? Color.NAMIDarkBlue : .gray)
-                }
-                
-                Button(action: onToggleViewMode) {
-                    Text("Calendar")
-                        .foregroundStyle(isCalendarView ? Color.NAMIDarkBlue : .gray)
-                }
-            }
-            
-            // Month navigation
-            HStack {
-                Button(action: { showMonthYearPicker = true }) {
-                    HStack {
-                        Text(monthYearString)
-                            .font(.title3.bold())
-                        Image(systemName: "chevron.down")
-                            .font(.caption.bold())
-                    }
-                    .foregroundStyle(Color.primary)
-                }
-                
-                Spacer()
-                
-                HStack(spacing: 20) {
-                    Button(action: onPreviousMonth) {
-                        Image(systemName: "chevron.left")
-                            .foregroundStyle(Color.NAMIDarkBlue)
-                    }
-                    
-                    Button(action: onNextMonth) {
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(Color.NAMIDarkBlue)
-                    }
-                }
-            }
-        }
-        .padding(.horizontal)
-    }
-}
 
 struct MonthYearPickerView: View {
     @Binding var isPresented: Bool
@@ -126,7 +64,7 @@ struct MonthYearPickerView: View {
             }
             .padding(.top)
             
-            // Select button with highlight background
+            // Select button
             Button(action: selectDate) {
                 HStack {
                     Spacer()
@@ -160,38 +98,13 @@ struct MonthYearPickerView: View {
     }
 }
 
-//  Preview
-struct CalendarHeaderView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            // Calendar view mode
-            CalendarHeaderView(
-                currentMonth: Date(),
-                onPreviousMonth: {},
-                onNextMonth: {},
-                onToggleViewMode: {},
-                isCalendarView: true,
-                showMonthYearPicker: .constant(false)
-            )
-            
-            // List view mode
-            CalendarHeaderView(
-                currentMonth: Date(),
-                onPreviousMonth: {},
-                onNextMonth: {},
-                onToggleViewMode: {},
-                isCalendarView: false,
-                showMonthYearPicker: .constant(false)
-            )
-            
-            // Jump to date sheet
+#Preview {
+    Text("Tap to show picker")
+        .sheet(isPresented: .constant(true)) {
             MonthYearPickerView(
                 isPresented: .constant(true),
                 selectedDate: .constant(Date()),
                 onDateSelected: { _ in }
             )
         }
-        .previewLayout(.sizeThatFits)
-        .padding()
-    }
 }

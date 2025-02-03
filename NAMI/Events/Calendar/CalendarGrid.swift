@@ -106,22 +106,17 @@ struct DayInfo {
     let isCurrentMonth: Bool
 }
 
-struct CalendarGrid_Previews: PreviewProvider {
-    static var previews: some View {
-        let calendar = Calendar.current
-        let currentDate = Date()
-        let events = [
-            Event.dummyEvent,
-            Event.dummyEvent,
-            Event.newEvent
-        ]
-        
+#Preview {
+    NavigationStack {
         CalendarGrid(
-            currentMonth: currentDate,
-            events: events,
-            selectedDate: currentDate,
+            currentMonth: Date(),
+            events: [Event.dummyEvent],
+            selectedDate: Date(),
             onDateSelected: { _ in }
         )
         .padding()
+        .environment(TabsControl())
+        .environment(HomeScreenRouter())
+        .environment(EventsViewRouter())
     }
 }

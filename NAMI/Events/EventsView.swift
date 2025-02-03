@@ -15,7 +15,10 @@ struct EventsView: View {
     @State var searchText: String = ""
     @State var selectedMeetingMode: MeetingMode?
     @State var selectedCategory: EventCategory?
-
+    
+    
+    @State private var calendarManager = CalendarManager()
+    
     @FirestoreQuery(collectionPath: "events",
                     predicates: [.order(by: "startTime", descending: false)],
                     animation: .default) var events: [Event]
@@ -30,25 +33,121 @@ struct EventsView: View {
 
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
-            VStack {
-                List {
-                    eventsMenuFilter
-                        .listRowSeparator(.hidden, edges: .all)
-                    ForEach(filteredEvents) {event in
-                        CustomEventsCardView(event: event)
-                            .environment(eventsViewRouter)
-                            .environment(tabVisibilityControls)
-                            .onTapGesture {
-                                tabVisibilityControls.makeHidden()
-                                eventsViewRouter.navigate(to: .eventDetailView(event: event))
+            VStack(spacing: 0) {
+                            // Toggle buttons
+                            HStack(spacing: 24) {
+                                Button(action: { calendarManager.toggleViewMode() }) {
+                                    VStack(spacing: 8) {
+                                        Text("List")
+                                            .foregroundStyle(!calendarManager.isCalendarView ? Color.NAMIDarkBlue : .gray)
+                                        Rectangle()
+                                            .fill(!calendarManager.isCalendarView ? Color.NAMIDarkBlue : .clear)
+                                            .frame(height: 2)
+                                    }
+                                }
+                                
+                                Button(action: { calendarManager.toggleViewMode() }) {
+                                    VStack(spacing: 8) {
+                                        Text("Calendar")
+                                            .foregroundStyle(calendarManager.isCalendarView ? Color.NAMIDarkBlue : .gray)
+                                        Rectangle()
+                                            .fill(calendarManager.isCalendarView ? Color.NAMIDarkBlue : .clear)
+                                            .frame(height: 2)
+                                    }
+                                }
                             }
-                    }
-                }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
-                .searchable(text: $searchText)
-            }
-            .navigationTitle("Events")
+                            .padding(.top)
+                            
+                            Divider()
+                            
+                            // Month picker (only in calendar view)
+                            if calendarManager.isCalendarView {
+                                HStack {
+                                    Button(action: { calendarManager.showMonthYearPicker = true }) {
+                                        HStack {
+                                            Text(monthYearString(from: calendarManager.currentMonth))
+                                                .font(.title3.bold())
+                                            Image(systemName: "chevron.down")
+                                                .font(.caption.bold())
+                                        }
+                                        .foregroundStyle(Color.primary)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    HStack(spacing: 20) {
+                                        Button(action: { calendarManager.previousMonth() }) {
+                                            Image(systemName: "chevron.left")
+                                                .foregroundStyle(Color.NAMIDarkBlue)
+                                        }
+                                        
+                                        Button(action: { calendarManager.nextMonth() }) {
+                                            Image(systemName: "chevron.right")
+                                                .foregroundStyle(Color.NAMIDarkBlue)
+                                        }
+                                    }
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            }
+                            
+                            // Filter menu
+                            eventsMenuFilter
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
+                            
+                            // Content area
+                            if calendarManager.isCalendarView {
+                                // Calendar view
+                                Divider()
+                                    .padding(.vertical, 8)
+                                VStack {
+                                    CalendarGrid(
+                                        currentMonth: calendarManager.currentMonth,
+                                        events: filteredEvents,
+                                        selectedDate: calendarManager.selectedDate,
+                                        onDateSelected: { date in
+                                            calendarManager.selectDate(date)
+                                        }
+                                    )
+                                    
+                                    Divider()
+                                        .padding(.vertical, 8)
+                                    
+                                    CalendarDayDetailView(
+                                        selectedDate: calendarManager.selectedDate,
+                                        events: filteredEvents
+                                    )
+                                }
+                                .transition(.opacity)
+                            } else {
+                                // List view
+                                List {
+                                    ForEach(filteredEvents) { event in
+                                        CustomEventsCardView(event: event)
+                                            .environment(eventsViewRouter)
+                                            .environment(tabVisibilityControls)
+                                            .onTapGesture {
+                                                tabVisibilityControls.makeHidden()
+                                                eventsViewRouter.navigate(to: .eventDetailView(event: event))
+                                            }
+                                    }
+                                }
+                                .listStyle(.plain)
+                                .transition(.opacity)
+                            }
+                        }
+                        .navigationTitle("Events")
+                        .searchable(text: $searchText)
+                        .sheet(isPresented: $calendarManager.showMonthYearPicker) {
+                            MonthYearPickerView(
+                                isPresented: $calendarManager.showMonthYearPicker,
+                                selectedDate: $calendarManager.currentMonth,
+                                onDateSelected: { date in
+                                    calendarManager.selectDate(date)
+                                }
+                            )
+                        }
             .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
                 switch destination {
                 case .eventDetailView(let event):
@@ -65,8 +164,8 @@ struct EventsView: View {
                         .environment(HomeScreenRouter())
                 }
             }
-            .onChange(of: eventsViewRouter.navPath) {
-                if eventsViewRouter.navPath.isEmpty {
+            .onChange(of: eventsViewRouter.navPath) { oldPath, newPath in
+                if newPath.isEmpty {
                     tabVisibilityControls.makeVisible()
                 }
             }
@@ -83,6 +182,12 @@ struct EventsView: View {
                 }
             }
         }
+    }
+    
+    private func monthYearString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: date)
     }
 
     var eventsMenuFilter: some View {
@@ -188,6 +293,11 @@ struct EventsView: View {
 }
 
 #Preview {
-    EventsView()
-        .environment(TabsControl())
+    @State var tabControl = TabsControl()
+        return EventsView()
+            .environment(tabControl)
+            .environment(EventsViewRouter())
+            .environment(UserManager.shared)
 }
+
+
