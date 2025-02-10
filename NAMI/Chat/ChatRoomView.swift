@@ -34,10 +34,10 @@ struct ChatRoomView: View {
                 Button(action: {
       
                 }) {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "xmark")
                         .resizable()
-                        .frame(width: 20, height: 5)
-                        .foregroundColor(.black)
+                        .scaledToFit()
+                        .frame(width: 15)
                 }
             }
             .padding()
@@ -50,17 +50,13 @@ struct ChatRoomView: View {
                                 Spacer()
                                 Text(message)
                                     .padding()
-                                    .background(Color.purple)
+                                    .background(Color.NAMITealBlue)
                                     .foregroundColor(.white)
                                     .cornerRadius(10)
                                     .frame(maxWidth: 250, alignment: .trailing)
                             }
                         } else {
                             HStack(alignment: .top, spacing: 10) {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                    .foregroundColor(.gray)
                                 Text(message)
                                     .padding()
                                     .background(Color.gray.opacity(0.2))
@@ -73,15 +69,7 @@ struct ChatRoomView: View {
                 }
                 .padding()
             }
-            // Input field and send button
             HStack {
-                Button(action: {
-                }) {
-                    Image(systemName: "face.smiling")
-                        .resizable()
-                        .frame(width: 25, height: 25)
-                        .foregroundColor(.gray)
-                }
                 TextField("Type a message...", text: $message)
                     .padding()
                     .background(Color.gray.opacity(0.1))
@@ -89,17 +77,10 @@ struct ChatRoomView: View {
                     .frame(minHeight: 44)
                 Button(action: {
                 }) {
-                    Image(systemName: "mic.fill")
-                        .resizable()
-                        .frame(width: 20, height: 25)
-                        .foregroundColor(.gray)
-                }
-                Button(action: {
-                }) {
                     Image(systemName: "arrow.up.circle.fill")
                         .resizable()
                         .frame(width: 30, height: 30)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color.NAMIDarkBlue)
                 }
             }
             .padding()
@@ -108,8 +89,7 @@ struct ChatRoomView: View {
         .navigationBarHidden(true)
     }
 }
-struct ChatRoomView_Previews: PreviewProvider {
-    static var previews: some View {
-        ChatRoomView()
-    }
+
+#Preview {
+    ChatRoomView()
 }
