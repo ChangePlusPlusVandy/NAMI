@@ -9,6 +9,7 @@ import SwiftUI
 struct ChatUnavailableView: View {
     @Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
+    let phoneNumber = 988
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -23,7 +24,7 @@ struct ChatUnavailableView: View {
                         .font(.title3)
                         .bold()
 
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(spacing: 10) {
                         Text("If you are experiencing a mental health crisis during this time, please call or text 988")
                             .font(.callout)
 
@@ -33,15 +34,29 @@ struct ChatUnavailableView: View {
                     }
                 }
 
-                Button {
-                    withAnimation (.snappy) { isPresented.toggle() }
-                } label: {
-                    Text("Dismiss")
+                HStack (alignment: .bottom, spacing: 15) {
+                    Link("Call", destination: URL(string: "tel://\(phoneNumber)")!)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
-                        .background(Color.NAMIDarkBlue)
-                        .foregroundColor(.white)
-                        .cornerRadius(15)
+                    
+                    Button {
+                        
+                    } label: {
+                        Text("Text")
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    
+                    Button {
+                        withAnimation (.snappy) { isPresented.toggle() }
+                    } label: {
+                        Text("Dismiss")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 10)
+                            .background(Color.NAMIDarkBlue)
+                            .foregroundColor(.white)
+                            .cornerRadius(15)
+                    }
                 }
             }
             .padding(20)

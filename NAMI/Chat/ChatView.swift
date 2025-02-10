@@ -60,11 +60,30 @@ struct ChatView: View {
             .navigationTitle("HelpLine")
             .overlay {
                 if showChatUnavailable {
-                    ChatUnavailableView(isPresented: $showChatUnavailable)
+                    if withinOperatingHours() {
+                        ChatRoomView(isPresented: $showChatUnavailable)
+                    } else {
+                        ChatUnavailableView(isPresented: $showChatUnavailable)
+                    }
                 }
             }
         }
     }
+}
+
+func withinOperatingHours() -> Bool {
+    let now = Date.now
+    let timezoneOffset =  TimeZone.current.secondsFromGMT() / 3600 + 4
+    //in: TimeZone(abbreviation: "CST"),
+    let components = Calendar.current.dateComponents([.hour, .minute, .weekday], from: now)
+    if components.weekday == 1 || components.weekday == 7 {
+        return false
+    }
+    if (components.hour ?? -100) < 10 - timezoneOffset ||
+        (components.hour ?? 100) > 22 - timezoneOffset {
+        return false
+    }
+    return true
 }
 
 #Preview {
