@@ -83,7 +83,7 @@ func withinOperatingHours() -> Bool {
         (components.hour ?? 100) > 22 - timezoneOffset {
         return false
     }
-    return true
+    return false
 }
 
 #Preview {
