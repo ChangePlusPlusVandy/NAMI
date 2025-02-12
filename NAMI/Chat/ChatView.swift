@@ -41,7 +41,11 @@ struct ChatView: View {
                     }
 
                     Button {
-                        withAnimation(.snappy) {showChatUnavailable = true}
+                        withAnimation(.snappy) {
+                            if !withinOperatingHours() {
+                                showChatUnavailable = true
+                            }
+                        }
                     } label: {
                         Text("Start a Chat")
                             .padding(.horizontal, 10)
@@ -60,11 +64,7 @@ struct ChatView: View {
             .navigationTitle("HelpLine")
             .overlay {
                 if showChatUnavailable {
-                    if withinOperatingHours() {
-                        ChatRoomView(isPresented: $showChatUnavailable)
-                    } else {
-                        ChatUnavailableView(isPresented: $showChatUnavailable)
-                    }
+                    ChatUnavailableView(isPresented: $showChatUnavailable)
                 }
             }
         }
@@ -72,17 +72,20 @@ struct ChatView: View {
 }
 
 func withinOperatingHours() -> Bool {
-    let now = Date.now
-    let timezoneOffset =  TimeZone.current.secondsFromGMT() / 3600 + 4
-    //in: TimeZone(abbreviation: "CST"),
-    let components = Calendar.current.dateComponents([.hour, .minute, .weekday], from: now)
-    if components.weekday == 1 || components.weekday == 7 {
+    let now = Date()
+
+    guard let cstTimeZone = TimeZone(identifier: "America/Chicago") else {
         return false
     }
-    if (components.hour ?? -100) < 10 - timezoneOffset ||
-        (components.hour ?? 100) > 22 - timezoneOffset {
-        return false
+
+    // Get the current hour in CST
+    let calendar = Calendar.current
+    let components = calendar.dateComponents(in: cstTimeZone, from: now)
+
+    if let hour = components.hour {
+        return hour >= 10 && hour < 22
     }
+
     return false
 }
 
