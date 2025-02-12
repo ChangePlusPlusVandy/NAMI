@@ -7,17 +7,21 @@ import SwiftUI
 
 @Observable
 class CalendarManager {
-    private let calendar = Calendar.current
+    enum ViewOption {
+        case calendar
+        case list
+    }
     
+    private let calendar = Calendar.current
     var currentMonth: Date
     var selectedDate: Date
-    var isCalendarView: Bool
+    var viewOption: ViewOption
     var showMonthYearPicker: Bool
     
     init() {
         self.currentMonth = Date()
         self.selectedDate = Date()
-        self.isCalendarView = false
+        self.viewOption = .list
         self.showMonthYearPicker = false
     }
     
@@ -43,14 +47,12 @@ class CalendarManager {
     
     func toggleViewMode() {
         withAnimation {
-            isCalendarView.toggle()
+            viewOption = viewOption == .calendar ? .list : .calendar
         }
     }
     
     func selectDate(_ date: Date) {
-        withAnimation {
-            selectedDate = date
-            currentMonth = date
-        }
+        selectedDate = date
+        currentMonth = date
     }
 }

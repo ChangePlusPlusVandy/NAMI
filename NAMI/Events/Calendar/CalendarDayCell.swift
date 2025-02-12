@@ -10,20 +10,20 @@ struct CalendarDayCell: View {
     let events: [Event]
     let isCurrentMonth: Bool
     let isSelected: Bool
-    
+
     private let calendar = Calendar.current
-    
+
     //Maximum no event indicators to show
     private let maxEventIndicators = 3
-    
+
     private var dayNumber: Int {
         calendar.component(.day, from: date)
     }
-    
+
     private var isToday: Bool {
         calendar.isDateInToday(date)
     }
-    
+
     var body: some View {
         VStack(spacing: 4) {
             //Day number
@@ -33,7 +33,8 @@ struct CalendarDayCell: View {
                 .foregroundStyle(foregroundColor)
                 .frame(width: 32, height: 32)
                 .background(backgroundShape)
-            
+                .animation(.snappy(duration: 0.1), value: isSelected)
+
             //Event indicator
             if !events.isEmpty {
                 HStack(spacing: 4) {
@@ -42,11 +43,11 @@ struct CalendarDayCell: View {
                             .fill(event.eventCategory.color)
                             .frame(width: 6, height: 6)
                     }
-                    
+
                     if events.count > maxEventIndicators {
                         Text("+\(events.count - maxEventIndicators)")
-                                                    .font(.system(size: 8))
-                                                    .foregroundStyle(.secondary)
+                            .font(.system(size: 8))
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .frame(height: 6)
@@ -58,7 +59,7 @@ struct CalendarDayCell: View {
         .frame(height: 45)
         .contentShape(Rectangle())
     }
-    
+
     private var foregroundColor: Color {
         if !isCurrentMonth {
             return .gray.opacity(0.5)
@@ -71,7 +72,7 @@ struct CalendarDayCell: View {
         }
         return .primary
     }
-    
+
     @ViewBuilder
     private var backgroundShape: some View {
         if isSelected {
@@ -90,7 +91,7 @@ struct CalendarDayCell_Previews: PreviewProvider {
     static var previews: some View {
         let today = Date()
         let calendar = Calendar.current
-        
+
         Group {
             //Today with no events
             CalendarDayCell(
@@ -99,7 +100,7 @@ struct CalendarDayCell_Previews: PreviewProvider {
                 isCurrentMonth: true,
                 isSelected: false
             )
-            
+
             // Selected day with events
             CalendarDayCell(
                 date: calendar.date(byAdding: .day, value: 1, to: today)!,
@@ -107,7 +108,7 @@ struct CalendarDayCell_Previews: PreviewProvider {
                 isCurrentMonth: true,
                 isSelected: true
             )
-                        
+
             // Non-current month day
             CalendarDayCell(
                 date: calendar.date(byAdding: .month, value: 1, to: today)!,
@@ -115,9 +116,9 @@ struct CalendarDayCell_Previews: PreviewProvider {
                 isCurrentMonth: false,
                 isSelected: false
             )
-            
+
         }
         .previewLayout(.sizeThatFits)
-            .padding()
+        .padding()
     }
 }
