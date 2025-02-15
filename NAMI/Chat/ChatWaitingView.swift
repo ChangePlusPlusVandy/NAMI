@@ -10,40 +10,46 @@ import SwiftUI
 struct ChatWaitingView: View {
     @State private var rotation: Double = 0
     @State private var showingAlert = false
+    @State private var navigateToChatView = false
     
-    private var helpMessage = "If you are experiencing a mental health crisis, please call or text 988, available 24/7/365"
+    private let helpMessage = "If you are experiencing a mental health crisis, please call or text 988, available 24/7/365"
     
     var body: some View {
-        VStack {
-            VStack(spacing: 0) {
-                Image("NAMILogo")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 250, height: 125)
-                
-                Text("HelpLine")
-                    .font(.system(size: 20))
-            }
-            
+        NavigationStack {
             VStack {
-                loadingSpinner()
-                    .frame(width: 40, height: 40)
-                    .padding(.top, 50)
+                VStack(spacing: 0) {
+                    Image("NAMILogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 250, height: 125)
+                    
+                    Text("HelpLine")
+                        .font(.system(size: 20))
+                }
                 
-                Text("Connecting...")
-                    .padding(.top, 10)
-            }
-            .padding(.bottom, 50)
-            
-            VStack {
-                Text(helpMessage)
-                    .frame(maxWidth: 300)
-                    .fontWeight(.light)
-                    .multilineTextAlignment(.center)
+                VStack {
+                    loadingSpinner()
+                        .frame(width: 40, height: 40)
+                        .padding(.top, 50)
+                    
+                    Text("Connecting...")
+                        .padding(.top, 10)
+                }
+                .padding(.bottom, 50)
                 
-                cancelChatButton()
+                VStack {
+                    Text(helpMessage)
+                        .frame(maxWidth: 300)
+                        .fontWeight(.light)
+                        .multilineTextAlignment(.center)
+                    
+                    cancelChatButton()
+                }
+                .padding(.top, 100)
             }
-            .padding(.top, 100)
+        }
+        .navigationDestination(isPresented: $navigateToChatView) {
+            ChatView()
         }
     }
     
@@ -67,8 +73,8 @@ struct ChatWaitingView: View {
     }
     
     func cancelChatButton() -> some View {
-        var alertTitle = "Are you sure you want to cancel your chat request?"
-        var alertMessage = "You're up next soon"
+        let alertTitle = "Are you sure you want to cancel your chat request?"
+        let alertMessage = "You're up next soon"
         
         return Button(action: {
             showingAlert = true
@@ -86,9 +92,9 @@ struct ChatWaitingView: View {
                 }
                 .alert(alertTitle, isPresented: $showingAlert) {
                     Button("Cancel", role: .cancel) { }
-                    Button("Exit", role: .destructive, action: {
-                        print("exited chat")  // TODO: implement exit navigation
-                    })
+                    Button("Exit", role: .destructive) {
+                        navigateToChatView = true
+                    }
                 } message: {
                     Text(alertMessage)
                 }
