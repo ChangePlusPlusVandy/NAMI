@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ChatWaitingView: View {
     @State private var rotation: Double = 0
+    private var helpMessage = "If you are experiencing a mental health crisis, please call or text 988, available 24/7/365"
     
     var body: some View {
         VStack {
@@ -30,6 +31,14 @@ struct ChatWaitingView: View {
                 Text("Connecting...")
                     .padding(.top, 10)
             }
+            
+            VStack {
+                Text(helpMessage)
+                    .frame(maxWidth: 300)
+                    .fontWeight(.light)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(.top, 100)
         }
     }
     
