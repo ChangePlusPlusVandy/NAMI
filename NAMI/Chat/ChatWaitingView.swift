@@ -24,7 +24,11 @@ struct ChatWaitingView: View {
             
             VStack {
                 loadingSpinner()
-                    .frame(width: 50, height: 50)
+                    .frame(width: 40, height: 40)
+                    .padding(.top, 70)
+                
+                Text("Connecting...")
+                    .padding(.top, 10)
             }
         }
     }
@@ -32,13 +36,13 @@ struct ChatWaitingView: View {
     func loadingSpinner() -> some View {
         ZStack {
             Circle()
-                .stroke(lineWidth: 4)
+                .stroke(lineWidth: 6)
                 .opacity(0.3)
                 .foregroundColor(.gray)
             
             Circle()
                 .trim(from: 0, to: 0.25)
-                .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                .stroke(style: StrokeStyle(lineWidth: 6, lineCap: .round))
                 .foregroundColor(.cyan)
                 .rotationEffect(.degrees(rotation))
                 .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: rotation)
