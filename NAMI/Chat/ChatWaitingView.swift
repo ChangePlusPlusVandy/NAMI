@@ -74,7 +74,7 @@ struct ChatWaitingView: View {
             showingAlert = true
                 }) {
                     Text("Cancel Chat")
-                        .font(.system(size: 18, weight: .medium))
+                        .font(.system(size: 18, weight: .regular))
                         .foregroundColor(.black)
                         .frame(maxWidth: .infinity, minHeight: 50)
                         .background(Color(UIColor.systemGray6))
