@@ -33,12 +33,12 @@ struct EventsView: View {
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
-                CalendarSelection.DisplaySelectionButton()
+                CalendarDisplaySelectionButton()
                     .environment(calendarManager)
                 if calendarManager.viewOption == .calendar {
                     Group {
                         Group {
-                            CalendarSelection.SelectionHeader()
+                            CalendarSelectionHeader()
                                 .environment(calendarManager)
                             
                             CalendarGrid(events: filteredEvents)

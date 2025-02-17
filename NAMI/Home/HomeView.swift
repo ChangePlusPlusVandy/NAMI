@@ -27,13 +27,13 @@ struct HomeView: View {
                         .padding([.bottom, .horizontal])
                         .padding(.top, 10)
                     
-                    CalendarSelection.DisplaySelectionButton()
+                    CalendarDisplaySelectionButton()
                         .environment(calendarManager)
                         .padding(.horizontal)
                     
                     if calendarManager.viewOption == .calendar {
                         Group {
-                            CalendarSelection.SelectionHeader()
+                            CalendarSelectionHeader()
                                 .environment(calendarManager)
                                 .padding(.horizontal, 20)
                             
