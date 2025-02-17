@@ -41,6 +41,7 @@ struct EventDetailView: View {
                             EventCategoryCapsule(eventCategory: event.eventCategory)
                             MeetingModeCapsule(meetingMode: event.meetingMode)
                         }
+                        RegisteredCountCapsule(count: event.registeredUsersIds.count)
                     }
                     .padding(.top, 15)
 
