@@ -33,11 +33,14 @@ struct EventsView: View {
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
-                eventDisplaySelectionButton
+                CalendarSelection.DisplaySelectionButton()
+                    .environment(calendarManager)
                 if calendarManager.viewOption == .calendar {
                     Group {
                         Group {
-                            calendarSelectionHeader
+                            CalendarSelection.SelectionHeader()
+                                .environment(calendarManager)
+                            
                             CalendarGrid(events: filteredEvents)
                                 .environment(calendarManager)
                                 .environment(eventsViewRouter)
@@ -120,73 +123,6 @@ struct EventsView: View {
                 }
             }
         }
-    }
-    
-    var calendarSelectionHeader: some View {
-        HStack {
-            Button {
-                calendarManager.showMonthYearPicker = true
-            } label: {
-                HStack {
-                    Text(monthYearString(from: calendarManager.currentMonth))
-                        .font(.title3.bold())
-                    Image(systemName: "chevron.down")
-                        .font(.caption.bold())
-                }
-            }
-            
-            Spacer()
-            
-            Button {
-                calendarManager.previousMonth()
-            } label: {
-                Image(systemName: "chevron.left")
-                    .foregroundStyle(Color.NAMIDarkBlue)
-            }
-            .padding(.horizontal, 10)
-
-            Button {
-                calendarManager.nextMonth()
-            } label: {
-                Image(systemName: "chevron.right")
-                    .foregroundStyle(Color.NAMIDarkBlue)
-            }
-        }
-    }
-    
-    var eventDisplaySelectionButton: some View {
-        HStack(spacing: 0) {
-            Button {
-                calendarManager.toggleViewMode()
-            } label: {
-                VStack(spacing: 5) {
-                    Text("List")
-                        .font(.callout)
-                    Rectangle()
-                        .frame(height: calendarManager.viewOption == .list ? 2 : 1)
-                }
-                .foregroundStyle(calendarManager.viewOption == .list ? Color.NAMIDarkBlue : Color.secondary)
-            }
-            
-            Button { calendarManager.toggleViewMode()
-            } label: {
-                VStack(spacing: 5) {
-                    Text("Calendar")
-                        .font(.callout)
-                    Rectangle()
-                        .frame(height: calendarManager.viewOption == .calendar ? 2 : 1)
-                }
-                .foregroundStyle(calendarManager.viewOption == .calendar ? Color.NAMIDarkBlue : Color.secondary)
-                
-            }
-        }
-        .padding(.horizontal, 20)
-    }
-    
-    private func monthYearString(from date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-        return formatter.string(from: date)
     }
     
     var eventsMenuFilter: some View {

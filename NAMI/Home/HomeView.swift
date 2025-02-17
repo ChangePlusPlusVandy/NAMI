@@ -13,6 +13,9 @@ struct HomeView: View {
     @Environment(TabsControl.self) var tabVisibilityControls
     @State var homeScreenRouter = HomeScreenRouter()
     @State private var viewModel = HomeViewModel()
+    @State private var calendarManager = CalendarManager()
+    @State private var eventsViewRouter = EventsViewRouter()
+
 
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
@@ -23,23 +26,53 @@ struct HomeView: View {
                         .font(.largeTitle.bold())
                         .padding([.bottom, .horizontal])
                         .padding(.top, 10)
-                    Text("My Upcoming Events")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .padding(10)
-                    List {
-                        ForEach(viewModel.registeredEvents) { event in
-                            CustomEventCardView(event: event)
+                    
+                    CalendarSelection.DisplaySelectionButton()
+                        .environment(calendarManager)
+                        .padding(.horizontal)
+                    
+                    if calendarManager.viewOption == .calendar {
+                        Group {
+                            CalendarSelection.SelectionHeader()
+                                .environment(calendarManager)
+                                .padding(.horizontal, 20)
+                            
+                            CalendarGrid(events: viewModel.registeredEvents)
+                                .environment(calendarManager)
                                 .environment(homeScreenRouter)
-                                .onTapGesture {
-                                    tabVisibilityControls.makeHidden()
-                                    homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                                }
+                                .environment(eventsViewRouter)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                            CalendarDayDetailView(
+                                isHomeView: true,
+                                selectedDate: calendarManager.selectedDate,
+                                events: viewModel.registeredEvents
+                                )
+                            .environment(homeScreenRouter)
+                            .environment(eventsViewRouter)
                         }
+                        .transition(.move(edge: .trailing))
+                    } else {
+                        Text("My Upcoming Events")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                            .padding(10)
+                        List {
+                            ForEach(viewModel.registeredEvents) { event in
+                                CustomEventCardView(event: event)
+                                    .environment(homeScreenRouter)
+                                    .environment(eventsViewRouter)
+                                    .onTapGesture {
+                                        tabVisibilityControls.makeHidden()
+                                        homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                    }
+                            }
+                        }
+                        .listStyle(.plain)
+                        .scrollIndicators(.hidden)
+                        .refreshable {viewModel.refreshRegisteredEvents()}
+                        .transition(.move(edge: .leading))
                     }
-                    .listStyle(.plain)
-                    .scrollIndicators(.hidden)
-                    .refreshable {viewModel.refreshRegisteredEvents()}
                 } else {
                     ScrollView {
                         Text("This is the admin dashboard")
@@ -50,6 +83,15 @@ struct HomeView: View {
             }
             .toolbar {homeViewToolBar}
             .navigationTitle("")
+            .sheet(isPresented: $calendarManager.showMonthYearPicker){
+                MonthYearPickerView(
+                    isPresented: $calendarManager.showMonthYearPicker,
+                    selectedDate: $calendarManager.currentMonth,
+                    onDateSelected: { date in
+                        calendarManager.selectDate(date)
+                        }
+                )
+            }
             .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
                 switch destination {
                 case .userProfileView:
@@ -173,4 +215,5 @@ class HomeViewModel {
     HomeView()
         .environment(AuthenticationManager())
         .environment(TabsControl())
+        .environment(EventsViewRouter())
 }
