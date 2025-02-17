@@ -20,16 +20,33 @@ struct AppView: View {
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        
+        // Set initial tab based on user type
+        if UserManager.shared.userType == .superAdmin {
+            _tabSelection = State(initialValue: 3) // Member tab
+        } else if UserManager.shared.userType == .admin {
+            _tabSelection = State(initialValue: 1) // Events tab
+        }
     }
     
     var body: some View {
         TabView(selection: $tabSelection) {
+            if UserManager.shared.userType == .member {
+                Tab(value: 0) {
+                    HomeView()
+                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                } label: {
+                    Label("Home", systemImage: "house")
+                }
+            }
 
-            Tab(value: 0) {
-                HomeView()
-                    .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
-            } label: {
-                Label("Home", systemImage: "house")
+            if UserManager.shared.userType == .superAdmin {
+                Tab(value: 3) {
+                    MemberView()
+                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                } label: {
+                    Label("Member", systemImage: "checkmark.seal.fill")
+                }
             }
 
             Tab(value: 1) {
@@ -46,14 +63,7 @@ struct AppView: View {
                 Label("Chat", systemImage: "message")
             }
 
-            if UserManager.shared.userType == .superAdmin {
-                Tab(value: 3) {
-                    MemberView()
-                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
-                } label: {
-                    Label("Member", systemImage: "checkmark.seal.fill")
-                }
-            }
+            
         }
         .environment(tabVisiblityControls)
         .sensoryFeedback(.impact(weight: .heavy), trigger: tabSelection)
