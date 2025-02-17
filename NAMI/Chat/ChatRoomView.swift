@@ -32,7 +32,7 @@ struct ChatRoomView: View {
                     .foregroundColor(.black)
                 Spacer()
                 Button(action: {
-      
+
                 }) {
                     Image(systemName: "xmark")
                         .resizable()

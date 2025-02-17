@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import UIKit
+
 struct ChatUnavailableView: View {
     @Binding var isPresented: Bool
     @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         ZStack {
             Color.black.opacity(0.4)
@@ -33,16 +36,36 @@ struct ChatUnavailableView: View {
                     }
                 }
 
-                Button {
-                    withAnimation (.snappy) { isPresented.toggle() }
-                } label: {
-                    Text("Dismiss")
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 10)
-                        .background(Color.NAMIDarkBlue)
-                        .foregroundColor(.white)
-                        .cornerRadius(15)
+                HStack(spacing: 10) {
+                    Spacer()
+
+                    Button {
+                        if let url = URL(string: "sms:988"), UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        Text("Text")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 7)
+                            .background(Color.NAMIDarkBlue)
+                            .foregroundColor(.white)
+                            .cornerRadius(15)
+                    }
+
+                    Button {
+                        if let url = URL(string: "tel://988"), UIApplication.shared.canOpenURL(url) {
+                            UIApplication.shared.open(url)
+                        }
+                    } label: {
+                        Text("Call")
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 7)
+                            .background(Color.NAMIDarkBlue)
+                            .foregroundColor(.white)
+                            .cornerRadius(15)
+                    }
                 }
+                .padding(.top)
             }
             .padding(20)
             .background(colorScheme == .dark ? Color(.systemGray5) : Color.white)
