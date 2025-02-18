@@ -176,7 +176,7 @@ struct EventDetailView: View {
             Text("Location:")
                 .font(.headline.bold())
                 .padding(.vertical, 3)
-            if isRegistered {
+            if isRegistered || UserManager.shared.isAdmin() {
                 switch event.meetingMode {
                 case .inPerson(let location):
                     if !location.isEmpty {
