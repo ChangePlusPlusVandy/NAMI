@@ -27,7 +27,11 @@ struct EventCardView: View {
                 .foregroundStyle(.secondary)
                 .font(.caption)
             Spacer()
-            MeetingModeCapsule(meetingMode: event.meetingMode)
+            HStack {
+                MeetingModeCapsule(meetingMode: event.meetingMode)
+                Spacer()
+                RegisteredCountCapsule(count: event.registeredUsersIds.count)
+            }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -45,6 +49,19 @@ struct EventCardView: View {
             }
         }
         .contentShape(Rectangle())
+    }
+}
+
+struct RegisteredCountCapsule: View{
+    let count: Int
+    var body: some View {
+        HStack(spacing: 3) {
+            Text("Registered: \(count)")
+        }
+        .foregroundStyle(.secondary)
+        .font(.caption)
+        .padding(.horizontal, 5)
+        .padding(.vertical, 2)
     }
 }
 
