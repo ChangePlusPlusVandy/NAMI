@@ -60,3 +60,21 @@ func openAddressInGoogleMap(address: String){
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
+
+func withinOperatingHours() -> Bool {
+    let now = Date()
+
+    guard let cstTimeZone = TimeZone(identifier: "America/Chicago") else {
+        return false
+    }
+
+    // Get the current hour in CST
+    let calendar = Calendar.current
+    let components = calendar.dateComponents(in: cstTimeZone, from: now)
+
+    if let hour = components.hour {
+        return hour >= 10 && hour < 22
+    }
+
+    return false
+}

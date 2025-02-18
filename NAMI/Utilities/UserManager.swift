@@ -37,6 +37,10 @@ final class UserManager {
         userType == .admin || userType == .superAdmin
     }
 
+    func isChatAdmin() -> Bool {
+        userType == .admin || userType == .superAdmin || userType == .volunteer
+    }
+
     // Update the user info and refresh cache
     func updateUserInfo(updatedUser: NamiUser) async -> Bool {
         do {

@@ -8,10 +8,34 @@
 import SwiftUI
 
 @Observable
-final class ChatRouter {
+final class ChatUserRouter {
 
     public enum Destination: Hashable {
         case chatWaitingView
+    }
+
+    var navPath = NavigationPath()
+
+    func navigate(to destination: Destination) {
+        navPath.append(destination)
+    }
+
+    func navigateBack() {
+        if navPath.count > 0 {
+            navPath.removeLast()
+        }
+    }
+
+    func navigateToRoot() {
+        navPath.removeLast(navPath.count)
+    }
+}
+
+@Observable
+final class ChatAdminRouter {
+
+    public enum Destination: Hashable {
+        case chatRoomView
     }
 
     var navPath = NavigationPath()

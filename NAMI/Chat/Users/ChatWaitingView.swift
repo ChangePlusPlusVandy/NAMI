@@ -11,7 +11,7 @@ struct ChatWaitingView: View {
     @State private var rotation: Double = 0
     @State private var showAlert = false
 
-    @Environment(ChatRouter.self) var chatRouter
+    @Environment(ChatUserRouter.self) var chatUserRouter
 
     var body: some View {
         VStack {
@@ -47,7 +47,7 @@ struct ChatWaitingView: View {
 
             }
             Button("Exit", role: .destructive) {
-                chatRouter.navigateBack()
+                chatUserRouter.navigateBack()
             }
         } message: {
             Text("You're up next soon")
@@ -99,5 +99,5 @@ struct ChatWaitingView: View {
 
 #Preview {
     ChatWaitingView()
-        .environment(ChatRouter())
+        .environment(ChatUserRouter())
 }
