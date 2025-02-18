@@ -8,20 +8,20 @@ import SwiftUI
 
 struct CalendarGrid: View{
     @Environment(CalendarManager.self) var calendarManager
-
+    
     let events: [Event]
-
+    
     private let calendar = Calendar.current
     private let daysInWeek = 7
     private let dayNames = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-
+    
     //Events grouped by date
     private var eventsByDate: [Date: [Event]] {
         Dictionary(grouping: events) { event in
             calendar.startOfDay(for: event.startTime)
         }
     }
-
+    
     var body: some View {
         VStack(spacing: 10) {
             HStack {
@@ -33,7 +33,7 @@ struct CalendarGrid: View{
                         .frame(maxWidth: .infinity)
                 }
             }
-
+            
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: daysInWeek), spacing: 0) {
                 ForEach(daysInMonth(), id: \.date) { dayInfo in
                     CalendarDayCell(
@@ -54,7 +54,7 @@ struct CalendarGrid: View{
         }
         .animation(.snappy, value: calendarManager.selectedDate)
     }
-
+    
     private func daysInMonth() -> [DayInfo] {
         guard let monthInterval = calendar.dateInterval(of: .month, for: calendarManager.currentMonth),
               let monthFirstWeek = calendar.dateInterval(of: .weekOfMonth, for: monthInterval.start),
@@ -62,14 +62,14 @@ struct CalendarGrid: View{
         else {
             return []
         }
-
+        
         let days = calendar.dateComponents([.day], from: monthInterval.start, to: monthInterval.end).day ?? 0
-
+        
         var result: [DayInfo] = []
-
+        
         // previous month days
         let preceedingDays = calendar.dateComponents([.day], from: monthFirstWeek.start, to: monthInterval.start).day ?? 0
-
+        
         if preceedingDays > 0 {
             for day in 1...preceedingDays{
                 if let date = calendar.date(byAdding: .day, value: -day, to: monthInterval.start) {
@@ -77,15 +77,15 @@ struct CalendarGrid: View{
                 }
             }
         }
-
+        
         for day in 0..<days {
             if let date = calendar.date(byAdding: .day, value: day, to: monthInterval.start) {
                 result.append(DayInfo(date: date, isCurrentMonth: true))
             }
         }
-
+        
         let followingDays = calendar.dateComponents([.day], from: monthInterval.end, to: monthLastWeek.end).day ?? 0
-
+        
         for day in 0..<followingDays {
             if let date = calendar.date(byAdding: .day,
                                         value: day,
@@ -93,10 +93,10 @@ struct CalendarGrid: View{
                 result.append(DayInfo(date: date, isCurrentMonth: false))
             }
         }
-
+        
         return result
     }
-
+    
     private func eventsFor(date: Date) -> [Event] {
         let startOfDay = calendar.startOfDay(for: date)
         return eventsByDate[startOfDay] ?? []

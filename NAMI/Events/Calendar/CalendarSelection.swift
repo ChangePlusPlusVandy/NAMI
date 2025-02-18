@@ -8,7 +8,7 @@ import SwiftUI
 // Shared components for calendar selection UI
 struct CalendarDisplaySelectionButton: View {
     @Environment(CalendarManager.self) var calendarManager
-
+    
     var body: some View {
         HStack(spacing: 0) {
             Button {
@@ -25,7 +25,7 @@ struct CalendarDisplaySelectionButton: View {
                 .foregroundStyle(calendarManager.viewOption == .list ? Color.NAMIDarkBlue : Color.secondary)
             }
             .frame(maxWidth: .infinity)
-
+            
             Button {
                 withAnimation {
                     calendarManager.toggleViewMode()
@@ -46,7 +46,7 @@ struct CalendarDisplaySelectionButton: View {
 
 struct CalendarSelectionHeader: View {
     @Environment(CalendarManager.self) var calendarManager
-
+    
     var body: some View {
         HStack {
             Button {
@@ -59,9 +59,9 @@ struct CalendarSelectionHeader: View {
                         .font(.caption.bold())
                 }
             }
-
+            
             Spacer()
-
+            
             Button {
                 calendarManager.previousMonth()
             } label: {
@@ -69,7 +69,7 @@ struct CalendarSelectionHeader: View {
                     .foregroundStyle(Color.NAMIDarkBlue)
             }
             .padding(.horizontal, 10)
-
+            
             Button {
                 calendarManager.nextMonth()
             } label: {
@@ -78,7 +78,7 @@ struct CalendarSelectionHeader: View {
             }
         }
     }
-
+    
     private func monthYearString(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"

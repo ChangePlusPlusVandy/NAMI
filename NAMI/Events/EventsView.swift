@@ -10,18 +10,17 @@ import FirebaseFirestore
 
 struct EventsView: View {
     @Environment(TabsControl.self) var tabVisibilityControls
-    
+
     @State var eventsViewRouter = EventsViewRouter()
     @State var searchText: String = ""
     @State var selectedMeetingMode: MeetingMode?
     @State var selectedCategory: EventCategory?
-    
     @State private var calendarManager = CalendarManager()
-    
+
     @FirestoreQuery(collectionPath: "events",
                     predicates: [.order(by: "startTime", descending: false)],
                     animation: .default) var events: [Event]
-    
+
     var filteredEvents: [Event] {
         events.filter { event in
             (selectedCategory == nil || event.eventCategory == selectedCategory) &&
@@ -29,54 +28,49 @@ struct EventsView: View {
             (selectedMeetingMode == nil || event.meetingMode.displayName == selectedMeetingMode?.displayName)
         }
     }
-    
+
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
                 CalendarDisplaySelectionButton()
-                    .environment(calendarManager)
-                if calendarManager.viewOption == .calendar {
+                    .padding(.horizontal)
+                switch calendarManager.viewOption {
+                case .calendar:
                     Group {
                         Group {
                             CalendarSelectionHeader()
-                                .environment(calendarManager)
-                            
-                            CalendarGrid(events: filteredEvents)
-                                .environment(calendarManager)
-                                .environment(eventsViewRouter)
+                                .padding(.vertical, 8)
+                            CalendarGrid(events: events)
                         }
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
-                        
+
                         CalendarDayDetailView(
-                            isHomeView: false,
                             selectedDate: calendarManager.selectedDate,
                             events: events
                         )
-                        .environment(eventsViewRouter)
                     }
                     .transition(.move(edge: .trailing))
-                } else {
+                case .list:
                     Group {
                         eventsMenuFilter
                             .padding(.horizontal)
                             .padding(.top, 8)
-                        List {
-                            ForEach(filteredEvents) { event in
-                                CustomEventsCardView(event: event)
-                                    .environment(eventsViewRouter)
-                                    .environment(tabVisibilityControls)
-                                    .onTapGesture {
-                                        tabVisibilityControls.makeHidden()
-                                        eventsViewRouter.navigate(to: .eventDetailView(event: event))
-                                    }
-                            }
+                        List(filteredEvents) { event in
+                            CustomEventsCardView(event: event)
+                                .onTapGesture {
+                                    tabVisibilityControls.makeHidden()
+                                    eventsViewRouter.navigate(to: .eventDetailView(event: event))
+                                }
                         }
                         .listStyle(.plain)
                     }
                     .transition(.move(edge: .leading))
                 }
             }
+            .environment(eventsViewRouter)
+            .environment(tabVisibilityControls)
+            .environment(calendarManager)
             .navigationTitle("Events")
             .navigationBarTitleDisplayMode(.inline)
             .searchable(text: $searchText)
@@ -124,7 +118,7 @@ struct EventsView: View {
             }
         }
     }
-    
+
     var eventsMenuFilter: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
@@ -135,7 +129,7 @@ struct EventsView: View {
                             selectedCategory = $0 == selectedCategory ? nil : $0
                         }
                     )
-                    
+
                     Picker("Category", selection: selected) {
                         ForEach(EventCategory.allCases){ category in
                             Text(category.rawValue).tag(category)
@@ -144,7 +138,7 @@ struct EventsView: View {
                 } label: {
                     Label(selectedCategory?.rawValue ?? "All Categories", systemImage: "chevron.down")
                 }
-                
+
                 Menu {
                     let selected = Binding(
                         get: { selectedMeetingMode },
@@ -169,7 +163,7 @@ struct CustomEventsCardView: View {
     @State private var showConfirmationDialog = false
     @Environment(EventsViewRouter.self) var eventsViewRouter
     @Environment(TabsControl.self) var tabVisibilityControls
-    
+
     let event: Event
     var body: some View {
         EventCardView(event: event, showRegistered: true)
@@ -178,22 +172,12 @@ struct CustomEventsCardView: View {
                 if UserManager.shared.isAdmin() {
                     Button("", systemImage: "trash") { showConfirmationDialog = true}
                         .tint(.red)
-                    
+
                     Button("", systemImage: "pencil") {
                         eventsViewRouter.navigate(to: .eventUpdateView(event: event))
                         tabVisibilityControls.makeHidden()
                     }
                 }
-                
-                // MARK: Register button should only be enabled in EventDetailView
-                //                    if UserManager.shared.userType == .member {
-                //                        Button("", systemImage: "calendar.badge.plus") {
-                //                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                //                        }
-                //                        .tint(Color.NAMIDarkBlue)
-                //                    }
-                
-                
             }
             .contextMenu {
                 if UserManager.shared.isAdmin() {
@@ -205,12 +189,6 @@ struct CustomEventsCardView: View {
                         tabVisibilityControls.makeHidden()
                     }
                 }
-                //                    if UserManager.shared.userType == .member {
-                //                        Button("Register Event", systemImage: "calendar.badge.plus") {
-                //                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-                //                        }
-                //                        .tint(Color.NAMIDarkBlue)
-                //                    }
             }
             .confirmationDialog(
                 "Are you sure you want to delete this event?",
