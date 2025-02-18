@@ -30,7 +30,11 @@ struct EventCardView: View {
             HStack {
                 MeetingModeCapsule(meetingMode: event.meetingMode)
                 Spacer()
-                RegisteredCountCapsule(count: event.registeredUsersIds.count)
+                if UserManager.shared.isAdmin() {
+                    Text("^[\(event.registeredUsersIds.count) person](inflected: true) registered")
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                }
             }
         }
         .padding()
@@ -49,19 +53,6 @@ struct EventCardView: View {
             }
         }
         .contentShape(Rectangle())
-    }
-}
-
-struct RegisteredCountCapsule: View{
-    let count: Int
-    var body: some View {
-        HStack(spacing: 3) {
-            Text("Registered: \(count)")
-        }
-        .foregroundStyle(.secondary)
-        .font(.caption)
-        .padding(.horizontal, 5)
-        .padding(.vertical, 2)
     }
 }
 

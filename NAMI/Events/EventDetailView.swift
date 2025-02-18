@@ -41,8 +41,12 @@ struct EventDetailView: View {
                             EventCategoryCapsule(eventCategory: event.eventCategory)
                             MeetingModeCapsule(meetingMode: event.meetingMode)
                         }
-                        RegisteredCountCapsule(count: event.registeredUsersIds.count)
-                    }
+
+                        if UserManager.shared.isAdmin() {
+                            Text("^[\(event.registeredUsersIds.count) person](inflected: true) registered")
+                                .foregroundStyle(.secondary)
+                                .font(.caption)
+                        }                    }
                     .padding(.top, 15)
 
                     CachedAsyncImage(url: event.imageURL)
