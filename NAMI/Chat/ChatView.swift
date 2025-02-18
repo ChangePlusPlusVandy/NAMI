@@ -9,9 +9,12 @@ import SwiftUI
 
 struct ChatView: View {
     @State private var showChatUnavailable = false
+    @State var chatRouter = ChatRouter()
+
+    @Environment(TabsControl.self) var tabVisibilityControls
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $chatRouter.navPath) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 40) {
 
@@ -41,8 +44,11 @@ struct ChatView: View {
                     }
 
                     Button {
-                        withAnimation(.snappy) {
-                            if !withinOperatingHours() {
+                        if withinOperatingHours() {
+                            tabVisibilityControls.makeHidden()
+                            chatRouter.navigate(to: .chatWaitingView)
+                        } else {
+                            withAnimation(.snappy) {
                                 showChatUnavailable = true
                             }
                         }
@@ -57,14 +63,23 @@ struct ChatView: View {
                     .padding(.top, 20)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .sensoryFeedback(.impact(weight:.heavy), trigger: showChatUnavailable)
-
                 }
                 .padding(.horizontal, 30)
             }
-            .navigationTitle("HelpLine")
             .overlay {
                 if showChatUnavailable {
                     ChatUnavailableView(isPresented: $showChatUnavailable)
+                }
+            }
+            .onAppear {
+                tabVisibilityControls.makeVisible()
+            }
+            .navigationTitle("HelpLine")
+            .navigationDestination(for: ChatRouter.Destination.self) { destination in
+                switch destination {
+                case .chatWaitingView:
+                    ChatWaitingView()
+                        .environment(chatRouter)
                 }
             }
         }
