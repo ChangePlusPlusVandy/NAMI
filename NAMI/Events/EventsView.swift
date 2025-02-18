@@ -15,6 +15,7 @@ struct EventsView: View {
     @State var searchText: String = ""
     @State var selectedMeetingMode: MeetingMode?
     @State var selectedCategory: EventCategory?
+    @State private var calendarManager = CalendarManager()
 
     @FirestoreQuery(collectionPath: "events",
                     predicates: [.order(by: "startTime", descending: false)],
@@ -31,24 +32,57 @@ struct EventsView: View {
     var body: some View {
         NavigationStack(path: $eventsViewRouter.navPath) {
             VStack {
-                List {
-                    eventsMenuFilter
-                        .listRowSeparator(.hidden, edges: .all)
-                    ForEach(filteredEvents) {event in
-                        CustomEventsCardView(event: event)
-                            .environment(eventsViewRouter)
-                            .environment(tabVisibilityControls)
-                            .onTapGesture {
-                                tabVisibilityControls.makeHidden()
-                                eventsViewRouter.navigate(to: .eventDetailView(event: event))
-                            }
+                CalendarDisplaySelectionButton()
+                    .padding(.horizontal)
+                switch calendarManager.viewOption {
+                case .calendar:
+                    Group {
+                        Group {
+                            CalendarSelectionHeader()
+                                .padding(.vertical, 8)
+                            CalendarGrid(events: events)
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 10)
+
+                        CalendarDayDetailView(
+                            selectedDate: calendarManager.selectedDate,
+                            events: events
+                        )
                     }
+                    .transition(.move(edge: .trailing))
+                case .list:
+                    Group {
+                        eventsMenuFilter
+                            .padding(.horizontal)
+                            .padding(.top, 8)
+                        List(filteredEvents) { event in
+                            CustomEventsCardView(event: event)
+                                .onTapGesture {
+                                    tabVisibilityControls.makeHidden()
+                                    eventsViewRouter.navigate(to: .eventDetailView(event: event))
+                                }
+                        }
+                        .listStyle(.plain)
+                    }
+                    .transition(.move(edge: .leading))
                 }
-                .listStyle(.plain)
-                .scrollIndicators(.hidden)
-                .searchable(text: $searchText)
             }
+            .environment(eventsViewRouter)
+            .environment(tabVisibilityControls)
+            .environment(calendarManager)
             .navigationTitle("Events")
+            .navigationBarTitleDisplayMode(.inline)
+            .searchable(text: $searchText)
+            .sheet(isPresented: $calendarManager.showMonthYearPicker) {
+                MonthYearPickerView(
+                    isPresented: $calendarManager.showMonthYearPicker,
+                    selectedDate: $calendarManager.currentMonth,
+                    onDateSelected: { date in
+                        calendarManager.selectDate(date)
+                    }
+                )
+            }
             .navigationDestination(for: EventsViewRouter.Destination.self) { destination in
                 switch destination {
                 case .eventDetailView(let event):
@@ -65,8 +99,8 @@ struct EventsView: View {
                         .environment(HomeScreenRouter())
                 }
             }
-            .onChange(of: eventsViewRouter.navPath) {
-                if eventsViewRouter.navPath.isEmpty {
+            .onChange(of: eventsViewRouter.navPath) { oldPath, newPath in
+                if newPath.isEmpty {
                     tabVisibilityControls.makeVisible()
                 }
             }
@@ -123,71 +157,59 @@ struct EventsView: View {
             .buttonBorderShape(.capsule)
         }
     }
+}
 
-    struct CustomEventsCardView: View {
-        @State private var showConfirmationDialog = false
-        @Environment(EventsViewRouter.self) var eventsViewRouter
-        @Environment(TabsControl.self) var tabVisibilityControls
+struct CustomEventsCardView: View {
+    @State private var showConfirmationDialog = false
+    @Environment(EventsViewRouter.self) var eventsViewRouter
+    @Environment(TabsControl.self) var tabVisibilityControls
 
-        let event: Event
-        var body: some View {
-            EventCardView(event: event, showRegistered: true)
-                .listRowSeparator(.hidden, edges: .all)
-                .swipeActions(edge: .trailing, allowsFullSwipe: false){
-                    if UserManager.shared.isAdmin() {
-                        Button("", systemImage: "trash") { showConfirmationDialog = true}
-                            .tint(.red)
+    let event: Event
+    var body: some View {
+        EventCardView(event: event, showRegistered: true)
+            .listRowSeparator(.hidden, edges: .all)
+            .swipeActions(edge: .trailing, allowsFullSwipe: false){
+                if UserManager.shared.isAdmin() {
+                    Button("", systemImage: "trash") { showConfirmationDialog = true}
+                        .tint(.red)
 
-                        Button("", systemImage: "pencil") {
-                            eventsViewRouter.navigate(to: .eventUpdateView(event: event))
-                            tabVisibilityControls.makeHidden()
-                        }
-                    }
-
-// MARK: Register button should only be enabled in EventDetailView
-//                    if UserManager.shared.userType == .member {
-//                        Button("", systemImage: "calendar.badge.plus") {
-//                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-//                        }
-//                        .tint(Color.NAMIDarkBlue)
-//                    }
-
-
-                }
-                .contextMenu {
-                    if UserManager.shared.isAdmin() {
-                        Button("Delete Event", systemImage: "trash", role: .destructive) {
-                            showConfirmationDialog = true
-                        }
-                        Button("Edit Event", systemImage: "pencil") {
-                            eventsViewRouter.navigate(to: .eventUpdateView(event: event))
-                            tabVisibilityControls.makeHidden()
-                        }
-                    }
-//                    if UserManager.shared.userType == .member {
-//                        Button("Register Event", systemImage: "calendar.badge.plus") {
-//                            EventsManager.shared.registerUserForEvent(eventId: event.id ?? "", userId: UserManager.shared.userID)
-//                        }
-//                        .tint(Color.NAMIDarkBlue)
-//                    }
-                }
-                .confirmationDialog(
-                    "Are you sure you want to delete this event?",
-                    isPresented: $showConfirmationDialog,
-                    titleVisibility: .visible
-                ) {
-                    Button("Delete event", role: .destructive) {
-                        if let targetEventId = event.id {
-                            EventsManager.shared.deleteImageFromStorage(imageURL: event.imageURL)
-                            EventsManager.shared.deleteEventFromDatabase(eventId: targetEventId)
-                        }
+                    Button("", systemImage: "pencil") {
+                        eventsViewRouter.navigate(to: .eventUpdateView(event: event))
+                        tabVisibilityControls.makeHidden()
                     }
                 }
-        }
+            }
+            .contextMenu {
+                if UserManager.shared.isAdmin() {
+                    Button("Delete Event", systemImage: "trash", role: .destructive) {
+                        showConfirmationDialog = true
+                    }
+                    Button("Edit Event", systemImage: "pencil") {
+                        eventsViewRouter.navigate(to: .eventUpdateView(event: event))
+                        tabVisibilityControls.makeHidden()
+                    }
+                }
+            }
+            .confirmationDialog(
+                "Are you sure you want to delete this event?",
+                isPresented: $showConfirmationDialog,
+                titleVisibility: .visible
+            ) {
+                Button("Delete event", role: .destructive) {
+                    if let targetEventId = event.id {
+                        EventsManager.shared.deleteImageFromStorage(imageURL: event.imageURL)
+                        EventsManager.shared.deleteEventFromDatabase(eventId: targetEventId)
+                    }
+                }
+            }
     }
 }
 
 #Preview {
     EventsView()
         .environment(TabsControl())
+        .environment(EventsViewRouter())
+        .environment(UserManager.shared)
 }
+
+

@@ -13,42 +13,77 @@ struct HomeView: View {
     @Environment(TabsControl.self) var tabVisibilityControls
     @State var homeScreenRouter = HomeScreenRouter()
     @State private var viewModel = HomeViewModel()
+    @State private var calendarManager = CalendarManager()
 
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
             VStack (alignment: .leading){
+                Text("Welcome")
+                    .font(.largeTitle.bold())
+                    .padding([.bottom, .horizontal])
+                    .padding(.top, 10)
 
-                if UserManager.shared.userType == .member {
-                    Text("Welcome")
-                        .font(.largeTitle.bold())
-                        .padding([.bottom, .horizontal])
-                        .padding(.top, 10)
-                    Text("My Upcoming Events")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .padding(10)
-                    List {
-                        ForEach(viewModel.registeredEvents) { event in
-                            CustomEventCardView(event: event)
-                                .environment(homeScreenRouter)
-                                .onTapGesture {
-                                    tabVisibilityControls.makeHidden()
-                                    homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                                }
+                Text("My Upcoming Events")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+                    .padding(.bottom, 5)
+
+                CalendarDisplaySelectionButton()
+                    .environment(calendarManager)
+                    .padding(.horizontal)
+
+                switch calendarManager.viewOption {
+                case .calendar:
+                    Group {
+                        Group {
+                            CalendarSelectionHeader()
+                                .padding(.vertical, 8)
+                            CalendarGrid(events: viewModel.registeredEvents)
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 6)
+
+                        let filteredEvents = viewModel.getEventsOnDate(calendarManager.selectedDate)
+                        if !filteredEvents.isEmpty {
+                            List(filteredEvents) { event in
+                                CustomEventCardView(event: event)
+                                    .onTapGesture {
+                                        tabVisibilityControls.makeHidden()
+                                        homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                    }
+                            }
+                            .listStyle(.plain)
+                            .scrollIndicators(.hidden)
+                        } else {
+                            emptyStateView
+                        }
+                    }
+                    .environment(calendarManager)
+                    .environment(homeScreenRouter)
+                    .transition(.move(edge: .trailing))
+                case .list:
+                    List(viewModel.registeredEvents) { event in
+                        CustomEventCardView(event: event)
+                            .onTapGesture {
+                                tabVisibilityControls.makeHidden()
+                                homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                            }
                     }
                     .listStyle(.plain)
                     .scrollIndicators(.hidden)
                     .refreshable {viewModel.refreshRegisteredEvents()}
-                } else {
-                    ScrollView {
-                        Text("This is the admin dashboard")
-                            .edgesIgnoringSafeArea(.all)
-                            .padding(.top, 200)
-                    }
+                    .transition(.move(edge: .leading))
                 }
             }
             .toolbar {homeViewToolBar}
+            .sheet(isPresented: $calendarManager.showMonthYearPicker){
+                MonthYearPickerView(
+                    isPresented: $calendarManager.showMonthYearPicker,
+                    selectedDate: $calendarManager.currentMonth,
+                    onDateSelected: { date in calendarManager.selectDate(date) }
+                )
+            }
             .navigationTitle("")
             .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
                 switch destination {
@@ -68,23 +103,19 @@ struct HomeView: View {
                         .environment(EventsViewRouter())
                 }
             }
-            .onChange(of: homeScreenRouter.navPath) {
-                if homeScreenRouter.navPath.isEmpty {
-                    tabVisibilityControls.makeVisible()
-                }
-            }
-            .onChange(of: UserManager.shared.currentUser?.registeredEventsIds) {
+            .onAppear {
+                tabVisibilityControls.makeVisible()
                 viewModel.refreshRegisteredEvents()
             }
-            .onAppear {
+            .onChange(of: UserManager.shared.currentUser?.registeredEventsIds) {
                 viewModel.refreshRegisteredEvents()
             }
         }
     }
 
     struct CustomEventCardView: View {
-        let event: Event
         @State var showConfirmationDialog = false
+        let event: Event
         var body: some View {
             EventCardView(event: event, showRegistered: false)
                 .listRowSeparator(.hidden, edges: .all)
@@ -141,6 +172,21 @@ struct HomeView: View {
             }
         }
     }
+
+    private var emptyStateView: some View {
+        VStack {
+            Image(systemName: "calendar.circle.fill")
+                .font(.largeTitle)
+                .foregroundStyle(.secondary)
+
+            Text("No events registered on this date")
+                .font(.headline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .listRowSeparator(.hidden, edges: .all)
+        .frame(maxHeight: .infinity)
+    }
 }
 
 @Observable
@@ -167,10 +213,17 @@ class HomeViewModel {
             }
         }
     }
+
+    func getEventsOnDate(_ date: Date) -> [Event] {
+        registeredEvents.filter { event in  // Assuming viewModel has an events property
+            Calendar.current.isDate(event.startTime, inSameDayAs: date)
+        }
+    }
 }
 
 #Preview {
     HomeView()
         .environment(AuthenticationManager())
         .environment(TabsControl())
+        .environment(EventsViewRouter())
 }
