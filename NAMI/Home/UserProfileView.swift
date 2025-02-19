@@ -10,6 +10,7 @@ import SwiftUI
 struct UserProfileView: View {
     @Environment(AuthenticationManager.self) var authManager
     @Environment(HomeScreenRouter.self) var homeScreenRouter
+    @Environment(TabsControl.self) var tabVisibilityControls
     @State private var showDeleteAccountAlert = false
     @State private var showUserTypePopover = false
 
@@ -75,6 +76,7 @@ struct UserProfileView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button {
                     homeScreenRouter.navigate(to: .userProfileEditView)
+                    tabVisibilityControls.makeHidden()
                 } label: {
                     Text("Edit")
                 }
@@ -82,6 +84,11 @@ struct UserProfileView: View {
         }
         .navigationTitle("Profile")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            if UserManager.shared.isAdmin() {
+                tabVisibilityControls.makeVisible()
+            }
+        }
     }
 
     var donateButton: some View {
