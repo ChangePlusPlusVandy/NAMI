@@ -12,6 +12,7 @@ final class ChatUserRouter {
 
     public enum Destination: Hashable {
         case chatWaitingView
+        case chatRequestView
     }
 
     var navPath = NavigationPath()

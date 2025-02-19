@@ -43,11 +43,10 @@ struct ChatWaitingView: View {
                 .padding(.bottom, 40)
         }
         .alert("Are you sure you want to cancel your chat request?", isPresented: $showAlert) {
-            Button("Cancel", role: .cancel) {
-
-            }
+            Button("Cancel", role: .cancel) {}
             Button("Exit", role: .destructive) {
-                chatUserRouter.navigateBack()
+                // ChatManager.shared.deleteCurrentChatRoomRequest()
+                chatUserRouter.navigateToRoot()
             }
         } message: {
             Text("You're up next soon")

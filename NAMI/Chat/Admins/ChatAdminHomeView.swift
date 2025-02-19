@@ -6,27 +6,30 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct ChatAdminHomeView: View {
     @State var chatAdminRouter = ChatAdminRouter()
+    
+    @FirestoreQuery(collectionPath: "chatRequests",
+                    predicates: [.order(by: "requestTime", descending: false)],
+                    animation: .default) var chatRequests: [ChatRequest]
+    
     var body: some View {
         NavigationStack(path: $chatAdminRouter.navPath) {
-            VStack {
-                ScrollView {
-                    Text("New Chats")
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top)
-
-                    Text("Active Chats")
-                        .font(.title)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+            List {
+                Section(header: Text("New Chats").font(.title3)) {
+                    ForEach(chatRequests) { chatRequest in
+                        ChatRequestCell(chatRequest: chatRequest)
+                    }
+                }
+                
+                Section(header: Text("Active Chats").font(.title3)) {
+                    
                 }
             }
-            .padding(.horizontal)
-            .navigationTitle("HelpLine")
+            //.listStyle(.plain)
+            .navigationTitle("NAMI HelpLine")
         }
     }
 }

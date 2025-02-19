@@ -43,12 +43,9 @@ struct ChatStartingView: View {
 
                     Button {
                         if withinOperatingHours() {
-                            tabVisibilityControls.makeHidden()
-                            chatUserRouter.navigate(to: .chatWaitingView)
+                            chatUserRouter.navigate(to: .chatRequestView)
                         } else {
-                            withAnimation(.snappy) {
-                                showChatUnavailable = true
-                            }
+                            withAnimation(.snappy) { showChatUnavailable = true }
                         }
                     } label: {
                         Text("Start a Chat")
@@ -77,6 +74,9 @@ struct ChatStartingView: View {
                 switch destination {
                 case .chatWaitingView:
                     ChatWaitingView()
+                        .environment(chatUserRouter)
+                case .chatRequestView:
+                    ChatRequestView()
                         .environment(chatUserRouter)
                 }
             }
