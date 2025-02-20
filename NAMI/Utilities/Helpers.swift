@@ -78,3 +78,34 @@ func withinOperatingHours() -> Bool {
 
     return false
 }
+
+func formatRelativeTime(from date: Date) -> String {
+    let now = Date()
+    let calendar = Calendar.current
+    let components = calendar.dateComponents([.minute, .hour, .day], from: date, to: now)
+
+    // If less than 1 minute ago
+    if components.minute ?? 0 < 1 {
+        return "now"
+    }
+
+    // If less than 1 hour ago
+    if components.hour ?? 0 < 1 {
+        let minutes = components.minute ?? 0
+        return "\(minutes) min ago"
+    }
+
+    // For same day, return time
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = Locale.current
+
+    if calendar.isDateInToday(date) {
+        dateFormatter.dateFormat = "h:mm a"
+        return dateFormatter.string(from: date).lowercased()
+    }
+
+    // For dates beyond today
+    dateFormatter.dateStyle = .medium
+    dateFormatter.timeStyle = .none
+    return dateFormatter.string(from: date)
+}

@@ -30,6 +30,8 @@ struct ChatRoom: Identifiable, Equatable, Hashable, Codable {
 struct ChatRequest: Identifiable, Equatable, Hashable, Codable {
     @DocumentID var id: String?
     var requestId: String
+
+    var userName: String
     var userId: String
     var requestTime: Date
     var requestReason: String

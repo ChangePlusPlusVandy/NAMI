@@ -12,7 +12,19 @@ struct ChatRequestCell: View {
 
     var body: some View {
         VStack {
-            Text(chatRequest.requestReason)
+            HStack {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(chatRequest.userName)
+                            .font(.title3.bold())
+                        Spacer()
+                        Text(formatRelativeTime(from: chatRequest.requestTime))
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(chatRequest.requestReason)
+                        .foregroundStyle(.secondary)
+                }
+            }
             Spacer(minLength: 10)
             HStack {
                 Spacer()
@@ -49,8 +61,8 @@ struct ChatRequestCell: View {
 
 #Preview {
     List {
-        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
-        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
-        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
+        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userName: "John John", userId: "123", requestTime: Date(), requestReason: "This is my request reason This is my request reason This is my request reason This is my request reason This is my request reason"))
+        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userName: "John John", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
+        ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userName: "John John", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
     }
 }

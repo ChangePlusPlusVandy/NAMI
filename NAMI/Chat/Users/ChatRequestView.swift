@@ -42,7 +42,10 @@ struct ChatRequestView: View {
 
 
                 Button {
-                    let chatRequest = ChatRequest(requestId: UUID().uuidString, userId: UserManager.shared.userID, requestTime: Date(), requestReason: messageText)
+                    let userFirstName = UserManager.shared.currentUser?.firstName ?? ""
+                    let userLastName = UserManager.shared.currentUser?.lastName ?? ""
+                    let userName = "\(userFirstName) \(userLastName)"
+                    let chatRequest = ChatRequest(requestId: UUID().uuidString, userName: userName, userId: UserManager.shared.userID, requestTime: Date(), requestReason: messageText)
                     chatUserRouter.navigate(to: .chatWaitingView)
                     ChatManager.shared.sendChatRoomRequest(chatRequest: chatRequest)
                 } label: {
