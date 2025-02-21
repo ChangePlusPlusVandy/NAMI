@@ -10,6 +10,9 @@ import SwiftUI
 struct MessageInputView: View {
     @Binding var message: String
     @Environment(\.colorScheme) var colorScheme
+    @FocusState.Binding var isFocused: Bool
+
+
     let onSend: () -> Void
     var body: some View {
         HStack {
@@ -24,6 +27,7 @@ struct MessageInputView: View {
                         .stroke(colorScheme == .dark ? Color.secondary : Color.clear, lineWidth: 1)
                 )
                 .padding(.leading, 2)
+                .focused($isFocused)
             Button(action: onSend) {
                 Image(systemName: "arrow.up.circle.fill")
                     .resizable()

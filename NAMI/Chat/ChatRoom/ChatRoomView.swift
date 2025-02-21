@@ -16,6 +16,7 @@ struct ChatRoomView: View {
 
     @State var keyboardHeight: CGFloat = 0
     @State var endChatConfirmAlert = false
+    @FocusState var isFocused: Bool
 
     init(chatRoom: ChatRoom, currentUserId: String, chatRoomType: ChatRoomType) {
         _chatRoomViewModel = State(wrappedValue: ChatRoomViewModel(chatRoom: chatRoom, currentUserId: currentUserId))
@@ -26,19 +27,31 @@ struct ChatRoomView: View {
         VStack(spacing: 10) {
             ScrollViewReader { proxy in
                 ScrollView {
-                    ForEach(chatRoomViewModel.messages) { message in
-                        MessageBubble(message: message, isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
-                    }
-                }
-                .onChange(of: chatRoomViewModel.messages.count) {
-                    withAnimation {
-                        if chatRoomViewModel.messages.count > 0 {
-                            proxy.scrollTo(chatRoomViewModel.messages.first!.id, anchor: .top)
+                    LazyVStack(spacing: 10) {
+                        ForEach(chatRoomViewModel.messages) { message in
+                            MessageBubble(message: message,
+                                          isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
+                            .id(message.id)
                         }
                     }
                 }
+                .onChange(of: chatRoomViewModel.messages.count) {
+                    scrollToBottom(proxy: proxy)
+                }
+                .onChange(of: isFocused) {
+                    if isFocused {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            scrollToBottom(proxy: proxy)
+                        }
+                    }
+                }
+                .onAppear {
+                    scrollToBottom(proxy: proxy)
+                }
+                .scrollIndicators(.hidden)
             }
-            MessageInputView(message: $chatRoomViewModel.newMessage, onSend: chatRoomViewModel.sendMessage)
+            MessageInputView(message: $chatRoomViewModel.newMessage,
+                             isFocused: $isFocused, onSend: chatRoomViewModel.sendMessage)
         }
         .confirmationDialog(
             "Are you sure you want to end this chat with \(chatRoomViewModel.chatRoom.userName)? This action cannot be undone and will delete all messages permanently.",
@@ -76,6 +89,14 @@ struct ChatRoomView: View {
             }
         }
         .scrollDismissesKeyboard(.interactively)
+    }
+
+    private func scrollToBottom(proxy: ScrollViewProxy) {
+        guard let lastMessageId = chatRoomViewModel.messages.last?.id else { return }
+
+        withAnimation(.snappy(duration: 0.3)) {
+            proxy.scrollTo(lastMessageId, anchor: .bottom)
+        }
     }
 }
 
