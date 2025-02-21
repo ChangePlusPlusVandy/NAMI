@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct ChatRequestCell: View {
+    @Environment(ChatAdminRouter.self) var chatAdminRouter
+    @Environment(TabsControl.self) var tabVisibilityControls
+
     var chatRequest: ChatRequest
+
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         VStack {
@@ -29,7 +34,13 @@ struct ChatRequestCell: View {
             HStack {
                 Spacer()
                 Button{
-
+                    Task {
+                        let newChatRoom = await ChatManager.shared.acceptChatRoomRequest(chatRequest: chatRequest, acceptAdminId: UserManager.shared.userID)
+                        if let newChatRoom = newChatRoom {
+                            tabVisibilityControls.makeHiddenNoAnimation()
+                            chatAdminRouter.navigate(to: .chatRoomView(chatRoom: newChatRoom))
+                        }
+                    }
                 } label: {
                     Text("Accept")
                         .padding(.horizontal, 10)
@@ -42,7 +53,7 @@ struct ChatRequestCell: View {
 
                 Spacer(minLength: 20)
                 Button{
-                    ChatManager.shared.deleteChatRoomRequest(chatRequestId: chatRequest.id ?? "")
+                    showDeleteConfirmation = true
                 } label: {
                     Text("Delete")
                         .padding(.horizontal, 10)
@@ -56,6 +67,15 @@ struct ChatRequestCell: View {
             }
         }
         .padding(.vertical, 10)
+        .confirmationDialog(
+            "Are you sure you want to delete this chat request from \(chatRequest.userName)?",
+            isPresented: $showDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                ChatManager.shared.deleteChatRoomRequest(chatRequestId: chatRequest.id ?? "")
+            }
+        }
     }
 }
 
@@ -65,4 +85,6 @@ struct ChatRequestCell: View {
         ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userName: "John John", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
         ChatRequestCell(chatRequest: ChatRequest(requestId: "1213", userName: "John John", userId: "123", requestTime: Date(), requestReason: "This is my request reason"))
     }
+    .environment(ChatAdminRouter())
+    .environment(TabsControl())
 }

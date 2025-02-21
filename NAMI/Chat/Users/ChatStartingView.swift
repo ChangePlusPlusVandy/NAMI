@@ -86,4 +86,5 @@ struct ChatStartingView: View {
 
 #Preview {
     ChatStartingView()
+        .environment(TabsControl())
 }

@@ -8,11 +8,14 @@
 import SwiftUI
 
 struct ChatView: View {
+    @Environment(TabsControl.self) var tabVisibilityControls
     var body: some View {
         if UserManager.shared.isChatAdmin() {
             ChatAdminHomeView()
+                .environment(tabVisibilityControls)
         } else {
             ChatStartingView()
+                .environment(tabVisibilityControls)
         }
     }
 }

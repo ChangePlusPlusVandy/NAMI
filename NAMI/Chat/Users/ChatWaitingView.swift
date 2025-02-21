@@ -15,7 +15,6 @@ struct ChatWaitingView: View {
 
     var body: some View {
         VStack {
-
             Spacer()
             Spacer()
 

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 @Observable
 final class ChatUserRouter {
 
@@ -32,11 +33,12 @@ final class ChatUserRouter {
     }
 }
 
+@MainActor
 @Observable
 final class ChatAdminRouter {
 
     public enum Destination: Hashable {
-        case chatRoomView
+        case chatRoomView(chatRoom: ChatRoom)
     }
 
     var navPath = NavigationPath()
