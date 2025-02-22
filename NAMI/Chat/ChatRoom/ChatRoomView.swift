@@ -26,16 +26,15 @@ struct ChatRoomView: View {
     var body: some View {
         VStack {
             ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(spacing: 10) {
-                        Rectangle().foregroundColor(.clear).frame(height: 1.0)
-                        ForEach(chatRoomViewModel.messages) { message in
-                            MessageBubble(message: message,
-                                          isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
-                            .id(message.id)
-                        }
+                List {
+                    ForEach(chatRoomViewModel.messages) { message in
+                        MessageBubble(message: message,
+                                      isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
+                        .id(message.id)
+                        .listRowSeparator(.hidden)
                     }
                 }
+                .listStyle(.plain)
                 .onChange(of: chatRoomViewModel.messages.count) {
                     scrollToBottom(proxy: proxy)
                 }
@@ -55,6 +54,7 @@ struct ChatRoomView: View {
             MessageInputView(message: $chatRoomViewModel.newMessage,
                              isFocused: $isFocused, onSend: chatRoomViewModel.sendMessage)
         }
+        .ignoresSafeArea(.container, edges: .bottom)
         .confirmationDialog(
             "Are you sure you want to end this chat with \(chatRoomViewModel.chatRoom.userName)? This action cannot be undone and will delete all messages permanently.",
             isPresented: $endChatConfirmAlert,

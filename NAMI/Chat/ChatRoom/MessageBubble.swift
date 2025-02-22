@@ -25,6 +25,6 @@ struct MessageBubble: View {
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: isCurrentUser ? .trailing : .leading)
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 5)
     }
 }

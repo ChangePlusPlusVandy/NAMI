@@ -37,7 +37,7 @@ struct ChatRequestCell: View {
                     Task {
                         let newChatRoom = await ChatManager.shared.acceptChatRoomRequest(chatRequest: chatRequest, acceptAdminId: UserManager.shared.userID)
                         if let newChatRoom = newChatRoom {
-                            tabVisibilityControls.makeHiddenNoAnimation()
+                            tabVisibilityControls.makeHidden()
                             chatAdminRouter.navigate(to: .chatRoomView(chatRoom: newChatRoom))
                         }
                     }

@@ -37,6 +37,6 @@ struct MessageInputView: View {
             }
         }
         .padding(.horizontal, 8)
-        .padding(.bottom, 10)
+        .padding(.bottom, 50)
     }
 }
