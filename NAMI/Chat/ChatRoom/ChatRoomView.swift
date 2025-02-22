@@ -24,10 +24,11 @@ struct ChatRoomView: View {
     }
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: 10) {
+                        Rectangle().foregroundColor(.clear).frame(height: 1.0)
                         ForEach(chatRoomViewModel.messages) { message in
                             MessageBubble(message: message,
                                           isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
@@ -49,6 +50,7 @@ struct ChatRoomView: View {
                     scrollToBottom(proxy: proxy)
                 }
                 .scrollIndicators(.hidden)
+                .scrollDismissesKeyboard(.interactively)
             }
             MessageInputView(message: $chatRoomViewModel.newMessage,
                              isFocused: $isFocused, onSend: chatRoomViewModel.sendMessage)
@@ -88,7 +90,6 @@ struct ChatRoomView: View {
                 }
             }
         }
-        .scrollDismissesKeyboard(.interactively)
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {

@@ -12,23 +12,19 @@ struct MessageBubble: View {
     let isCurrentUser: Bool
 
     var body: some View {
-        HStack {
-            if isCurrentUser { Spacer() }
+        VStack(alignment: isCurrentUser ? .trailing : .leading, spacing: 4) {
+            Text(message.message)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(isCurrentUser ? Color.NAMIDarkBlue : Color.gray.opacity(0.2))
+                .foregroundColor(isCurrentUser ? .white : .primary)
+                .cornerRadius(10)
 
-            VStack(alignment: isCurrentUser ? .trailing : .leading, spacing: 4) {
-                Text(message.message)
-                    .padding(12)
-                    .background(isCurrentUser ? Color.NAMIDarkBlue : Color.gray.opacity(0.2))
-                    .foregroundColor(isCurrentUser ? .white : .primary)
-                    .cornerRadius(10)
-
-                Text(formatRelativeTime(from: message.timestamp))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-
-            if !isCurrentUser { Spacer() }
+            Text(formatRelativeTime(from: message.timestamp))
+                .font(.caption2)
+                .foregroundColor(.secondary)
         }
+        .frame(maxWidth: .infinity, alignment: isCurrentUser ? .trailing : .leading)
         .padding(.horizontal, 20)
     }
 }
