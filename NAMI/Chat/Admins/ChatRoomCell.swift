@@ -27,7 +27,7 @@ struct ChatRoomCell: View {
 
                 Button {
                     chatAdminRouter.navigate(to: .chatRoomView(chatRoom: chatRoom))
-                    tabVisibilityControls.makeHidden()
+                    tabVisibilityControls.makeHiddenNoAnimation()
                 } label: {
                     Image(systemName: "chevron.right")
                         .foregroundStyle(.secondary)

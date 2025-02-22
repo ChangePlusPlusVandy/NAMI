@@ -95,16 +95,21 @@ func formatRelativeTime(from date: Date) -> String {
         return "\(minutes) min ago"
     }
 
-    // For same day, return time
     let dateFormatter = DateFormatter()
     dateFormatter.locale = Locale.current
 
+    // For same day, return time
     if calendar.isDateInToday(date) {
         dateFormatter.dateFormat = "h:mm a"
         return dateFormatter.string(from: date).lowercased()
     }
 
-    // For dates beyond today
+    // If yesterday, return "yesterday"
+    if calendar.isDateInYesterday(date) {
+        return "yesterday"
+    }
+
+    // For older dates, return full date
     dateFormatter.dateStyle = .medium
     dateFormatter.timeStyle = .none
     return dateFormatter.string(from: date)

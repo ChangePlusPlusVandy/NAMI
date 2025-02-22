@@ -12,7 +12,6 @@ struct MessageInputView: View {
     @Environment(\.colorScheme) var colorScheme
     @FocusState.Binding var isFocused: Bool
 
-
     let onSend: () -> Void
     var body: some View {
         HStack {
@@ -36,7 +35,7 @@ struct MessageInputView: View {
                     .disabled(message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
-        .padding(.horizontal, 8)
-        .padding(.bottom, 50)
+        .padding(.horizontal, 12)
+        .padding(.bottom, 15)
     }
 }

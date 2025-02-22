@@ -32,6 +32,7 @@ struct ChatRoomView: View {
                                       isCurrentUser: message.senderId == chatRoomViewModel.currentUserId)
                         .id(message.id)
                         .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
                     }
                 }
                 .listStyle(.plain)
@@ -40,7 +41,7 @@ struct ChatRoomView: View {
                 }
                 .onChange(of: isFocused) {
                     if isFocused {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                             scrollToBottom(proxy: proxy)
                         }
                     }
@@ -49,12 +50,11 @@ struct ChatRoomView: View {
                     scrollToBottom(proxy: proxy)
                 }
                 .scrollIndicators(.hidden)
-                .scrollDismissesKeyboard(.interactively)
+                .scrollDismissesKeyboard(.immediately)
             }
             MessageInputView(message: $chatRoomViewModel.newMessage,
                              isFocused: $isFocused, onSend: chatRoomViewModel.sendMessage)
         }
-        .ignoresSafeArea(.container, edges: .bottom)
         .confirmationDialog(
             "Are you sure you want to end this chat with \(chatRoomViewModel.chatRoom.userName)? This action cannot be undone and will delete all messages permanently.",
             isPresented: $endChatConfirmAlert,
@@ -72,6 +72,7 @@ struct ChatRoomView: View {
         }
         .background(Color.black.opacity(0.05).ignoresSafeArea(edges: .all))
         .navigationTitle("")
+        .toolbarBackgroundVisibility(.visible)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 switch chatRoomType {

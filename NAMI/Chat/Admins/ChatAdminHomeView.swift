@@ -17,7 +17,9 @@ struct ChatAdminHomeView: View {
                     animation: .default) var chatRequests: [ChatRequest]
 
     @FirestoreQuery(collectionPath: "chatRooms",
-                    predicates: [.order(by: "lastMessageTimestamp", descending: true)],
+                    predicates: [.order(by: "lastMessageTimestamp", descending: true),
+                                 .isEqualTo("adminId", UserManager.shared.userID)
+                                ],
                     animation: .default) var chatRooms: [ChatRoom]
 
     var body: some View {
