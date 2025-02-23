@@ -47,9 +47,9 @@ struct ChatRoomCell: View {
 
 #Preview {
     List {
-        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message Hello this is a message Hello this is a message Hello this is a message"))
-        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message"))
-        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message"))
+        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", chatRequestId: "", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message Hello this is a message Hello this is a message Hello this is a message"))
+        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", chatRequestId: "", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message"))
+        ChatRoomCell(chatRoom: ChatRoom(userId: "", adminId: "", userName: "Zach Tao", chatRequestId: "", lastMessageTimestamp: Date(), lastMessage: "Hello this is a message"))
     }
     .environment(ChatAdminRouter())
     .environment(TabsControl())

@@ -24,6 +24,7 @@ struct ChatRoom: Identifiable, Equatable, Hashable, Codable {
     var adminId: String
 
     var userName: String
+    var chatRequestId: String
 
     var lastMessageId: String?
     var lastMessageTimestamp: Date?

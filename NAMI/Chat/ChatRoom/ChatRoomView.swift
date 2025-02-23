@@ -61,7 +61,7 @@ struct ChatRoomView: View {
             titleVisibility: .visible
         ) {
             Button("End Chat", role: .destructive) {
-                ChatManager.shared.deleteChat(chatRoom: chatRoomViewModel.chatRoom)
+                deleteChat(chatRoom: chatRoomViewModel.chatRoom)
                 switch chatRoomType {
                 case .admin:
                     chatAdminRouter.navigateToRoot()
@@ -100,6 +100,31 @@ struct ChatRoomView: View {
             proxy.scrollTo(lastMessageId, anchor: .bottom)
         }
     }
+
+    func deleteChat(chatRoom: ChatRoom) {
+        Task {
+            let db = Firestore.firestore()
+            guard let roomId = chatRoom.id else { return }
+
+            let batch = db.batch()
+
+            // delete messages in the chat room
+            let messagesSnapshot = try await db.collection("messages")
+                .whereField("chatRoomId", isEqualTo: roomId)
+                .getDocuments()
+
+            for message in messagesSnapshot.documents {
+                batch.deleteDocument(message.reference)
+            }
+
+            // 3. Delete the chat room itself
+            let roomRef = db.collection("chatRooms").document(roomId)
+            batch.deleteDocument(roomRef)
+
+            // 4. Commit all deletions atomically
+            try await batch.commit()
+        }
+    }
 }
 
 extension ChatRoomView {
@@ -111,7 +136,7 @@ extension ChatRoomView {
 
 
 #Preview {
-    ChatRoomView(chatRoom: ChatRoom(userId: "", adminId: "", userName: "NAMI Helpline"), currentUserId: "", chatRoomType: .admin)
+    ChatRoomView(chatRoom: ChatRoom(userId: "", adminId: "", userName: "NAMI Helpline", chatRequestId: ""), currentUserId: "", chatRoomType: .admin)
         .environment(ChatAdminRouter())
         .environment(ChatUserRouter())
 }

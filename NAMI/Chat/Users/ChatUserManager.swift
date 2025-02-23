@@ -1,5 +1,5 @@
 //
-//  ChatManager.swift
+//  ChatUserManager.swift
 //  NAMI
 //
 //  Created by Zachary Tao on 2/18/25.
@@ -10,12 +10,12 @@ import FirebaseStorage
 
 @Observable
 @MainActor
-class ChatManager {
-    static let shared = ChatManager()
+class ChatUserManager {
     let db = Firestore.firestore()
     var errorMessage = ""
     var currentChatRequestId: String?
 
+    // user send chat request
     func sendChatRoomRequest(chatRequest: ChatRequest) {
         do {
             try db.collection("chatRequests").addDocument(from: chatRequest)
@@ -46,55 +46,7 @@ class ChatManager {
         }
     }
 
-    func acceptChatRoomRequest(chatRequest: ChatRequest, acceptAdminId: String) async -> ChatRoom? {
-        let batch = db.batch()
-        // create chat room
-        let chatRoomRef = db.collection("chatRooms").document()
-        var chatRoom = ChatRoom(
-            id: chatRoomRef.documentID,
-            userId: chatRequest.userId,
-            adminId: UserManager.shared.userID,
-            userName: chatRequest.userName,
-            lastMessageId: nil,
-            lastMessageTimestamp: nil
-        )
-
-        // create the first message
-        let messageRef = db.collection("messages").document()
-        let welcomeMessage = ChatMessage(
-            chatRoomId: chatRoomRef.documentID,
-            senderId: chatRequest.userId,
-            receiverId: acceptAdminId,
-            message: chatRequest.requestReason,
-            timestamp: chatRequest.requestTime
-        )
-
-        // update chat room with first message
-        chatRoom.lastMessageId = messageRef.documentID
-        chatRoom.lastMessageTimestamp = welcomeMessage.timestamp
-        chatRoom.lastMessage = chatRequest.requestReason
-
-        // update chat room to server
-        do {
-            try batch.setData(from: chatRoom, forDocument: chatRoomRef)
-            try batch.setData(from: welcomeMessage, forDocument: messageRef)
-
-            // delete the original request
-            if let requestId = chatRequest.id {
-                let requestRef = db.collection("chatRequests").document(requestId)
-                batch.deleteDocument(requestRef)
-            }
-
-            try await batch.commit()
-
-            return chatRoom
-        } catch {
-            print("error accepting chat room request: \(error.localizedDescription)")
-            errorMessage = error.localizedDescription
-            return nil
-        }
-    }
-
+    // Delete chat room and its messages
     func deleteChat(chatRoom: ChatRoom) {
         Task {
             guard let roomId = chatRoom.id else { return }

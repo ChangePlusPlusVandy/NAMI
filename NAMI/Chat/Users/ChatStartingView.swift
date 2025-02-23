@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatStartingView: View {
     @State private var showChatUnavailable = false
     @State var chatUserRouter = ChatUserRouter()
+    @State var chatUserManager = ChatUserManager()
     @Environment(TabsControl.self) var tabVisibilityControls
 
     var body: some View {
@@ -75,9 +76,11 @@ struct ChatStartingView: View {
                 case .chatWaitingView:
                     ChatWaitingView()
                         .environment(chatUserRouter)
+                        .environment(chatUserManager)
                 case .chatRequestView:
                     ChatRequestView()
                         .environment(chatUserRouter)
+                        .environment(chatUserManager)
                 }
             }
         }

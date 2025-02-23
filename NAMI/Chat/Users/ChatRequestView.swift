@@ -11,6 +11,7 @@ struct ChatRequestView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(ChatUserRouter.self) var chatUserRouter
     @Environment(TabsControl.self) var tabVisibilityControls
+    @Environment(ChatUserManager.self) var chatUserManager
     @State private var messageText: String = ""
     @FocusState private var keyboardFocused: Bool
 
@@ -47,7 +48,7 @@ struct ChatRequestView: View {
                     let userName = "\(userFirstName) \(userLastName)"
                     let chatRequest = ChatRequest(requestId: UUID().uuidString, userName: userName, userId: UserManager.shared.userID, requestTime: Date(), requestReason: messageText)
                     chatUserRouter.navigate(to: .chatWaitingView)
-                    ChatManager.shared.sendChatRoomRequest(chatRequest: chatRequest)
+                    chatUserManager.sendChatRoomRequest(chatRequest: chatRequest)
                 } label: {
                     Text("Send Request")
                         .padding(.horizontal, 40)

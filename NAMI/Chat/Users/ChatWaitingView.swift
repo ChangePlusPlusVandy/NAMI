@@ -12,6 +12,7 @@ struct ChatWaitingView: View {
     @State private var showAlert = false
     @Environment(\.colorScheme) var colorScheme
 
+    @Environment(ChatUserManager.self) var chatUserManager
     @Environment(ChatUserRouter.self) var chatUserRouter
 
     var body: some View {
@@ -45,7 +46,7 @@ struct ChatWaitingView: View {
         .alert("Are you sure you want to cancel your chat request?", isPresented: $showAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Exit", role: .destructive) {
-                ChatManager.shared.deleteCurrentChatRoomRequest()
+                chatUserManager.deleteCurrentChatRoomRequest()
                 chatUserRouter.navigateToRoot()
             }
         } message: {

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct ChatRequestCell: View {
     @Environment(ChatAdminRouter.self) var chatAdminRouter
@@ -35,7 +36,7 @@ struct ChatRequestCell: View {
                 Spacer()
                 Button{
                     Task {
-                        let newChatRoom = await ChatManager.shared.acceptChatRoomRequest(chatRequest: chatRequest, acceptAdminId: UserManager.shared.userID)
+                        let newChatRoom = await acceptChatRoomRequest(chatRequest: chatRequest, acceptAdminId: UserManager.shared.userID)
                         if let newChatRoom = newChatRoom {
                             tabVisibilityControls.makeHiddenNoAnimation()
                             chatAdminRouter.navigate(to: .chatRoomView(chatRoom: newChatRoom))
@@ -73,9 +74,63 @@ struct ChatRequestCell: View {
             titleVisibility: .visible
         ) {
             Button("Delete", role: .destructive) {
-                ChatManager.shared.deleteChatRoomRequest(chatRequestId: chatRequest.id ?? "")
+                deleteChatRoomRequest(chatRequestId: chatRequest.id ?? "")
             }
         }
+    }
+
+    func acceptChatRoomRequest(chatRequest: ChatRequest, acceptAdminId: String) async -> ChatRoom? {
+        let db = Firestore.firestore()
+        let batch = db.batch()
+        // create chat room
+        let chatRoomRef = db.collection("chatRooms").document()
+        var chatRoom = ChatRoom(
+            id: chatRoomRef.documentID,
+            userId: chatRequest.userId,
+            adminId: UserManager.shared.userID,
+            userName: chatRequest.userName,
+            chatRequestId: chatRequest.requestId,
+            lastMessageId: nil,
+            lastMessageTimestamp: nil
+        )
+
+        // create the first message
+        let messageRef = db.collection("messages").document()
+        let welcomeMessage = ChatMessage(
+            chatRoomId: chatRoomRef.documentID,
+            senderId: chatRequest.userId,
+            receiverId: acceptAdminId,
+            message: chatRequest.requestReason,
+            timestamp: chatRequest.requestTime
+        )
+
+        // update chat room with first message
+        chatRoom.lastMessageId = messageRef.documentID
+        chatRoom.lastMessageTimestamp = welcomeMessage.timestamp
+        chatRoom.lastMessage = chatRequest.requestReason
+
+        // update chat room to server
+        do {
+            try batch.setData(from: chatRoom, forDocument: chatRoomRef)
+            try batch.setData(from: welcomeMessage, forDocument: messageRef)
+
+            // delete the original request
+            if let requestId = chatRequest.id {
+                let requestRef = db.collection("chatRequests").document(requestId)
+                batch.deleteDocument(requestRef)
+            }
+
+            try await batch.commit()
+
+            return chatRoom
+        } catch {
+            print("error accepting chat room request: \(error.localizedDescription)")
+            return nil
+        }
+    }
+
+    func deleteChatRoomRequest(chatRequestId: String) {
+        Firestore.firestore().collection("chatRequests").document(chatRequestId).delete()
     }
 }
 
