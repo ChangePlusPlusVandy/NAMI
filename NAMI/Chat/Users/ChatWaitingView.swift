@@ -10,6 +10,7 @@ import SwiftUI
 struct ChatWaitingView: View {
     @State private var rotation: Double = 0
     @State private var showAlert = false
+    @Environment(\.colorScheme) var colorScheme
 
     @Environment(ChatUserRouter.self) var chatUserRouter
 
@@ -44,7 +45,7 @@ struct ChatWaitingView: View {
         .alert("Are you sure you want to cancel your chat request?", isPresented: $showAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Exit", role: .destructive) {
-                // ChatManager.shared.deleteCurrentChatRoomRequest()
+                ChatManager.shared.deleteCurrentChatRoomRequest()
                 chatUserRouter.navigateToRoot()
             }
         } message: {
@@ -81,7 +82,7 @@ struct ChatWaitingView: View {
                 .font(.callout)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical)
-                .background(Color.NAMITealBlue.opacity(0.05))
+                .background(colorScheme == .dark ? Color.NAMITealBlue : Color.NAMITealBlue.opacity(0.05))
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
