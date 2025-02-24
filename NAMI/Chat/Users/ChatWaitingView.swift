@@ -54,6 +54,12 @@ struct ChatWaitingView: View {
         }
         .navigationBarBackButtonHidden(true)
         .ignoresSafeArea(.all)
+        .task {
+            chatUserManager.listenForChatRoomCreation { chatRoom in
+                chatUserRouter.navigate(to: .chatRoomView(chatRoom: chatRoom))
+                chatUserManager.cleanupListeners()
+            }
+        }
     }
 
     func loadingSpinner() -> some View {

@@ -14,6 +14,7 @@ class ChatUserManager {
     let db = Firestore.firestore()
     var errorMessage = ""
     var currentChatRequestId: String?
+    private var roomListener: ListenerRegistration?
 
     // user send chat request
     func sendChatRoomRequest(chatRequest: ChatRequest) {
@@ -69,6 +70,48 @@ class ChatUserManager {
             // 4. Commit all deletions atomically
             try await batch.commit()
         }
+    }
+
+    func listenForChatRoomCreation(completion: @escaping (ChatRoom) -> Void) {
+        // Clean up any existing listener
+        roomListener?.remove()
+
+        guard let currentChatRequestId else { return }
+
+        // Listen directly for the new chat room with matching chatRequestId
+        roomListener = db.collection("chatRooms")
+            .whereField("chatRequestId", isEqualTo: currentChatRequestId)
+            .addSnapshotListener { [weak self] roomSnapshot, error in
+                guard let self else { return }
+
+                if let error {
+                    print("Error listening for chat room: \(error.localizedDescription)")
+                    self.errorMessage = error.localizedDescription
+                    return
+                }
+
+                guard let roomSnapshot else { return }
+
+                // Look for newly added chat room
+                for change in roomSnapshot.documentChanges {
+                    if change.type == .added {
+                        do {
+                            let chatRoom = try change.document.data(as: ChatRoom.self)
+                            completion(chatRoom)
+
+                            // Clean up listener since we only need the first match
+                            self.roomListener?.remove()
+                        } catch {
+                            print("Error decoding chat room: \(error.localizedDescription)")
+                            self.errorMessage = error.localizedDescription
+                        }
+                    }
+                }
+            }
+    }
+
+    func cleanupListeners() {
+        roomListener?.remove()
     }
 }
 

@@ -12,6 +12,7 @@ import FirebaseFirestore
 class ChatRoomViewModel {
     var messages: [ChatMessage] = []
     var newMessage: String = ""
+    var chatRoomIsDeleted = false
     private var listenerRegistration: ListenerRegistration?
     private let db = Firestore.firestore()
 
@@ -27,6 +28,23 @@ class ChatRoomViewModel {
     func startListeningToMessages() {
         listenerRegistration?.remove()
 
+        db.collection("chatRooms").document(chatRoom.id ?? "").addSnapshotListener { [weak self] snapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error checking chat room: \(error)")
+                return
+            }
+
+            if snapshot?.exists == false {
+                DispatchQueue.main.async {
+                    self.chatRoomIsDeleted = true
+                    self.listenerRegistration?.remove()
+                }
+                return
+            }
+        }
+
         listenerRegistration = db.collection("messages")
             .whereField("chatRoomId", isEqualTo: chatRoom.id ?? "")
             .order(by: "timestamp", descending: false)
@@ -38,7 +56,7 @@ class ChatRoomViewModel {
                     return
                 }
 
-                guard let documents = snapshot?.documents else { return }
+                guard let documents = snapshot?.documents, !documents.isEmpty else { return }
 
                 self.messages = documents.compactMap { document in
                     try? document.data(as: ChatMessage.self)

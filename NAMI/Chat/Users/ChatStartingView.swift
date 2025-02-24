@@ -81,6 +81,10 @@ struct ChatStartingView: View {
                     ChatRequestView()
                         .environment(chatUserRouter)
                         .environment(chatUserManager)
+                case .chatRoomView(let chatRoom):
+                    ChatRoomView(chatRoom: chatRoom, currentUserId: UserManager.shared.userID, chatRoomType: .user)
+                        .environment(chatUserRouter)
+                        .environment(ChatAdminRouter())
                 }
             }
         }

@@ -34,6 +34,14 @@ struct ChatRoomView: View {
                         .listRowSeparator(.hidden)
                         .listRowBackground(Color.clear)
                     }
+
+                    if chatRoomViewModel.chatRoomIsDeleted {
+                        Text("This chat room was deleted by \(chatRoomType == .user ? "NAMI Helpline" : chatRoomViewModel.chatRoom.userName). Tap 'End Chat' to go back.")
+                            .foregroundStyle(.red)
+                            .listRowSeparator(.hidden)
+                            .listRowBackground(Color.clear)
+                            .multilineTextAlignment(.center)
+                    }
                 }
                 .listStyle(.plain)
                 .onChange(of: chatRoomViewModel.messages.count) {
@@ -56,7 +64,7 @@ struct ChatRoomView: View {
                              isFocused: $isFocused, onSend: chatRoomViewModel.sendMessage)
         }
         .confirmationDialog(
-            "Are you sure you want to end this chat with \(chatRoomViewModel.chatRoom.userName)? This action cannot be undone and will delete all messages permanently.",
+            "Are you sure you want to end this chat with \(chatRoomType == .user ? "NAMI Helpline" : chatRoomViewModel.chatRoom.userName)? This action cannot be undone and will delete all messages permanently.",
             isPresented: $endChatConfirmAlert,
             titleVisibility: .visible
         ) {
@@ -72,6 +80,7 @@ struct ChatRoomView: View {
         }
         .background(Color.black.opacity(0.05).ignoresSafeArea(edges: .all))
         .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
         .toolbarBackgroundVisibility(.visible)
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -85,12 +94,21 @@ struct ChatRoomView: View {
 
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    endChatConfirmAlert = true
+                    if chatRoomViewModel.chatRoomIsDeleted {
+                        switch chatRoomType {
+                        case .admin:
+                            chatAdminRouter.navigateToRoot()
+                        case .user:
+                            chatUserRouter.navigateToRoot()
+                        }
+                    }
+                    else { endChatConfirmAlert = true }
                 } label: {
                     Text("End Chat")
                 }
             }
         }
+        .navigationBarBackButtonHidden(chatRoomType == .user)
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {
