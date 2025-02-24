@@ -11,7 +11,6 @@ struct AppView: View {
     
     @State var tabSelection = 0
     @State var tabVisiblityControls = TabsControl()
-    @State var homeScreenRouter = HomeScreenRouter()
     @State var userProfileRouter = HomeScreenRouter()
 
     init() {
@@ -29,7 +28,6 @@ struct AppView: View {
             if UserManager.shared.userType == .member {
                 Tab(value: 0) {
                     HomeView()
-                        .environment(homeScreenRouter)
                         .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
                 } label: {
                     Label("Home", systemImage: "house")

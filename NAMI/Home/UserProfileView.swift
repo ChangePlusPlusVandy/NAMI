@@ -17,44 +17,45 @@ struct UserProfileView: View {
     var body: some View {
         ZStack(alignment: .center) {
             ScrollView {
-                VStack (alignment: .leading, spacing: 25) {
-                    profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
-                    profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
-                    profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
-                    profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
-                    profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("User Type")
-                                .fontWeight(.semibold)
-// MARK: Temporarily disable
-//                            if UserManager.shared.userType == .member {
-//                                Button {
-//                                    withAnimation(.snappy(duration: 0.2)) {
-//                                        showUserTypePopover.toggle()
-//                                    }
-//                                } label: {
-//                                    Image(systemName: "info.circle")
-//                                }
-//                                .sensoryFeedback(.impact(weight: .heavy), trigger: showUserTypePopover)
-//                            }
+                VStack {
+                    VStack (alignment: .leading, spacing: 30) {
+                        profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
+                        profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
+                        profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
+                        profileRow(label: "Phone:", value: UserManager.shared.currentUser?.phoneNumber)
+                        profileRow(label: "Zip Code:", value: UserManager.shared.currentUser?.zipCode)
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack {
+                                Text("User Type")
+                                    .fontWeight(.semibold)
+                                //                          MARK: Temporarily disable
+                                //                            if UserManager.shared.userType == .member {
+                                //                                Button {
+                                //                                    withAnimation(.snappy(duration: 0.2)) {
+                                //                                        showUserTypePopover.toggle()
+                                //                                    }
+                                //                                } label: {
+                                //                                    Image(systemName: "info.circle")
+                                //                                }
+                                //                                .sensoryFeedback(.impact(weight: .heavy), trigger: showUserTypePopover)
+                                //                            }
+                            }
+                            Text(UserManager.shared.currentUser?.userType.description ?? "error")
+                                .foregroundColor(.secondary)
                         }
-                        Text(UserManager.shared.currentUser?.userType.description ?? "error")
-                            .foregroundColor(.secondary)
                     }
-                }
-                .padding(.horizontal, 20)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 40)
-                .padding(.bottom, 20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 20)
+                    .padding(.bottom, 20)
 
-                VStack (alignment: .center, spacing: 15) {
-                    donateButton
-                    signOutButton
-                    if UserManager.shared.userType != .superAdmin {
-                        deleteAccountButton
+                    VStack (alignment: .center, spacing: 15) {
+                        donateButton
+                        signOutButton
+                        if UserManager.shared.userType != .superAdmin {
+                            deleteAccountButton
+                        }
                     }
-                }
+                }.padding(.horizontal, 50)
             }
 
             if showUserTypePopover {
