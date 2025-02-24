@@ -63,17 +63,22 @@ struct HomeView: View {
                     .environment(homeScreenRouter)
                     .transition(.move(edge: .trailing))
                 case .list:
-                    List(viewModel.registeredEvents) { event in
-                        CustomEventCardView(event: event)
-                            .onTapGesture {
-                                tabVisibilityControls.makeHidden()
-                                homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                            }
+                    if viewModel.registeredEvents.isEmpty {
+                        noEventsView
+                            .transition(.move(edge: .leading))
+                    } else {
+                        List(viewModel.registeredEvents) { event in
+                            CustomEventCardView(event: event)
+                                .onTapGesture {
+                                    tabVisibilityControls.makeHidden()
+                                    homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                }
+                        }
+                        .listStyle(.plain)
+                        .scrollIndicators(.hidden)
+                        .refreshable {viewModel.refreshRegisteredEvents()}
+                        .transition(.move(edge: .leading))
                     }
-                    .listStyle(.plain)
-                    .scrollIndicators(.hidden)
-                    .refreshable {viewModel.refreshRegisteredEvents()}
-                    .transition(.move(edge: .leading))
                 }
             }
             .toolbar {homeViewToolBar}
@@ -111,6 +116,41 @@ struct HomeView: View {
                 viewModel.refreshRegisteredEvents()
             }
         }
+    }
+    
+    private var noEventsView: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            
+            Text("You have no upcoming events")
+                .font(.title3)
+                .fontWeight(.medium)
+                .multilineTextAlignment(.center)
+            
+            Text("Take a look at new events posted and sign up")
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+            
+            Button {
+                // Navigate to Events tab
+                
+            } label: {
+                Text("Events")
+                    .fontWeight(.medium)
+                    .padding(.horizontal, 30)
+                    .padding(.vertical, 12)
+                    .background(Color(red: 0.33, green: 0.65, blue: 0.67)) // Teal color like in the image
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding(.top, 10)
+            
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(UIColor.systemBackground))
     }
 
     struct CustomEventCardView: View {
