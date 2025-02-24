@@ -36,11 +36,22 @@ struct ChatRoomView: View {
                     }
 
                     if chatRoomViewModel.chatRoomIsDeleted {
-                        Text("This chat room was deleted by \(chatRoomType == .user ? "NAMI Helpline" : chatRoomViewModel.chatRoom.userName). Tap 'End Chat' to go back.")
-                            .foregroundStyle(.red)
-                            .listRowSeparator(.hidden)
-                            .listRowBackground(Color.clear)
-                            .multilineTextAlignment(.center)
+                        switch chatRoomType {
+                        case .admin:
+                            Text("\(chatRoomViewModel.chatRoom.userName) has ended the chat")
+                                .foregroundStyle(.red)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        case .user:
+                            Text("This chat room has been removed by a NAMI Helpline admin. Tap 'End Chat' to exit and create a new request if needed.")
+                                .foregroundStyle(.red)
+                                .listRowSeparator(.hidden)
+                                .listRowBackground(Color.clear)
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
                     }
                 }
                 .listStyle(.plain)

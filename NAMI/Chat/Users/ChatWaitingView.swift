@@ -27,13 +27,19 @@ struct ChatWaitingView: View {
 
             Spacer()
 
-            loadingSpinner()
-                .frame(width: 40)
+            if chatUserManager.isCurrentChatRequestRemoved {
+                Text("Your chat request has been removed by the admin. You can tap 'Cancel Chat' to exit and create a new request if needed.")
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+                    .padding()
+            } else {
+                loadingSpinner()
+                    .frame(width: 40)
 
-            Text("Connecting...")
-                .fontWeight(.light)
-                .padding(.top, 5)
-
+                Text("Connecting...")
+                    .fontWeight(.light)
+                    .padding(.top, 5)
+            }
             Spacer()
 
             Text("If you are experiencing a mental health crisis, please call or text 988, available 24/7/365")
@@ -59,6 +65,7 @@ struct ChatWaitingView: View {
                 chatUserRouter.navigate(to: .chatRoomView(chatRoom: chatRoom))
                 chatUserManager.cleanupListeners()
             }
+            chatUserManager.listenForChatRequestDeletion()
         }
     }
 
@@ -83,7 +90,11 @@ struct ChatWaitingView: View {
 
     func cancelChatButton() -> some View {
         Button {
-            showAlert = true
+            if chatUserManager.isCurrentChatRequestRemoved {
+                chatUserRouter.navigateToRoot()
+            } else {
+                showAlert = true
+            }
         } label: {
             Text("Cancel Chat")
                 .font(.callout)

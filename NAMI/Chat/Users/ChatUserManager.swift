@@ -14,7 +14,9 @@ class ChatUserManager {
     let db = Firestore.firestore()
     var errorMessage = ""
     var currentChatRequestId: String?
+    var isCurrentChatRequestRemoved = false
     private var roomListener: ListenerRegistration?
+    private var chatRequestListener: ListenerRegistration?
 
     // user send chat request
     func sendChatRoomRequest(chatRequest: ChatRequest) {
@@ -72,6 +74,34 @@ class ChatUserManager {
         }
     }
 
+    func listenForChatRequestDeletion() {
+        isCurrentChatRequestRemoved = false
+        guard let currentChatRequestId else { return }
+
+        chatRequestListener?.remove()
+
+        let query = db.collection("chatRequests")
+            .whereField("requestId", isEqualTo: currentChatRequestId)
+
+        chatRequestListener = query.addSnapshotListener { [weak self] snapshot, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                print("Error listening for chat request deletion: \(error.localizedDescription)")
+                self.errorMessage = error.localizedDescription
+                return
+            }
+
+            // If the snapshot is empty, it means the document has been deleted
+            if let snapshot = snapshot, snapshot.documents.isEmpty {
+                print("Chat request \(self.currentChatRequestId ?? "") was deleted.")
+                self.currentChatRequestId = nil
+                self.chatRequestListener?.remove()
+                isCurrentChatRequestRemoved = true
+            }
+        }
+    }
+
     func listenForChatRoomCreation(completion: @escaping (ChatRoom) -> Void) {
         // Clean up any existing listener
         roomListener?.remove()
@@ -112,6 +142,7 @@ class ChatUserManager {
 
     func cleanupListeners() {
         roomListener?.remove()
+        chatRequestListener?.remove()
     }
 }
 

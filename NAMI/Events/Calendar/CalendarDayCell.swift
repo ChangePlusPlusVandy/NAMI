@@ -25,7 +25,7 @@ struct CalendarDayCell: View {
     }
     
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 2) {
             //Day number
             Text("\(dayNumber)")
                 .font(.subheadline)

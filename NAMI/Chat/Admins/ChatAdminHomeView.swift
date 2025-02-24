@@ -15,25 +15,33 @@ struct ChatAdminHomeView: View {
     @FirestoreQuery(collectionPath: "chatRequests",
                     predicates: [.order(by: "requestTime", descending: false)],
                     animation: .default) var chatRequests: [ChatRequest]
-
+    
     @FirestoreQuery(collectionPath: "chatRooms",
                     predicates: [.order(by: "lastMessageTimestamp", descending: true),
                                  .isEqualTo("adminId", UserManager.shared.userID)
-                                ],
+                    ],
                     animation: .default) var chatRooms: [ChatRoom]
 
     var body: some View {
         NavigationStack(path: $chatAdminRouter.navPath) {
             List {
                 Section(header: Text("New Chats").font(.title3)) {
-                    ForEach(chatRequests) { chatRequest in
-                        ChatRequestCell(chatRequest: chatRequest)
+                    if chatRequests.isEmpty {
+                        Text("No new chat requests").foregroundColor(.gray)
+                    } else {
+                        ForEach(chatRequests) { chatRequest in
+                            ChatRequestCell(chatRequest: chatRequest)
+                        }
                     }
                 }
-                
+
                 Section(header: Text("Active Chats").font(.title3)) {
-                    ForEach(chatRooms) { chatRoom in
-                        ChatRoomCell(chatRoom: chatRoom)
+                    if chatRooms.isEmpty {
+                        Text("No active chats").foregroundColor(.gray)
+                    } else {
+                        ForEach(chatRooms) { chatRoom in
+                            ChatRoomCell(chatRoom: chatRoom)
+                        }
                     }
                 }
             }
