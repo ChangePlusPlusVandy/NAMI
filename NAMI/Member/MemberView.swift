@@ -32,6 +32,16 @@ struct MemberView: View {
             }
             .searchable(text: $searchText)
             .navigationTitle("NAMI Members")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading){
+                    HStack(spacing: 0) {
+                        Image("NAMIDavidson")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 28)
+                    }
+                }
+            }
             .sheet(isPresented: $showMemberInfoSheet){ MemberInfoSheet(user: $tappedUser)}
             .onChange(of: memberRouter.navPath) {
                 if memberRouter.navPath.isEmpty {
