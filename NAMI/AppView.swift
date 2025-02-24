@@ -11,6 +11,7 @@ struct AppView: View {
     
     @State var tabSelection = 0
     @State var tabVisiblityControls = TabsControl()
+    @State var userProfileRouter = HomeScreenRouter()
 
     init() {
         // to customize tab bar color
@@ -24,12 +25,20 @@ struct AppView: View {
     
     var body: some View {
         TabView(selection: $tabSelection) {
-
-            Tab(value: 0) {
-                HomeView()
-                    .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
-            } label: {
-                Label("Home", systemImage: "house")
+            if UserManager.shared.userType == .member {
+                Tab(value: 0) {
+                    HomeView()
+                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                } label: {
+                    Label("Home", systemImage: "house")
+                }
+            } else if UserManager.shared.userType == .superAdmin {
+                Tab(value: 0) {
+                    MemberView()
+                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                } label: {
+                    Label("Member", systemImage: "checkmark.seal.fill")
+                }
             }
 
             Tab(value: 1) {
@@ -46,12 +55,21 @@ struct AppView: View {
                 Label("Chat", systemImage: "message")
             }
 
-            if UserManager.shared.userType == .superAdmin {
+            if UserManager.shared.isAdmin() {
                 Tab(value: 3) {
-                    MemberView()
-                        .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                    NavigationStack(path: $userProfileRouter.navPath) {
+                        UserProfileView()
+                            .environment(userProfileRouter)
+                            .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
+                            .navigationDestination(for: HomeScreenRouter.Destination.self) { destination in
+                                if destination == .userProfileEditView {
+                                    UserProfileEditView()
+                                        .environment(userProfileRouter)
+                                }
+                            }
+                    }
                 } label: {
-                    Label("Member", systemImage: "checkmark.seal.fill")
+                    Label("Profile", systemImage: "person.fill")
                 }
             }
         }
