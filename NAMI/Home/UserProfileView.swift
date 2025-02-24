@@ -16,9 +16,8 @@ struct UserProfileView: View {
 
     var body: some View {
         ZStack(alignment: .center) {
-            VStack (alignment: .leading) {
-
-                VStack (alignment: .leading, spacing: 30) {
+            ScrollView {
+                VStack (alignment: .leading, spacing: 25) {
                     profileRow(label: "First Name:", value: UserManager.shared.currentUser?.firstName)
                     profileRow(label: "Last Name:", value: UserManager.shared.currentUser?.lastName)
                     profileRow(label: "Email:", value: UserManager.shared.currentUser?.email)
@@ -44,10 +43,10 @@ struct UserProfileView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 40)
                 .padding(.bottom, 20)
-
-                Spacer()
 
                 VStack (alignment: .center, spacing: 15) {
                     donateButton
@@ -56,8 +55,6 @@ struct UserProfileView: View {
                         deleteAccountButton
                     }
                 }
-                
-                Spacer()
             }
 
             if showUserTypePopover {
@@ -86,7 +83,7 @@ struct UserProfileView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             if UserManager.shared.isAdmin() {
-                tabVisibilityControls.makeVisible()
+                tabVisibilityControls.makeVisibleNoAnimation()
             }
         }
     }

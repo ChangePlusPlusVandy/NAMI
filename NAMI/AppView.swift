@@ -14,7 +14,6 @@ struct AppView: View {
     @State var homeScreenRouter = HomeScreenRouter()
     @State var userProfileRouter = HomeScreenRouter()
 
-
     init() {
         // to customize tab bar color
         let tabBarAppearance = UITabBarAppearance()
@@ -23,13 +22,6 @@ struct AppView: View {
         
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        
-        // Set initial tab based on user type
-        if UserManager.shared.userType == .superAdmin {
-            _tabSelection = State(initialValue: 3) // Member tab
-        } else if UserManager.shared.userType == .admin {
-            _tabSelection = State(initialValue: 1) // Events tab
-        }
     }
     
     var body: some View {
@@ -42,10 +34,8 @@ struct AppView: View {
                 } label: {
                     Label("Home", systemImage: "house")
                 }
-            }
-
-            if UserManager.shared.userType == .superAdmin {
-                Tab(value: 3) {
+            } else if UserManager.shared.userType == .superAdmin {
+                Tab(value: 0) {
                     MemberView()
                         .toolbar(tabVisiblityControls.isTabVisible ? .visible: .hidden, for: .tabBar)
                 } label: {
@@ -67,8 +57,8 @@ struct AppView: View {
                 Label("Chat", systemImage: "message")
             }
 
-            if UserManager.shared.userType != .member {
-                Tab(value: 4) {
+            if UserManager.shared.isAdmin() {
+                Tab(value: 3) {
                     NavigationStack(path: $userProfileRouter.navPath) {
                         UserProfileView()
                             .environment(userProfileRouter)
