@@ -147,8 +147,10 @@ struct HomeView: View {
             }
             .padding(.top, 30)
             Spacer()
+            Spacer()
         }
         .padding(.horizontal, 50)
+        .ignoresSafeArea()
     }
 
     struct CustomEventCardView: View {
