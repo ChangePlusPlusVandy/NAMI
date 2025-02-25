@@ -8,7 +8,9 @@
 import SwiftUI
 
 @Observable class TabsControl {
+    var tabSelection = 0
     private(set) var isTabVisible = true
+
     func makeVisible() {
         withAnimation(.snappy) {
             isTabVisible = true

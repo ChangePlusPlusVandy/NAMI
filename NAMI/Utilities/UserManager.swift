@@ -37,7 +37,7 @@ final class UserManager {
         userType == .admin || userType == .superAdmin
     }
 
-    func isChatAdmin() -> Bool {
+    func isVolunteerOrAdmin() -> Bool {
         userType == .admin || userType == .superAdmin || userType == .volunteer
     }
 

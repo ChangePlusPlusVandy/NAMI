@@ -10,7 +10,7 @@ import SwiftUI
 struct ChatView: View {
     @Environment(TabsControl.self) var tabVisibilityControls
     var body: some View {
-        if UserManager.shared.isChatAdmin() {
+        if UserManager.shared.isVolunteerOrAdmin() {
             ChatAdminHomeView()
                 .environment(tabVisibilityControls)
         } else {

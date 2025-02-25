@@ -9,7 +9,6 @@ import SwiftUI
 
 struct AppView: View {
     
-    @State var tabSelection = 0
     @State var tabVisiblityControls = TabsControl()
     @State var userProfileRouter = HomeScreenRouter()
 
@@ -24,7 +23,7 @@ struct AppView: View {
     }
     
     var body: some View {
-        TabView(selection: $tabSelection) {
+        TabView(selection: $tabVisiblityControls.tabSelection) {
             if UserManager.shared.userType == .member {
                 Tab(value: 0) {
                     HomeView()
@@ -55,7 +54,7 @@ struct AppView: View {
                 Label("Chat", systemImage: "message")
             }
 
-            if UserManager.shared.isAdmin() {
+            if UserManager.shared.isVolunteerOrAdmin() {
                 Tab(value: 3) {
                     NavigationStack(path: $userProfileRouter.navPath) {
                         UserProfileView()
@@ -74,7 +73,7 @@ struct AppView: View {
             }
         }
         .environment(tabVisiblityControls)
-        .sensoryFeedback(.impact(weight: .heavy), trigger: tabSelection)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: tabVisiblityControls.tabSelection)
     }
 }
 

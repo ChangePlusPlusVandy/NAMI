@@ -17,7 +17,7 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack(path: $homeScreenRouter.navPath) {
-            VStack (alignment: .leading){
+            VStack (alignment: .leading) {
                 Text("Welcome")
                     .font(.largeTitle.bold())
                     .padding([.bottom, .horizontal])
@@ -29,9 +29,13 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 5)
 
-                if viewModel.registeredEvents.isEmpty {
+                switch viewModel.eventsLoadState {
+                case .loading:
+                    ProgressView()
+                case .empty:
                     noEventsView
-                } else {
+                        .padding(.horizontal, 20)
+                case .loaded:
                     CalendarDisplaySelectionButton()
                         .environment(calendarManager)
                         .padding(.horizontal)
@@ -41,7 +45,7 @@ struct HomeView: View {
                         Group {
                             Group {
                                 CalendarSelectionHeader()
-                                    .padding(.vertical, 8)
+                                    .padding(.vertical, 5)
                                 CalendarGrid(events: viewModel.registeredEvents)
                             }
                             .padding(.horizontal, 20)
@@ -131,7 +135,7 @@ struct HomeView: View {
                 .multilineTextAlignment(.center)
 
             Button {
-
+                tabVisibilityControls.tabSelection = 1
             } label: {
                 Text("Events")
                     .fontWeight(.medium)
@@ -227,6 +231,7 @@ struct HomeView: View {
 @MainActor
 class HomeViewModel {
     var registeredEvents: [Event] = []
+    var eventsLoadState: EventsLoadState = .loading
     private let db = Firestore.firestore()
 
     func refreshRegisteredEvents() {
@@ -245,6 +250,11 @@ class HomeViewModel {
             withAnimation {
                 registeredEvents = events
             }
+            if registeredEvents.isEmpty {
+                eventsLoadState = .empty
+            } else {
+                eventsLoadState = .loaded
+            }
         }
     }
 
@@ -252,6 +262,12 @@ class HomeViewModel {
         registeredEvents.filter { event in  // Assuming viewModel has an events property
             Calendar.current.isDate(event.startTime, inSameDayAs: date)
         }
+    }
+
+    enum EventsLoadState {
+        case loading
+        case empty
+        case loaded
     }
 }
 
