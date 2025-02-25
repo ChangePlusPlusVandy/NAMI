@@ -29,44 +29,43 @@ struct HomeView: View {
                     .padding(.horizontal)
                     .padding(.bottom, 5)
 
-                CalendarDisplaySelectionButton()
-                    .environment(calendarManager)
-                    .padding(.horizontal)
+                if viewModel.registeredEvents.isEmpty {
+                    noEventsView
+                } else {
+                    CalendarDisplaySelectionButton()
+                        .environment(calendarManager)
+                        .padding(.horizontal)
 
-                switch calendarManager.viewOption {
-                case .calendar:
-                    Group {
+                    switch calendarManager.viewOption {
+                    case .calendar:
                         Group {
-                            CalendarSelectionHeader()
-                                .padding(.vertical, 8)
-                            CalendarGrid(events: viewModel.registeredEvents)
-                        }
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 6)
-
-                        let filteredEvents = viewModel.getEventsOnDate(calendarManager.selectedDate)
-                        if !filteredEvents.isEmpty {
-                            List(filteredEvents) { event in
-                                CustomEventCardView(event: event)
-                                    .onTapGesture {
-                                        tabVisibilityControls.makeHidden()
-                                        homeScreenRouter.navigate(to: .eventDetailView(event: event))
-                                    }
+                            Group {
+                                CalendarSelectionHeader()
+                                    .padding(.vertical, 8)
+                                CalendarGrid(events: viewModel.registeredEvents)
                             }
-                            .listStyle(.plain)
-                            .scrollIndicators(.hidden)
-                        } else {
-                            emptyStateView
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 6)
+
+                            let filteredEvents = viewModel.getEventsOnDate(calendarManager.selectedDate)
+                            if !filteredEvents.isEmpty {
+                                List(filteredEvents) { event in
+                                    CustomEventCardView(event: event)
+                                        .onTapGesture {
+                                            tabVisibilityControls.makeHidden()
+                                            homeScreenRouter.navigate(to: .eventDetailView(event: event))
+                                        }
+                                }
+                                .listStyle(.plain)
+                                .scrollIndicators(.hidden)
+                            } else {
+                                emptyStateView
+                            }
                         }
-                    }
-                    .environment(calendarManager)
-                    .environment(homeScreenRouter)
-                    .transition(.move(edge: .trailing))
-                case .list:
-                    if viewModel.registeredEvents.isEmpty {
-                        noEventsView
-                            .transition(.move(edge: .leading))
-                    } else {
+                        .environment(calendarManager)
+                        .environment(homeScreenRouter)
+                        .transition(.move(edge: .trailing))
+                    case .list:
                         List(viewModel.registeredEvents) { event in
                             CustomEventCardView(event: event)
                                 .onTapGesture {
@@ -117,40 +116,35 @@ struct HomeView: View {
             }
         }
     }
-    
+
     private var noEventsView: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 10) {
             Spacer()
-            
             Text("You have no upcoming events")
-                .font(.title3)
+                .font(.headline)
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
-            
+
             Text("Take a look at new events posted and sign up")
-                .font(.body)
+                .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            
+
             Button {
-                // Navigate to Events tab
-                
+
             } label: {
                 Text("Events")
                     .fontWeight(.medium)
-                    .padding(.horizontal, 30)
-                    .padding(.vertical, 12)
-                    .background(Color(red: 0.33, green: 0.65, blue: 0.67)) // Teal color like in the image
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(Color.NAMITealBlue)
                     .foregroundColor(.white)
-                    .cornerRadius(8)
+                    .cornerRadius(10)
             }
-            .padding(.top, 10)
-            
+            .padding(.top, 30)
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(UIColor.systemBackground))
+        .padding(.horizontal, 50)
     }
 
     struct CustomEventCardView: View {
