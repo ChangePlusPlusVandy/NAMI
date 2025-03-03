@@ -1,10 +1,11 @@
 ## Contributors
 
 |   |   |   |   |
-|---|---|---|---|
+|:---:|:---:|:---:|:---:|
 | <img src="https://github.com/ZacharyTao.png" width="50" height="50"> <br> **Zachary Tao (EM)** <br> [@ZacharyTao](https://github.com/ZacharyTao) | <img src="https://github.com/DanaIzadpanah.png" width="50" height="50"> <br> **Dana Izadpanah (PM)** <br> [@DanaIzadpanah](https://github.com/DanaIzadpanah) | <img src="https://github.com/tamara-re.png" width="50" height="50"> <br> **Tamara Regalado (Designer)** <br> [@tamara-re](https://github.com/tamara-re) | <img src="https://github.com/charlespoulin58.png" width="50" height="50"> <br> **Charles Poulin** <br> [@charlespoulin58](https://github.com/charlespoulin58) |
-| <img src="https://github.com/DavidHuang2002.png" width="50" height="50"> <br> **David Huang** <br> [@DavidHuang2002](https://github.com/DavidHuang2002) | <img src="https://github.com/kevinchenbo2.png" width="50" height="50"> <br> **Kevin Chen** <br> [@kevinchenbo2](https://github.com/kevinchenbo2) | <img src="https://github.com/owusunp.png" width="50" height="50"> <br> **Naphtali Owusu** <br> [@owusunp](https://github.com/owusunp) | <img src="https://github.com/RileyK19.png" width="50" height="50"> <br> **Riley Koo** <br> [@RileyK19](https://github.com/RileyK19) |
-| <img src="https://github.com/sophie-26.png" width="50" height="50"> <br> **Sophie Zhuang** <br> [@sophie-26](https://github.com/sophie-26) | <img src="https://github.com/stevenysy.png" width="50" height="50"> <br> **Steven Yi** <br> [@stevenysy](https://github.com/stevenysy) |||
+| <img src="https://github.com/DavidHuang2002.png" width="50" height="50"> <br> **David Huang** <br> [@DavidHuang2002](https://github.com/DavidHuang2002) | <img src="https://github.com/kevinchenbo2.png" width="50" height="50"> <br> **Kevin Chen** <br> [@kevinchenbo2](https://github.com/kevinchenbo2) | <img src="https://github.com/owusunp.png" width="50" height="50"> <br> **Prince Owusu-Nkrumah** <br> [@owusunp](https://github.com/owusunp) | <img src="https://github.com/RileyK19.png" width="50" height="50"> <br> **Riley Koo** <br> [@RileyK19](https://github.com/RileyK19) |
+| <img src="https://github.com/sophie-26.png" width="50" height="50"> <br> **Sophie Zhuang** <br> [@sophie-26](https://github.com/sophie-26) | <img src="https://github.com/stevenysy.png" width="50" height="50"> <br> **Steven Yi** <br> [@stevenysy](https://github.com/stevenysy) |<img src="https://github.com/vnthanhdng.png" width="50" height="50"> <br> **Van Dang** <br> [@vnthanhdng](https://github.com/vnthanhdng)||
+
 
 ## NAMI User Main Views
 | Home Tab | Event Tab(List) | Event Tab(Calendar)| Chat Tab
