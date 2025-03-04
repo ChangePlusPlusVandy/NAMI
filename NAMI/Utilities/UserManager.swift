@@ -20,7 +20,9 @@ final class UserManager {
     var currentUser: NamiUser?
     var userType: UserType = .member
     private var listenerRegistration: ListenerRegistration?
-    
+
+    var authenticationViewState: AuthenticatedViewState = .loading
+
     private init () {}
 
     // Expose current user
@@ -63,9 +65,9 @@ final class UserManager {
             currentUser = try await db.collection("users").document(userID).getDocument().data(as: NamiUser.self)
             userType = currentUser?.userType ?? .member
             print("User information is fetched \(String(describing: currentUser))")
+            authenticationViewState = .home
         } catch {
-            errorMessage = error.localizedDescription
-            print(errorMessage)
+            authenticationViewState = .userOnBoarding
         }
     }
 
@@ -77,9 +79,11 @@ final class UserManager {
             currentUser = newUser
             userType = newUser.userType
             print("User information is created \(String(describing: currentUser))")
+            authenticationViewState = .home
         } catch {
             errorMessage = error.localizedDescription
             print(errorMessage)
+            authenticationViewState = .userOnBoarding
         }
     }
 
@@ -88,6 +92,7 @@ final class UserManager {
         db.collection("users").document(userIDTarget).delete()
         currentUser = nil
         print("User information is deleted \(String(describing: currentUser))")
+        authenticationViewState = .loading
     }
 
     func startListeningForUserChanges() {
@@ -134,5 +139,13 @@ final class UserManager {
 
     func updateSpecificNamiUserType(userIDtoBeUpdated: String, newUserType: UserType) {
         db.collection("users").document(userIDtoBeUpdated).updateData(["userType": newUserType.rawValue])
+    }
+}
+
+extension UserManager {
+    enum AuthenticatedViewState {
+        case loading
+        case userOnBoarding
+        case home
     }
 }

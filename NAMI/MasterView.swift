@@ -10,6 +10,7 @@ import SwiftUI
 struct MasterView: View {
     @State private var authManager = AuthenticationManager()
     @State private var showAlert = false
+    @State private var showSignInView = false
 
     var body: some View {
         Group {
@@ -31,19 +32,22 @@ struct MasterView: View {
                     }
 
             case .authenticated:
-                if UserManager.shared.currentUser == nil {
+                switch UserManager.shared.authenticationViewState {
+                case .loading:
                     ProgressView()
                         .task {
                             await UserManager.shared.fetchUser()
                             UserManager.shared.startListeningForUserChanges()
                         }
-                } else {
+                case .userOnBoarding:
+                    UserOnboardingView()
+                        .environment(authManager)
+                case .home:
                     AppView()
                         .environment(authManager)
-                        .fullScreenCover(isPresented: $authManager.isFirstTimeSignIn) {
-                            UserOnboardingView()
-                                .environment(authManager)
-                                .interactiveDismissDisabled()
+                        .task {
+                            await UserManager.shared.fetchUser()
+                            UserManager.shared.startListeningForUserChanges()
                         }
                 }
             }

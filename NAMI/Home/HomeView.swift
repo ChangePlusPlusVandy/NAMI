@@ -32,6 +32,7 @@ struct HomeView: View {
                 switch viewModel.eventsLoadState {
                 case .loading:
                     ProgressView()
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                 case .empty:
                     noEventsView
                         .padding(.horizontal, 20)
