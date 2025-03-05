@@ -1,3 +1,35 @@
+
+# NAMI Davidson County Mobile Application
+
+## A Lifeline for Mental Health Support
+
+### Because Every Moment Matters
+Mental health support should never be out of reach. The NAMI Davidson County Mobile Application is built with one goal—to make help available when it’s needed most. For those struggling, for those searching for answers, for those who need to feel heard—this app is a bridge to connection, to community, to hope.
+
+This isn’t just another app. It’s a commitment. A commitment to ensuring that no one has to navigate their mental health journey alone. Whether someone is looking for a support group, a listening ear, or just a safe space to explore their options, this platform is here to make that process effortless and accessible.
+
+## Features
+
+### Finding Support Shouldn’t Be Hard
+- A clear, organized way to browse available support groups.
+- Quick registration for in-person or virtual events without hassle.
+- A personalized calendar to keep track of upcoming sessions.
+
+### A Direct Line to Help
+- Instant access to NAMI’s Warm Line for real-time, non-crisis support.
+- A simple chat interface to connect users with volunteers who listen and care.
+- Immediate call and text options, with a direct link to emergency support when needed.
+
+### A Secure & Inclusive Space
+- Easy sign-in with Google or Apple authentication.
+- A private, customizable user profile to personalize the experience.
+- Clear logout and security features to protect user data.
+
+### Built for the Community, by the Community
+- Volunteers can log hours and track their contributions.
+- Admins can ensure events and resources remain up to date.
+- A thoughtfully designed interface that prioritizes ease of use for everyone.
+- 
 ## Contributors
 
 |   |   |   |   |
