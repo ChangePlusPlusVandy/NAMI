@@ -1,5 +1,6 @@
 
 # NAMI Davidson County Mobile Application
+![logo white bkg](https://github.com/user-attachments/assets/a5b95430-21e5-4e0d-8658-d106d3369c00)
 
 ## Overview
 NAMI Davidson App is an iOS application designed to streamline event registration for the National Alliance on Mental Illness (NAMI), and provide essential support for individuals affected by mental health conditions. This project is developed in collaboration with Change++, a student-run nonprofit dedicated to building free software for local nonprofit organizations. Our mission is to help members and volunteers effortlessly find and join events while also providing direct access to mental health support resources.
