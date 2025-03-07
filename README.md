@@ -1,35 +1,22 @@
 
 # NAMI Davidson County Mobile Application
 
-## A Lifeline for Mental Health Support
-
-### Because Every Moment Matters
-Mental health support should never be out of reach. The NAMI Davidson County Mobile Application is built with one goal—to make help available when it’s needed most. For those struggling, for those searching for answers, for those who need to feel heard—this app is a bridge to connection, to community, to hope.
-
-This isn’t just another app. It’s a commitment. A commitment to ensuring that no one has to navigate their mental health journey alone. Whether someone is looking for a support group, a listening ear, or just a safe space to explore their options, this platform is here to make that process effortless and accessible.
+## Overview
+NAMI Davidson App is an iOS application designed to streamline event registration for the National Alliance on Mental Illness (NAMI), and provide essential support for individuals affected by mental health conditions. This project is developed in collaboration with Change++, a student-run nonprofit dedicated to building free software for local nonprofit organizations. Our mission is to help members and volunteers effortlessly find and join events while also providing direct access to mental health support resources.
 
 ## Features
+- **Event Registration**: Users can browse, search, and register for NAMI-hosted events with ease.
+- **User-Friendly Interface**: A clean and accessible design to ensure smooth navigation and engagement.
+- **NAMI Helpline**: A built-in chat support feature allowing users to ask questions, seek guidance, and connect directly with NAMI representatives.
+- **Scalability**: Designed to support up to 5000 users across NAMI’s network.
 
-### Finding Support Shouldn’t Be Hard
-- A clear, organized way to browse available support groups.
-- Quick registration for in-person or virtual events without hassle.
-- A personalized calendar to keep track of upcoming sessions.
 
-### A Direct Line to Help
-- Instant access to NAMI’s Warm Line for real-time, non-crisis support.
-- A simple chat interface to connect users with volunteers who listen and care.
-- Immediate call and text options, with a direct link to emergency support when needed.
+## Tech Stack
+- **Language**: Swift
+- **Framework**: SwiftUI, UIKit, 
+- **Backend**: Google Firebase (Authentication, Firestore Database, Cloud Storage, Cloud Functions)
 
-### A Secure & Inclusive Space
-- Easy sign-in with Google or Apple authentication.
-- A private, customizable user profile to personalize the experience.
-- Clear logout and security features to protect user data.
 
-### Built for the Community, by the Community
-- Volunteers can log hours and track their contributions.
-- Admins can ensure events and resources remain up to date.
-- A thoughtfully designed interface that prioritizes ease of use for everyone.
-- 
 ## Contributors
 
 |   |   |   |   |
@@ -60,3 +47,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 For questions or feedback, please open an issue on the repository or reach out via email **danaizad8624@gmail.com** or **zacharywtao@gmail.com**
+NAMI Davidson Website: **https://namidavidson.org**
